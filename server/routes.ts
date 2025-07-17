@@ -5,7 +5,7 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
 import { storage } from "./storage";
-import { insertUserSchema, insertQuestionSchema, insertGameSessionSchema } from "@shared/schema";
+import { insertUserSchema, insertQuestionSchema, insertGameSessionSchema, insertCategorySchema, insertCouponSchema } from "@shared/schema";
 import { z } from "zod";
 import Stripe from "stripe";
 
@@ -788,6 +788,159 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ message: "تم حذف السؤال بنجاح" });
     } catch (error) {
       res.status(500).json({ message: "خطأ في حذف السؤال" });
+    }
+  });
+
+  // Categories routes
+  app.get("/api/admin/categories", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    const user = req.user as any;
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "غير مصرح بالوصول" });
+    }
+
+    try {
+      const categories = await storage.getAllCategories();
+      res.json({ categories });
+    } catch (error) {
+      res.status(500).json({ message: "خطأ في جلب الفئات" });
+    }
+  });
+
+  app.post("/api/admin/categories", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    const user = req.user as any;
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "غير مصرح بالوصول" });
+    }
+
+    try {
+      const categoryData = insertCategorySchema.parse(req.body);
+      const category = await storage.createCategory(categoryData);
+      res.json({ category });
+    } catch (error) {
+      res.status(400).json({ message: "خطأ في إنشاء الفئة" });
+    }
+  });
+
+  app.put("/api/admin/categories/:id", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    const user = req.user as any;
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "غير مصرح بالوصول" });
+    }
+
+    try {
+      const categoryData = insertCategorySchema.partial().parse(req.body);
+      const category = await storage.updateCategory(parseInt(req.params.id), categoryData);
+      res.json({ category });
+    } catch (error) {
+      res.status(400).json({ message: "خطأ في تحديث الفئة" });
+    }
+  });
+
+  // Coupons routes
+  app.get("/api/admin/coupons", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    const user = req.user as any;
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "غير مصرح بالوصول" });
+    }
+
+    try {
+      const coupons = await storage.getAllCoupons();
+      res.json({ coupons });
+    } catch (error) {
+      res.status(500).json({ message: "خطأ في جلب الكوبونات" });
+    }
+  });
+
+  app.post("/api/admin/coupons", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    const user = req.user as any;
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "غير مصرح بالوصول" });
+    }
+
+    try {
+      const couponData = insertCouponSchema.parse(req.body);
+      const coupon = await storage.createCoupon(couponData);
+      res.json({ coupon });
+    } catch (error) {
+      res.status(400).json({ message: "خطأ في إنشاء الكوبون" });
+    }
+  });
+
+  app.put("/api/admin/coupons/:id", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    const user = req.user as any;
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "غير مصرح بالوصول" });
+    }
+
+    try {
+      const couponData = insertCouponSchema.partial().parse(req.body);
+      const coupon = await storage.updateCoupon(parseInt(req.params.id), couponData);
+      res.json({ coupon });
+    } catch (error) {
+      res.status(400).json({ message: "خطأ في تحديث الكوبون" });
+    }
+  });
+
+  // Coupon validation route
+  app.post("/api/validate-coupon", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    try {
+      const { code } = req.body;
+      const coupon = await storage.getCouponByCode(code);
+      
+      if (!coupon) {
+        return res.status(404).json({ message: "كوبون غير صحيح" });
+      }
+
+      if (!coupon.isActive) {
+        return res.status(400).json({ message: "كوبون غير نشط" });
+      }
+
+      if (coupon.expiresAt && new Date() > new Date(coupon.expiresAt)) {
+        return res.status(400).json({ message: "كوبون منتهي الصلاحية" });
+      }
+
+      if (coupon.maxUsage && coupon.usageCount >= coupon.maxUsage) {
+        return res.status(400).json({ message: "تم استنفاد استخدامات الكوبون" });
+      }
+
+      res.json({ 
+        valid: true, 
+        coupon: {
+          code: coupon.code,
+          discountType: coupon.discountType,
+          discountValue: coupon.discountValue,
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ message: "خطأ في التحقق من الكوبون" });
     }
   });
 

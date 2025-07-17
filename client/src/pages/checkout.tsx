@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, CreditCard, Loader2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { ArrowRight, CreditCard, Loader2, Tag, CheckCircle, XCircle } from "lucide-react";
 
 // Make sure to call `loadStripe` outside of a component's render to avoid
 // recreating the `Stripe` object on every render.
@@ -17,7 +18,7 @@ const stripePromise = import.meta.env.VITE_STRIPE_PUBLIC_KEY
   ? loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY)
   : null;
 
-const CheckoutForm = ({ gameCount }: { gameCount: number }) => {
+const CheckoutForm = ({ gameCount, finalPrice }: { gameCount: number, finalPrice: number }) => {
   const stripe = useStripe();
   const elements = useElements();
   const { toast } = useToast();
@@ -81,7 +82,7 @@ const CheckoutForm = ({ gameCount }: { gameCount: number }) => {
           ) : (
             <>
               <CreditCard className="ml-2 h-5 w-5" />
-              دفع ${gameCount === 1 ? "1.99" : "8.99"}
+              دفع ${finalPrice.toFixed(2)}
             </>
           )}
         </button>
@@ -96,6 +97,10 @@ export default function CheckoutPage() {
   const { toast } = useToast();
   const [gameCount, setGameCount] = useState(5);
   const [clientSecret, setClientSecret] = useState("");
+  const [couponCode, setCouponCode] = useState("");
+  const [validCoupon, setValidCoupon] = useState<any>(null);
+  const [couponError, setCouponError] = useState("");
+  const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
 
   // Redirect if not logged in
   if (!user) {
@@ -124,6 +129,58 @@ export default function CheckoutPage() {
   const handleBack = () => {
     setLocation("/dashboard");
   };
+
+  const validateCoupon = async () => {
+    if (!couponCode.trim()) {
+      setCouponError("يرجى إدخال رمز الكوبون");
+      return;
+    }
+
+    setIsValidatingCoupon(true);
+    setCouponError("");
+
+    try {
+      const response = await apiRequest("POST", "/api/validate-coupon", { code: couponCode });
+      const data = await response.json();
+
+      if (data.valid) {
+        setValidCoupon(data.coupon);
+        toast({
+          title: "تم تطبيق الكوبون بنجاح",
+          description: `خصم ${data.coupon.discountType === 'percentage' ? data.coupon.discountValue + '%' : '$' + data.coupon.discountValue}`,
+        });
+      } else {
+        setCouponError(data.message || "كوبون غير صحيح");
+      }
+    } catch (error: any) {
+      setCouponError(error.message || "خطأ في التحقق من الكوبون");
+    } finally {
+      setIsValidatingCoupon(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setValidCoupon(null);
+    setCouponCode("");
+    setCouponError("");
+  };
+
+  const calculateDiscountedPrice = (originalPrice: number) => {
+    if (!validCoupon) return originalPrice;
+
+    if (validCoupon.discountType === 'percentage') {
+      return originalPrice * (1 - validCoupon.discountValue / 100);
+    } else {
+      return Math.max(0, originalPrice - validCoupon.discountValue);
+    }
+  };
+
+  const getOriginalPrice = (count: number) => {
+    return count === 1 ? 1.99 : 8.99;
+  };
+
+  const originalPrice = getOriginalPrice(gameCount);
+  const finalPrice = calculateDiscountedPrice(originalPrice);
 
   if (!clientSecret) {
     return (
@@ -179,7 +236,14 @@ export default function CheckoutPage() {
                         <span className="font-semibold text-luxury-green-dark">لعبة واحدة</span>
                         <span className="text-sm text-muted-foreground block">36 سؤالاً</span>
                       </div>
-                      <span className="font-bold text-luxury-green text-xl">$1.99</span>
+                      <div className="text-left">
+                        {validCoupon && originalPrice !== finalPrice && (
+                          <span className="text-sm text-muted-foreground line-through block">$1.99</span>
+                        )}
+                        <span className="font-bold text-luxury-green text-xl">
+                          ${gameCount === 1 ? finalPrice.toFixed(2) : '1.99'}
+                        </span>
+                      </div>
                     </Label>
                   </div>
                 </div>
@@ -191,17 +255,81 @@ export default function CheckoutPage() {
                         <span className="font-semibold text-luxury-green-dark">5 ألعاب</span>
                         <span className="text-sm text-luxury-green-dark font-medium block">وفر 10%</span>
                       </div>
-                      <span className="font-bold text-luxury-green-dark text-xl">$8.99</span>
+                      <div className="text-left">
+                        {validCoupon && originalPrice !== finalPrice && (
+                          <span className="text-sm text-muted-foreground line-through block">$8.99</span>
+                        )}
+                        <span className="font-bold text-luxury-green-dark text-xl">
+                          ${gameCount === 5 ? finalPrice.toFixed(2) : '8.99'}
+                        </span>
+                      </div>
                     </Label>
                   </div>
                 </div>
               </RadioGroup>
+
+              {/* Coupon Section */}
+              <div className="luxury-card p-4 border border-luxury-green-light">
+                <Label className="text-base font-semibold text-luxury-green-dark mb-3 block flex items-center">
+                  <Tag className="ml-2 h-4 w-4" />
+                  كوبون خصم
+                </Label>
+                
+                {!validCoupon ? (
+                  <div className="flex space-x-reverse space-x-2">
+                    <Input
+                      type="text"
+                      placeholder="أدخل رمز الكوبون"
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value)}
+                      className="flex-1"
+                    />
+                    <Button
+                      type="button"
+                      onClick={validateCoupon}
+                      disabled={isValidatingCoupon}
+                      className="luxury-button-secondary px-4"
+                    >
+                      {isValidatingCoupon ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        "تطبيق"
+                      )}
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <div className="flex items-center space-x-reverse space-x-2">
+                      <CheckCircle className="h-5 w-5 text-green-600" />
+                      <div>
+                        <span className="font-semibold text-green-800">{validCoupon.code}</span>
+                        <p className="text-sm text-green-600">
+                          خصم {validCoupon.discountType === 'percentage' ? validCoupon.discountValue + '%' : '$' + validCoupon.discountValue}
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      type="button"
+                      onClick={removeCoupon}
+                      variant="ghost"
+                      size="sm"
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      <XCircle className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
+                
+                {couponError && (
+                  <p className="text-red-500 text-sm mt-2">{couponError}</p>
+                )}
+              </div>
             </div>
 
             {/* Payment Form */}
             {stripePromise ? (
               <Elements stripe={stripePromise} options={{ clientSecret }}>
-                <CheckoutForm gameCount={gameCount} />
+                <CheckoutForm gameCount={gameCount} finalPrice={finalPrice} />
               </Elements>
             ) : (
               <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">

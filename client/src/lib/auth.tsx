@@ -133,3 +133,16 @@ export function useAuth() {
   }
   return context;
 }
+
+export function useAuthRedirect() {
+  const { user, isLoading } = useAuth();
+  const [, setLocation] = useLocation();
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      setLocation("/auth");
+    }
+  }, [user, isLoading, setLocation]);
+
+  return { user, isLoading };
+}

@@ -50,7 +50,31 @@ export const purchases = pgTable("purchases", {
   userId: integer("user_id").references(() => users.id).notNull(),
   gameCount: integer("game_count").notNull(),
   amount: integer("amount").notNull(), // in cents
+  originalAmount: integer("original_amount"), // in cents, before discount
+  discountAmount: integer("discount_amount"), // in cents
+  couponCode: varchar("coupon_code", { length: 100 }),
   stripePaymentIntentId: varchar("stripe_payment_intent_id", { length: 255 }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const coupons = pgTable("coupons", {
+  id: serial("id").primaryKey(),
+  code: varchar("code", { length: 100 }).notNull().unique(),
+  discountType: varchar("discount_type", { length: 20 }).notNull(), // "percentage" or "fixed"
+  discountValue: integer("discount_value").notNull(), // percentage (0-100) or fixed amount in cents
+  isActive: boolean("is_active").default(true).notNull(),
+  usageCount: integer("usage_count").default(0).notNull(),
+  maxUsage: integer("max_usage"), // null for unlimited
+  expiresAt: timestamp("expires_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const categories = pgTable("categories", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull().unique(),
+  displayName: varchar("display_name", { length: 100 }).notNull(),
+  description: text("description"),
+  isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -93,6 +117,16 @@ export const insertPurchaseSchema = createInsertSchema(purchases).omit({
   createdAt: true,
 });
 
+export const insertCouponSchema = createInsertSchema(coupons).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertCategorySchema = createInsertSchema(categories).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 
@@ -104,3 +138,9 @@ export type GameSession = typeof gameSessions.$inferSelect;
 
 export type InsertPurchase = z.infer<typeof insertPurchaseSchema>;
 export type Purchase = typeof purchases.$inferSelect;
+
+export type InsertCoupon = z.infer<typeof insertCouponSchema>;
+export type Coupon = typeof coupons.$inferSelect;
+
+export type InsertCategory = z.infer<typeof insertCategorySchema>;
+export type Category = typeof categories.$inferSelect;

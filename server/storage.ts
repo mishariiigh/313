@@ -1,4 +1,4 @@
-import { users, questions, gameSessions, purchases, type User, type InsertUser, type Question, type InsertQuestion, type GameSession, type InsertGameSession, type Purchase, type InsertPurchase } from "@shared/schema";
+import { users, questions, gameSessions, purchases, categories, coupons, type User, type InsertUser, type Question, type InsertQuestion, type GameSession, type InsertGameSession, type Purchase, type InsertPurchase, type Category, type InsertCategory, type Coupon, type InsertCoupon } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, desc, inArray, and, not } from "drizzle-orm";
 
@@ -27,6 +27,18 @@ export interface IStorage {
   createPurchase(purchase: InsertPurchase): Promise<Purchase>;
   getUserPurchases(userId: number): Promise<Purchase[]>;
   
+  // Category operations
+  getAllCategories(): Promise<Category[]>;
+  createCategory(category: InsertCategory): Promise<Category>;
+  updateCategory(id: number, updates: Partial<Category>): Promise<Category>;
+  
+  // Coupon operations
+  getAllCoupons(): Promise<Coupon[]>;
+  getCouponByCode(code: string): Promise<Coupon | undefined>;
+  createCoupon(coupon: InsertCoupon): Promise<Coupon>;
+  updateCoupon(id: number, updates: Partial<Coupon>): Promise<Coupon>;
+  incrementCouponUsage(id: number): Promise<void>;
+
   // Admin operations
   getStats(): Promise<{
     totalUsers: number;
@@ -169,6 +181,62 @@ export class DatabaseStorage implements IStorage {
 
   async getUserPurchases(userId: number): Promise<Purchase[]> {
     return db.select().from(purchases).where(eq(purchases.userId, userId)).orderBy(desc(purchases.createdAt));
+  }
+
+  // Category operations
+  async getAllCategories(): Promise<Category[]> {
+    return db.select().from(categories).orderBy(categories.displayName);
+  }
+
+  async createCategory(insertCategory: InsertCategory): Promise<Category> {
+    const [category] = await db
+      .insert(categories)
+      .values(insertCategory)
+      .returning();
+    return category;
+  }
+
+  async updateCategory(id: number, updates: Partial<Category>): Promise<Category> {
+    const [category] = await db
+      .update(categories)
+      .set(updates)
+      .where(eq(categories.id, id))
+      .returning();
+    return category;
+  }
+
+  // Coupon operations
+  async getAllCoupons(): Promise<Coupon[]> {
+    return db.select().from(coupons).orderBy(desc(coupons.createdAt));
+  }
+
+  async getCouponByCode(code: string): Promise<Coupon | undefined> {
+    const [coupon] = await db.select().from(coupons).where(eq(coupons.code, code));
+    return coupon || undefined;
+  }
+
+  async createCoupon(insertCoupon: InsertCoupon): Promise<Coupon> {
+    const [coupon] = await db
+      .insert(coupons)
+      .values(insertCoupon)
+      .returning();
+    return coupon;
+  }
+
+  async updateCoupon(id: number, updates: Partial<Coupon>): Promise<Coupon> {
+    const [coupon] = await db
+      .update(coupons)
+      .set(updates)
+      .where(eq(coupons.id, id))
+      .returning();
+    return coupon;
+  }
+
+  async incrementCouponUsage(id: number): Promise<void> {
+    await db
+      .update(coupons)
+      .set({ usageCount: sql`${coupons.usageCount} + 1` })
+      .where(eq(coupons.id, id));
   }
 
   async getStats(): Promise<{

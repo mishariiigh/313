@@ -10,6 +10,7 @@ import Dashboard from "@/pages/dashboard";
 import GamePage from "@/pages/game";
 import GameSetupPage from "@/pages/game-setup";
 import AdminPage from "@/pages/admin";
+import AdminDashboard from "@/pages/admin-dashboard";
 import CheckoutPage from "@/pages/checkout";
 import NotFound from "@/pages/not-found";
 
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/game-setup" component={GameSetupPage} />
       <Route path="/game/:id" component={GamePage} />
       <Route path="/admin" component={AdminPage} />
+      <Route path="/admin-dashboard" component={AdminDashboard} />
       <Route path="/checkout" component={CheckoutPage} />
       <Route component={NotFound} />
     </Switch>
