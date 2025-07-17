@@ -206,7 +206,33 @@ export default function AdminDashboard() {
     return coupon.code.toLowerCase().includes(couponSearch.toLowerCase());
   }) || [];
 
-  // Helper function to populate form when editing
+  // Helper functions for editing
+  const handleEditQuestion = (question: Question) => {
+    setEditingQuestion(question);
+    setQuestionForm({
+      question: question.question,
+      answer: question.answer,
+      category: question.category,
+      difficulty: question.difficulty,
+      hint: question.hint || "",
+      explanation: question.explanation || "",
+      imageUrl: question.imageUrl || "",
+    });
+  };
+
+  const handleQuestionSubmit = () => {
+    if (editingQuestion) {
+      updateQuestionMutation.mutate({ id: editingQuestion.id, updates: questionForm });
+    } else {
+      createQuestionMutation.mutate(questionForm);
+    }
+  };
+
+  const handleCancelQuestionEdit = () => {
+    setEditingQuestion(null);
+    setQuestionForm({ question: "", answer: "", category: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" });
+  };
+
   const handleEditCategory = (category: Category) => {
     setEditingCategory(category);
     setCategoryForm({
@@ -331,8 +357,12 @@ export default function AdminDashboard() {
               {/* Add Question Form */}
               <Card>
                 <CardHeader>
-                  <CardTitle>إضافة سؤال جديد</CardTitle>
-                  <CardDescription>أضف سؤالاً جديداً إلى قاعدة البيانات</CardDescription>
+                  <CardTitle>
+                    {editingQuestion ? "تعديل السؤال" : "إضافة سؤال جديد"}
+                  </CardTitle>
+                  <CardDescription>
+                    {editingQuestion ? "تعديل بيانات السؤال المحدد" : "أضف سؤالاً جديداً إلى قاعدة البيانات"}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
@@ -410,14 +440,39 @@ export default function AdminDashboard() {
                       className="mt-2"
                     />
                   </div>
-                  <Button
-                    onClick={() => createQuestionMutation.mutate(questionForm)}
-                    disabled={createQuestionMutation.isPending || !questionForm.question || !questionForm.answer}
-                    className="w-full"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    إضافة السؤال
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={handleQuestionSubmit}
+                      disabled={
+                        (editingQuestion ? updateQuestionMutation.isPending : createQuestionMutation.isPending) ||
+                        !questionForm.question ||
+                        !questionForm.answer ||
+                        !questionForm.category
+                      }
+                      className="flex-1"
+                    >
+                      {editingQuestion ? (
+                        <>
+                          <Edit className="w-4 h-4 mr-2" />
+                          تحديث السؤال
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-4 h-4 mr-2" />
+                          إضافة السؤال
+                        </>
+                      )}
+                    </Button>
+                    {editingQuestion && (
+                      <Button
+                        variant="outline"
+                        onClick={handleCancelQuestionEdit}
+                        className="flex-1"
+                      >
+                        إلغاء
+                      </Button>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
 
@@ -463,7 +518,7 @@ export default function AdminDashboard() {
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    onClick={() => setEditingQuestion(question)}
+                                    onClick={() => handleEditQuestion(question)}
                                   >
                                     <Edit className="w-4 h-4" />
                                   </Button>
