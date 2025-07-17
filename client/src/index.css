@@ -1,0 +1,254 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(222, 84%, 4.9%);
+  --muted: hsl(210, 40%, 98%);
+  --muted-foreground: hsl(215, 16%, 47%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(222, 84%, 4.9%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(222, 84%, 4.9%);
+  --border: hsl(214, 32%, 91%);
+  --input: hsl(214, 32%, 91%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(210, 40%, 98%);
+  --secondary: hsl(142, 76%, 36%);
+  --secondary-foreground: hsl(210, 40%, 98%);
+  --accent: hsl(210, 40%, 98%);
+  --accent-foreground: hsl(222, 84%, 4.9%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(210, 40%, 98%);
+  --ring: hsl(222, 84%, 4.9%);
+  --radius: 0.5rem;
+  
+  /* Custom colors for Arabic theme */
+  --neutral-50: hsl(210, 40%, 98%);
+  --neutral-100: hsl(210, 40%, 96%);
+  --neutral-200: hsl(214, 32%, 91%);
+  --neutral-300: hsl(213, 27%, 84%);
+  --neutral-400: hsl(215, 20%, 65%);
+  --neutral-500: hsl(215, 16%, 47%);
+  --neutral-600: hsl(215, 19%, 35%);
+  --neutral-700: hsl(215, 25%, 27%);
+  --neutral-800: hsl(217, 33%, 17%);
+  --neutral-900: hsl(222, 84%, 4.9%);
+}
+
+.dark {
+  --background: hsl(222, 84%, 4.9%);
+  --foreground: hsl(210, 40%, 98%);
+  --muted: hsl(217, 32%, 17%);
+  --muted-foreground: hsl(215, 20%, 65%);
+  --popover: hsl(222, 84%, 4.9%);
+  --popover-foreground: hsl(210, 40%, 98%);
+  --card: hsl(222, 84%, 4.9%);
+  --card-foreground: hsl(210, 40%, 98%);
+  --border: hsl(217, 32%, 17%);
+  --input: hsl(217, 32%, 17%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(210, 40%, 98%);
+  --secondary: hsl(142, 76%, 36%);
+  --secondary-foreground: hsl(210, 40%, 98%);
+  --accent: hsl(217, 32%, 17%);
+  --accent-foreground: hsl(210, 40%, 98%);
+  --destructive: hsl(0, 62%, 30%);
+  --destructive-foreground: hsl(210, 40%, 98%);
+  --ring: hsl(212, 12%, 84%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-arabic antialiased bg-background text-foreground;
+    direction: rtl;
+  }
+
+  html {
+    direction: rtl;
+  }
+}
+
+@layer utilities {
+  .font-arabic {
+    font-family: 'Noto Sans Arabic', sans-serif;
+  }
+  
+  .font-english {
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* Custom neutral colors */
+  .bg-neutral-50 { background-color: var(--neutral-50); }
+  .bg-neutral-100 { background-color: var(--neutral-100); }
+  .bg-neutral-200 { background-color: var(--neutral-200); }
+  .bg-neutral-300 { background-color: var(--neutral-300); }
+  .bg-neutral-400 { background-color: var(--neutral-400); }
+  .bg-neutral-500 { background-color: var(--neutral-500); }
+  .bg-neutral-600 { background-color: var(--neutral-600); }
+  .bg-neutral-700 { background-color: var(--neutral-700); }
+  .bg-neutral-800 { background-color: var(--neutral-800); }
+  .bg-neutral-900 { background-color: var(--neutral-900); }
+
+  .text-neutral-50 { color: var(--neutral-50); }
+  .text-neutral-100 { color: var(--neutral-100); }
+  .text-neutral-200 { color: var(--neutral-200); }
+  .text-neutral-300 { color: var(--neutral-300); }
+  .text-neutral-400 { color: var(--neutral-400); }
+  .text-neutral-500 { color: var(--neutral-500); }
+  .text-neutral-600 { color: var(--neutral-600); }
+  .text-neutral-700 { color: var(--neutral-700); }
+  .text-neutral-800 { color: var(--neutral-800); }
+  .text-neutral-900 { color: var(--neutral-900); }
+
+  .border-neutral-100 { border-color: var(--neutral-100); }
+  .border-neutral-200 { border-color: var(--neutral-200); }
+  .border-neutral-300 { border-color: var(--neutral-300); }
+  .border-neutral-400 { border-color: var(--neutral-400); }
+  .border-neutral-500 { border-color: var(--neutral-500); }
+
+  /* RTL spacing utilities */
+  .space-x-reverse > * + * {
+    margin-right: var(--tw-space-x-reverse);
+    margin-left: calc(var(--tw-space-x-reverse) * -1);
+  }
+
+  .space-x-reverse {
+    --tw-space-x-reverse: 1;
+  }
+
+  /* Custom gradient backgrounds */
+  .bg-gradient-to-br {
+    background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
+  }
+
+  .from-primary\/10 {
+    --tw-gradient-from: hsl(207, 90%, 54%, 0.1);
+    --tw-gradient-to: hsl(207, 90%, 54%, 0);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+  }
+
+  .to-secondary\/10 {
+    --tw-gradient-to: hsl(142, 76%, 36%, 0.1);
+  }
+
+  /* Custom hover states */
+  .hover\:bg-primary\/90:hover {
+    background-color: hsl(207, 90%, 54%, 0.9);
+  }
+
+  .hover\:bg-secondary\/90:hover {
+    background-color: hsl(142, 76%, 36%, 0.9);
+  }
+
+  .hover\:bg-neutral-50:hover {
+    background-color: var(--neutral-50);
+  }
+
+  .hover\:bg-neutral-700:hover {
+    background-color: var(--neutral-700);
+  }
+
+  .hover\:text-neutral-800:hover {
+    color: var(--neutral-800);
+  }
+
+  /* Focus states */
+  .focus\:ring-2:focus {
+    box-shadow: 0 0 0 2px var(--tw-ring-color);
+  }
+
+  .focus\:ring-primary\/50:focus {
+    --tw-ring-color: hsl(207, 90%, 54%, 0.5);
+  }
+
+  .focus\:border-primary:focus {
+    border-color: hsl(207, 90%, 54%);
+  }
+
+  /* Background with opacity */
+  .bg-primary\/10 {
+    background-color: hsl(207, 90%, 54%, 0.1);
+  }
+
+  .bg-secondary\/10 {
+    background-color: hsl(142, 76%, 36%, 0.1);
+  }
+
+  .bg-secondary\/5 {
+    background-color: hsl(142, 76%, 36%, 0.05);
+  }
+
+  .bg-yellow-500\/10 {
+    background-color: hsl(45, 93%, 47%, 0.1);
+  }
+
+  .bg-red-500\/10 {
+    background-color: hsl(0, 84%, 60%, 0.1);
+  }
+
+  .bg-yellow-50 {
+    background-color: hsl(54, 92%, 95%);
+  }
+
+  /* Text colors */
+  .text-yellow-500 {
+    color: hsl(45, 93%, 47%);
+  }
+
+  .text-yellow-600 {
+    color: hsl(45, 93%, 42%);
+  }
+
+  .text-yellow-700 {
+    color: hsl(45, 70%, 32%);
+  }
+
+  .text-yellow-800 {
+    color: hsl(45, 70%, 25%);
+  }
+
+  .text-red-500 {
+    color: hsl(0, 84%, 60%);
+  }
+
+  /* Border colors */
+  .border-yellow-200 {
+    border-color: hsl(54, 77%, 85%);
+  }
+
+  .border-secondary\/30 {
+    border-color: hsl(142, 76%, 36%, 0.3);
+  }
+
+  .border-secondary {
+    border-color: hsl(142, 76%, 36%);
+  }
+
+  /* Category and difficulty colors */
+  .bg-blue-100 { background-color: hsl(214, 100%, 97%); }
+  .text-blue-800 { color: hsl(214, 100%, 27%); }
+  .bg-green-100 { background-color: hsl(142, 76%, 96%); }
+  .text-green-800 { color: hsl(142, 76%, 27%); }
+  .bg-purple-100 { background-color: hsl(270, 100%, 97%); }
+  .text-purple-800 { color: hsl(270, 100%, 27%); }
+  .bg-orange-100 { background-color: hsl(25, 100%, 97%); }
+  .text-orange-800 { color: hsl(25, 100%, 27%); }
+  .bg-pink-100 { background-color: hsl(330, 100%, 97%); }
+  .text-pink-800 { color: hsl(330, 100%, 27%); }
+  .bg-indigo-100 { background-color: hsl(240, 100%, 97%); }
+  .text-indigo-800 { color: hsl(240, 100%, 27%); }
+  .bg-yellow-100 { background-color: hsl(54, 92%, 95%); }
+  .text-yellow-800 { color: hsl(45, 70%, 25%); }
+  .bg-red-100 { background-color: hsl(0, 100%, 97%); }
+  .text-red-800 { color: hsl(0, 100%, 27%); }
+  .bg-gray-100 { background-color: hsl(210, 20%, 96%); }
+  .text-gray-800 { color: hsl(210, 20%, 25%); }
+}
