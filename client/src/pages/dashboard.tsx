@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Brain, Gamepad2, Trophy, Star, Play, ShoppingCart, Home, Settings, LogOut } from "lucide-react";
+import { Brain, Gamepad2, Trophy, Star, Play, ShoppingCart, Home, Settings, LogOut, Plus } from "lucide-react";
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
@@ -51,6 +51,31 @@ export default function Dashboard() {
 
   const handlePurchaseGames = () => {
     setLocation("/checkout");
+  };
+
+  const addGamesMutation = useMutation({
+    mutationFn: async (gameCount: number) => {
+      const response = await apiRequest("POST", "/api/add-games", { gameCount });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
+      toast({
+        title: "تم إضافة الألعاب بنجاح",
+        description: "تم إضافة الألعاب إلى حسابك",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "خطأ في إضافة الألعاب",
+        description: error.message || "حاول مرة أخرى",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleAddGames = (gameCount: number) => {
+    addGamesMutation.mutate(gameCount);
   };
 
   const handleLogout = async () => {
@@ -214,13 +239,49 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <button 
-              className="luxury-button-secondary w-full text-lg py-4"
-              onClick={handlePurchaseGames}
-            >
-              <ShoppingCart className="ml-2 h-6 w-6" />
-              شراء الآن
-            </button>
+            <div className="space-y-3">
+              <button 
+                className="luxury-button-secondary w-full text-lg py-4"
+                onClick={handlePurchaseGames}
+              >
+                <ShoppingCart className="ml-2 h-6 w-6" />
+                شراء الآن
+              </button>
+              
+              <div className="text-center text-sm text-muted-foreground">أو</div>
+              
+              <div className="grid grid-cols-2 gap-3">
+                <button 
+                  className="luxury-button py-3 text-sm"
+                  onClick={() => handleAddGames(1)}
+                  disabled={addGamesMutation.isPending}
+                >
+                  {addGamesMutation.isPending ? (
+                    <div className="luxury-spinner mx-auto scale-75" />
+                  ) : (
+                    <>
+                      <Plus className="ml-1 h-4 w-4" />
+                      إضافة لعبة
+                    </>
+                  )}
+                </button>
+                
+                <button 
+                  className="luxury-button py-3 text-sm"
+                  onClick={() => handleAddGames(5)}
+                  disabled={addGamesMutation.isPending}
+                >
+                  {addGamesMutation.isPending ? (
+                    <div className="luxury-spinner mx-auto scale-75" />
+                  ) : (
+                    <>
+                      <Plus className="ml-1 h-4 w-4" />
+                      إضافة 5 ألعاب
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 

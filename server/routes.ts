@@ -273,7 +273,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Payment routes
+  // Simple add games route for testing (bypasses payment)
+  app.post("/api/add-games", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    try {
+      const { gameCount } = req.body;
+      const user = req.user as any;
+      
+      // Add games to user account
+      await storage.updateUserGames(user.id, user.availableGames + gameCount);
+      
+      res.json({ success: true, message: "تم إضافة الألعاب بنجاح" });
+    } catch (error: any) {
+      console.error("Add games error:", error);
+      res.status(500).json({ message: "خطأ في إضافة الألعاب: " + error.message });
+    }
+  });
+
+  // Payment routes - Mock for testing
   app.post("/api/create-payment-intent", async (req, res) => {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "غير مسجل الدخول" });
@@ -281,26 +301,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     try {
       const { gameCount } = req.body;
-      let amount;
       
-      if (gameCount === 1) {
-        amount = 199; // $1.99 in cents
-      } else if (gameCount === 5) {
-        amount = 899; // $8.99 in cents
-      } else {
-        return res.status(400).json({ message: "عدد الألعاب غير صحيح" });
-      }
-
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount,
-        currency: "usd",
-        metadata: {
-          userId: (req.user as any).id,
-          gameCount,
-        },
-      });
-
-      res.json({ clientSecret: paymentIntent.client_secret });
+      // Create a mock client secret for testing
+      const mockClientSecret = `pi_mock_${Date.now()}_secret_${Math.random().toString(36).substr(2, 9)}`;
+      
+      res.json({ clientSecret: mockClientSecret });
     } catch (error: any) {
       console.error("Payment intent error:", error);
       res.status(500).json({ message: "خطأ في إنشاء الدفعة: " + error.message });
