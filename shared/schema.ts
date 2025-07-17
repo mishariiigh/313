@@ -40,6 +40,7 @@ export const gameSessions = pgTable("game_sessions", {
   currentTurn: integer("current_turn").default(0).notNull(),
   teamScores: integer("team_scores").array().notNull().default([]),
   usedQuestions: text("used_questions").array().notNull().default([]),
+  usedHints: text("used_hints").array().notNull().default([]),
   gameType: varchar("game_type", { length: 50 }).default("single").notNull(),
 });
 

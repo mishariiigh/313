@@ -432,6 +432,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Use hint for a question
+  app.post("/api/games/:id/use-hint", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    try {
+      const gameSession = await storage.getGameSession(parseInt(req.params.id));
+      if (!gameSession) {
+        return res.status(404).json({ message: "جلسة اللعبة غير موجودة" });
+      }
+
+      const user = req.user as any;
+      if (gameSession.userId !== user.id) {
+        return res.status(403).json({ message: "غير مصرح بالوصول" });
+      }
+
+      const { questionKey } = req.body;
+      
+      // Check if hint already used for this question
+      if (gameSession.usedHints?.includes(questionKey)) {
+        return res.status(400).json({ message: "تم استخدام التلميح لهذا السؤال من قبل" });
+      }
+      
+      // Mark hint as used
+      const newUsedHints = [...(gameSession.usedHints || []), questionKey];
+      
+      await storage.updateGameSession(gameSession.id, {
+        usedHints: newUsedHints,
+      });
+
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "خطأ في استخدام التلميح" });
+    }
+  });
+
   // Switch team turn
   app.post("/api/games/:id/switch-turn", async (req, res) => {
     if (!req.isAuthenticated()) {

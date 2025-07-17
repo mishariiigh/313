@@ -86,6 +86,25 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     },
   });
 
+  // Use hint for a question
+  const useHintMutation = useMutation({
+    mutationFn: async (data: { questionKey: string }) => {
+      const response = await apiRequest("POST", `/api/games/${id}/use-hint`, data);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/games/${id}`] });
+      setShowHint(true);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "خطأ في استخدام التلميح",
+        description: error.message || "حاول مرة أخرى",
+        variant: "destructive",
+      });
+    },
+  });
+
   // Switch team turn
   const switchTeamTurnMutation = useMutation({
     mutationFn: async () => {
@@ -158,7 +177,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     
     if (question) {
       setSelectedQuestion(question);
-      setShowHint(false);
+      // Check if hint was already used for this question
+      const isHintUsed = gameSession.usedHints?.includes(questionKey);
+      setShowHint(isHintUsed);
       setShowAnswer(false);
     }
   };
@@ -195,6 +216,33 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       const questionKey = `${selectedQuestion.category}-${positionInCategory}`;
       skipQuestionMutation.mutate({ questionKey });
     }
+  };
+
+  const handleUseHint = () => {
+    if (!selectedQuestion) return;
+    
+    // Find which category and position this question is in
+    const categoryIndex = CATEGORIES.findIndex(cat => cat.id === selectedQuestion.category);
+    const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
+    
+    if (categoryIndex !== -1 && questionIndex !== -1) {
+      const positionInCategory = questionIndex - (categoryIndex * 6);
+      const questionKey = `${selectedQuestion.category}-${positionInCategory}`;
+      useHintMutation.mutate({ questionKey });
+    }
+  };
+
+  const getCurrentQuestionKey = () => {
+    if (!selectedQuestion) return null;
+    
+    const categoryIndex = CATEGORIES.findIndex(cat => cat.id === selectedQuestion.category);
+    const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
+    
+    if (categoryIndex !== -1 && questionIndex !== -1) {
+      const positionInCategory = questionIndex - (categoryIndex * 6);
+      return `${selectedQuestion.category}-${positionInCategory}`;
+    }
+    return null;
   };
 
   // Game completion screen
@@ -272,14 +320,28 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             </h1>
             
             <div className="flex justify-center gap-4 mb-8">
-              <Button
-                onClick={() => setShowHint(!showHint)}
-                variant="outline"
-                className="luxury-button-secondary"
-              >
-                <HelpCircle className="ml-2 h-4 w-4 text-luxury-green-dark" />
-                {showHint ? "إخفاء التلميح" : "إظهار التلميح"}
-              </Button>
+              {(() => {
+                const currentQuestionKey = getCurrentQuestionKey();
+                const isHintUsed = currentQuestionKey && gameSession.usedHints?.includes(currentQuestionKey);
+                
+                return (
+                  <Button
+                    onClick={() => {
+                      if (showHint) {
+                        setShowHint(false);
+                      } else if (!isHintUsed) {
+                        handleUseHint();
+                      }
+                    }}
+                    variant="outline"
+                    className={`luxury-button-secondary ${isHintUsed ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    disabled={isHintUsed || useHintMutation.isPending}
+                  >
+                    <HelpCircle className="ml-2 h-4 w-4 text-luxury-green-dark" />
+                    {isHintUsed ? "تم استخدام التلميح" : showHint ? "إخفاء التلميح" : "إظهار التلميح"}
+                  </Button>
+                );
+              })()}
               
               <Button
                 onClick={() => setShowAnswer(!showAnswer)}
@@ -290,12 +352,17 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
               </Button>
             </div>
 
-            {showHint && selectedQuestion.hint && (
-              <div className="luxury-card p-4 mb-6 bg-blue-50 border-blue-200 hint-reveal">
-                <h3 className="font-semibold text-blue-800 mb-2">تلميح:</h3>
-                <p className="text-blue-700">{selectedQuestion.hint}</p>
-              </div>
-            )}
+            {(() => {
+              const currentQuestionKey = getCurrentQuestionKey();
+              const isHintUsed = currentQuestionKey && gameSession.usedHints?.includes(currentQuestionKey);
+              
+              return (showHint && isHintUsed && selectedQuestion.hint) ? (
+                <div className="luxury-card p-4 mb-6 bg-blue-50 border-blue-200 hint-reveal">
+                  <h3 className="font-semibold text-blue-800 mb-2">تلميح:</h3>
+                  <p className="text-blue-700">{selectedQuestion.hint}</p>
+                </div>
+              ) : null;
+            })()}
 
             {showAnswer && (
               <div className="luxury-card p-4 mb-6 bg-green-50 border-green-200 answer-reveal">

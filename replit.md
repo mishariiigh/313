@@ -19,6 +19,9 @@
   - Redesigned statistics cards with unique color schemes and real data display
   - Added progress bars, achievement stars, and score animations to stats cards
   - Improved data accuracy for completed games and total score calculations
+  - Implemented hint restriction: each team can only use a hint once per question turn
+  - Added database tracking for hint usage with usedHints field in game sessions
+  - Enhanced hint button UI to show disabled state when hint already used
 
 ## Overview
 
