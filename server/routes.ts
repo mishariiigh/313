@@ -15,10 +15,16 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_...", {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   app.use(session({
-    secret: process.env.SESSION_SECRET || "default-secret",
+    secret: process.env.SESSION_SECRET || "default-secret-key-for-development",
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 } // 24 hours
+    cookie: { 
+      secure: false, 
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      httpOnly: true,
+      sameSite: 'lax'
+    },
+    name: 'trivia.session'
   }));
 
   app.use(passport.initialize());

@@ -20,10 +20,6 @@ export default function GamePage({ params }: GamePageProps) {
     }
   }, [user, setLocation]);
 
-  if (!user) {
-    return null;
-  }
-
-  // Since we only support team games now, redirect to team game component
+  // Always render the team game component - it will handle auth checks internally
   return <TeamGamePage params={params} />;
 }
