@@ -11,6 +11,9 @@ import { Progress } from "@/components/ui/progress";
 import { ArrowRight, Lightbulb, Eye, ArrowLeft, Home, Trophy } from "lucide-react";
 import { getCategoryColor, getDifficultyColor } from "@/lib/game";
 
+// Import the team game component
+import TeamGamePage from "./team-game";
+
 interface GamePageProps {
   params: {
     id: string;
@@ -36,6 +39,16 @@ export default function GamePage({ params }: GamePageProps) {
     queryKey: ["/api/games", gameId],
     refetchOnWindowFocus: false,
   });
+
+  // If this is a team game, use the team game component
+  if (gameData?.gameSession?.gameType === "team") {
+    return <TeamGamePage params={params} />;
+  }
+
+  // If this is a team game, use the team game component
+  if (gameData?.gameSession?.gameType === "team") {
+    return <TeamGamePage params={params} />;
+  }
 
   const nextQuestionMutation = useMutation({
     mutationFn: async (answered: boolean) => {

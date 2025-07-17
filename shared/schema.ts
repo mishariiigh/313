@@ -34,6 +34,13 @@ export const gameSessions = pgTable("game_sessions", {
   isCompleted: boolean("is_completed").default(false).notNull(),
   completedAt: timestamp("completed_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  
+  // Team-based game fields
+  teams: text("teams").array().notNull().default([]),
+  currentTurn: integer("current_turn").default(0).notNull(),
+  teamScores: integer("team_scores").array().notNull().default([]),
+  usedQuestions: text("used_questions").array().notNull().default([]),
+  gameType: varchar("game_type", { length: 50 }).default("single").notNull(),
 });
 
 export const purchases = pgTable("purchases", {

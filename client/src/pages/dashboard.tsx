@@ -46,7 +46,7 @@ export default function Dashboard() {
       });
       return;
     }
-    startGameMutation.mutate();
+    setLocation("/game-setup");
   };
 
   const handlePurchaseGames = () => {
@@ -193,16 +193,10 @@ export default function Dashboard() {
             <button 
               className="luxury-button w-full text-lg py-4 glow"
               onClick={handleStartGame}
-              disabled={user?.availableGames <= 0 || startGameMutation.isPending}
+              disabled={user?.availableGames <= 0}
             >
-              {startGameMutation.isPending ? (
-                <div className="luxury-spinner mx-auto" />
-              ) : (
-                <>
-                  <Gamepad2 className="ml-2 h-6 w-6" />
-                  بدء اللعبة الآن
-                </>
-              )}
+              <Gamepad2 className="ml-2 h-6 w-6" />
+              بدء اللعبة الآن
             </button>
             <p className="text-sm text-muted-foreground mt-4">
               {user?.availableGames || 0} ألعاب متاحة

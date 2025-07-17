@@ -1,0 +1,127 @@
+1. Purchase Process
+A logged-in user visits the "Buy Games" page.
+
+Selects a package (e.g., 1 Game, 5 Games, 10 Games).
+
+Payment is processed via Stripe or a local gateway (e.g., KNet).
+
+Upon successful payment:
+
+The user’s account is credited with purchased game(s).
+
+These games appear in their dashboard under “My Games” with status: Available.
+
+No questions are shown at this point (questions are generated only when a game starts).
+
+
+Game Flow Breakdown
+1. Game Starts
+User clicks “Start New Game”
+
+The game consumes 1 purchased credit
+
+User is taken to a full-screen Question Board
+
+2. Question Board UI
+Display 6 category tiles (grid or list):
+
+📚 التاريخ (History)
+
+🌍 الجغرافيا (Geography)
+
+🧠 الثقافة العامة (General Knowledge)
+
+🏅 الرياضة (Sports)
+
+✨ الدين (Religion)
+
+🔬 العلوم (Science)
+
+Each category has 6 clickable boxes (total: 36 questions)
+
+e.g. “التاريخ - 1”, “التاريخ - 2” … until “التاريخ - 6”
+
+Questions are hidden — only revealed when clicked
+
+3. Selecting a Question
+Host clicks a tile (e.g. “الرياضة - 2”)
+
+The screen shows:
+
+The question text
+
+“Show Hint” button (optional)
+
+“Reveal Answer” button
+
+A "Back to Board" button (no "Next Question")
+
+Host reads the question aloud to the room.
+
+After answering, host clicks "Reveal Answer" → then “Back to Board”
+
+4. Team Turn Display
+At the top of the board: "🔁 Team: [Team Name]'s Turn"
+
+After each question is played (i.e., when returning to the board), the system:
+
+Switches turn to the next team automatically in round-robin format
+
+E.g. Team 1 → Team 2  → Team 1 again
+
+Mark Which Team Answered Correctly
+Show a list of team buttons:
+👉 Example: "Which team got it right?"
+
+Team A ✅
+
+Team B
+
+Team C
+
+Host clicks on the correct team (only one team per question gets the point).
+
+The system:
+
+Adds 1 point to that team
+
+Returns to the board
+
+Automatically rotates turn to the next team
+
+⛔️ If no team answered correctly, host clicks “Skip – No Team Got It”
+
+5. Tracking Usage
+Each question box is disabled/marked after it's used (e.g., ✅ or greyed out)
+
+Teams can’t click the same box again
+
+After all 36 questions are used → “🎉 Game Over” screen
+Developer Notes
+🧮 Turn Rotation Logic
+Let user enter team names at the start (e.g., 2 teams)
+
+After each question is played and user returns to the board:
+{
+  "gameId": "123abc",
+  "userId": "user_id",
+  "status": "active",
+  "teams": ["Team A", "Team B"],
+  "currentTurn": 1,
+  "board": {
+    "التاريخ": [true, false, true, false, false, false],
+    "الجغرافيا": [false, false, false, false, false, false],
+    ...
+  },
+  "startedAt": "timestamp"
+}js
+Copy
+Edit
+currentTurn = (currentTurn + 1) % teams.length
+
+Question Reveal Flow
+Questions are pre-loaded from database during game start
+
+Each tile’s coordinates (e.g., category + index) links to a question
+
+After “Back to Board,” the system disables the tile and updates turn

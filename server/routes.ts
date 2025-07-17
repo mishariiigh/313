@@ -124,6 +124,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     const user = req.user as any;
+    const { gameType = "single", teams = [] } = req.body;
+    
     if (user.availableGames <= 0) {
       return res.status(400).json({ message: "لا توجد ألعاب متاحة" });
     }
@@ -143,6 +145,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         currentQuestionIndex: 0,
         score: 0,
         isCompleted: false,
+        gameType,
+        teams: gameType === "team" ? teams : [],
+        teamScores: gameType === "team" ? teams.map(() => 0) : [],
+        currentTurn: 0,
+        usedQuestions: [],
       });
 
       // Decrease available games
@@ -154,8 +161,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           currentQuestionIndex: gameSession.currentQuestionIndex,
           score: gameSession.score,
           totalQuestions: questions.length,
+          gameType: gameSession.gameType,
+          teams: gameSession.teams,
+          teamScores: gameSession.teamScores,
+          currentTurn: gameSession.currentTurn,
         },
-        currentQuestion: questions[0] 
+        currentQuestion: gameType === "single" ? questions[0] : null
       });
     } catch (error: any) {
       console.error("Start game error:", error);
@@ -194,7 +205,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "غير مصرح بالوصول" });
       }
 
-      // Get current question
+      // For team games, return all questions
+      if (gameSession.gameType === "team") {
+        const questions = await Promise.all(
+          gameSession.questionIds.map(id => storage.getQuestionById(id))
+        );
+        return res.json({
+          gameSession: {
+            id: gameSession.id,
+            currentQuestionIndex: gameSession.currentQuestionIndex,
+            score: gameSession.score,
+            totalQuestions: gameSession.questionIds.length,
+            isCompleted: gameSession.isCompleted,
+            gameType: gameSession.gameType,
+            teams: gameSession.teams,
+            teamScores: gameSession.teamScores,
+            currentTurn: gameSession.currentTurn,
+            usedQuestions: gameSession.usedQuestions,
+          },
+          questions: questions,
+        });
+      }
+
+      // For single games, return current question
       const questionId = gameSession.questionIds[gameSession.currentQuestionIndex];
       const question = await storage.getQuestionById(questionId);
 
@@ -205,11 +238,88 @@ export async function registerRoutes(app: Express): Promise<Server> {
           score: gameSession.score,
           totalQuestions: gameSession.questionIds.length,
           isCompleted: gameSession.isCompleted,
+          gameType: gameSession.gameType,
         },
         currentQuestion: question 
       });
     } catch (error) {
       res.status(500).json({ message: "خطأ في جلب بيانات اللعبة" });
+    }
+  });
+
+  // Team game endpoints
+  app.post("/api/games/:id/team-correct", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    try {
+      const gameSession = await storage.getGameSession(parseInt(req.params.id));
+      if (!gameSession) {
+        return res.status(404).json({ message: "جلسة اللعبة غير موجودة" });
+      }
+
+      const user = req.user as any;
+      if (gameSession.userId !== user.id) {
+        return res.status(403).json({ message: "غير مصرح بالوصول" });
+      }
+
+      const { teamIndex, questionKey } = req.body;
+      
+      // Update team score
+      const newTeamScores = [...gameSession.teamScores];
+      newTeamScores[teamIndex] = (newTeamScores[teamIndex] || 0) + 1;
+      
+      // Mark question as used
+      const newUsedQuestions = [...(gameSession.usedQuestions || []), questionKey];
+      
+      // Move to next team's turn
+      const newCurrentTurn = (gameSession.currentTurn + 1) % gameSession.teams.length;
+      
+      await storage.updateGameSession(gameSession.id, {
+        teamScores: newTeamScores,
+        usedQuestions: newUsedQuestions,
+        currentTurn: newCurrentTurn,
+      });
+
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "خطأ في تسجيل النقطة" });
+    }
+  });
+
+  app.post("/api/games/:id/skip-question", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    try {
+      const gameSession = await storage.getGameSession(parseInt(req.params.id));
+      if (!gameSession) {
+        return res.status(404).json({ message: "جلسة اللعبة غير موجودة" });
+      }
+
+      const user = req.user as any;
+      if (gameSession.userId !== user.id) {
+        return res.status(403).json({ message: "غير مصرح بالوصول" });
+      }
+
+      const { questionKey } = req.body;
+      
+      // Mark question as used (without scoring)
+      const newUsedQuestions = [...(gameSession.usedQuestions || []), questionKey];
+      
+      // Move to next team's turn
+      const newCurrentTurn = (gameSession.currentTurn + 1) % gameSession.teams.length;
+      
+      await storage.updateGameSession(gameSession.id, {
+        usedQuestions: newUsedQuestions,
+        currentTurn: newCurrentTurn,
+      });
+
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "خطأ في تخطي السؤال" });
     }
   });
 
