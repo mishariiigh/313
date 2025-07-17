@@ -104,39 +104,73 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen page-transition">
-      {/* Luxury Header */}
-      <header className="luxury-nav board-transition">
-        <div className="luxury-container">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center space-x-reverse space-x-4">
-              <div className="h-12 w-12 luxury-button rounded-full flex items-center justify-center floating question-category-pulse">
-                <Brain className="text-luxury-cream h-6 w-6" />
+      {/* Creative Header */}
+      <header className="relative overflow-hidden">
+        {/* Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-r from-red-50 via-red-100 to-red-50 opacity-80"></div>
+        
+        {/* Decorative Elements */}
+        <div className="absolute top-0 left-0 w-full h-full">
+          <div className="absolute top-4 left-16 w-32 h-32 bg-red-200 rounded-full opacity-20 animate-pulse"></div>
+          <div className="absolute top-12 right-24 w-24 h-24 bg-red-300 rounded-full opacity-15 animate-bounce"></div>
+          <div className="absolute bottom-8 left-1/3 w-20 h-20 bg-red-200 rounded-full opacity-10"></div>
+        </div>
+
+        <div className="relative z-10 luxury-container">
+          <div className="flex justify-between items-center py-8">
+            <div className="flex items-center space-x-reverse space-x-6">
+              {/* Enhanced Logo */}
+              <div className="relative">
+                <div className="h-16 w-16 bg-gradient-to-br from-red-400 to-red-600 rounded-2xl flex items-center justify-center shadow-xl transform hover:scale-105 transition-all duration-300">
+                  <Brain className="text-white h-8 w-8" />
+                </div>
+                <div className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center animate-pulse">
+                  <Star className="text-white h-3 w-3" />
+                </div>
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gradient">منصة الألعاب الثقافية</h1>
-                <p className="text-sm text-muted-foreground">مرحباً، {user?.name}</p>
+              
+              {/* Enhanced Title */}
+              <div className="space-y-1">
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-red-600 via-red-700 to-red-800 bg-clip-text text-transparent">
+                  منصة الألعاب الثقافية
+                </h1>
+                <div className="flex items-center space-x-2 space-x-reverse">
+                  <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
+                  <p className="text-red-600 font-medium">مرحباً، {user?.name}</p>
+                  <Trophy className="h-4 w-4 text-red-500" />
+                </div>
               </div>
             </div>
-            <div className="flex items-center space-x-reverse space-x-4">
+            
+            {/* Enhanced Action Buttons */}
+            <div className="flex items-center space-x-reverse space-x-3">
               {user?.isAdmin && (
                 <button
-                  className="luxury-button-secondary"
+                  className="group relative px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                   onClick={() => setLocation("/admin")}
                 >
-                  <Settings className="h-4 w-4 ml-2" />
-                  الإدارة
+                  <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-red-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="relative flex items-center">
+                    <Settings className="h-5 w-5 ml-2" />
+                    الإدارة
+                  </div>
                 </button>
               )}
               <button
-                className="luxury-button-secondary"
+                className="group relative px-6 py-3 bg-white border-2 border-red-300 text-red-600 rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:bg-red-50"
                 onClick={handleLogout}
               >
-                <LogOut className="h-4 w-4 ml-2" />
-                خروج
+                <div className="flex items-center">
+                  <LogOut className="h-5 w-5 ml-2" />
+                  خروج
+                </div>
               </button>
             </div>
           </div>
         </div>
+        
+        {/* Bottom Border */}
+        <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-red-300 via-red-500 to-red-300"></div>
       </header>
 
       {/* Main Content */}
