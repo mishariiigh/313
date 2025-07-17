@@ -1,3 +1,4 @@
+import React from "react";
 import { useAuth } from "@/lib/auth";
 import { useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -14,8 +15,13 @@ export default function Dashboard() {
   const { toast } = useToast();
 
   // Redirect if not logged in
+  React.useEffect(() => {
+    if (!user) {
+      setLocation("/auth");
+    }
+  }, [user, setLocation]);
+
   if (!user) {
-    setLocation("/auth");
     return null;
   }
 

@@ -1,6 +1,6 @@
 import { users, questions, gameSessions, purchases, type User, type InsertUser, type Question, type InsertQuestion, type GameSession, type InsertGameSession, type Purchase, type InsertPurchase } from "@shared/schema";
 import { db } from "./db";
-import { eq, sql, desc, inArray, and } from "drizzle-orm";
+import { eq, sql, desc, inArray, and, not } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -111,42 +111,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getRandomQuestions(count: number): Promise<Question[]> {
-    const categories = ["التاريخ", "الجغرافيا", "الدين", "الرياضة", "الثقافة العامة", "العلوم"];
-    const difficulties = ["سهل", "متوسط", "صعب"];
-    
-    const questionsPerCategory = Math.floor(count / categories.length);
-    const questionsPerDifficulty = Math.floor(questionsPerCategory / difficulties.length);
-    
-    const selectedQuestions: Question[] = [];
-    
-    for (const category of categories) {
-      for (const difficulty of difficulties) {
-        const categoryQuestions = await db
-          .select()
-          .from(questions)
-          .where(and(eq(questions.category, category), eq(questions.difficulty, difficulty)))
-          .orderBy(sql`RANDOM()`)
-          .limit(questionsPerDifficulty);
-        
-        selectedQuestions.push(...categoryQuestions);
-      }
-    }
-    
-    // Fill remaining slots with random questions
-    const remaining = count - selectedQuestions.length;
-    if (remaining > 0) {
-      const usedIds = selectedQuestions.map(q => q.id);
-      const remainingQuestions = await db
-        .select()
-        .from(questions)
-        .where(usedIds.length > 0 ? sql`${questions.id} NOT IN (${usedIds.join(',')})` : sql`1=1`)
-        .orderBy(sql`RANDOM()`)
-        .limit(remaining);
-      
-      selectedQuestions.push(...remainingQuestions);
-    }
-    
-    return selectedQuestions.slice(0, count);
+    // Simple approach: just get random questions from all available
+    return await db
+      .select()
+      .from(questions)
+      .orderBy(sql`RANDOM()`)
+      .limit(count);
   }
 
   async createGameSession(insertSession: InsertGameSession): Promise<GameSession> {
@@ -172,7 +142,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserGameSessions(userId: number): Promise<GameSession[]> {
-    return db.select().from(gameSessions).where(eq(gameSessions.userId, userId)).orderBy(desc(gameSessions.createdAt));
+    try {
+      return await db.select().from(gameSessions).where(eq(gameSessions.userId, userId)).orderBy(desc(gameSessions.createdAt));
+    } catch (error) {
+      console.error("getUserGameSessions error:", error);
+      throw error;
+    }
   }
 
   async createPurchase(insertPurchase: InsertPurchase): Promise<Purchase> {

@@ -28,7 +28,7 @@ export const questions = pgTable("questions", {
 export const gameSessions = pgTable("game_sessions", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id).notNull(),
-  questionIds: text("question_ids").array().notNull(),
+  questionIds: integer("question_ids").array().notNull(),
   currentQuestionIndex: integer("current_question_index").default(0).notNull(),
   score: integer("score").default(0).notNull(),
   isCompleted: boolean("is_completed").default(false).notNull(),

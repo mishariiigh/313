@@ -73,12 +73,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Hash password
       const hashedPassword = await bcrypt.hash(password, 10);
       
-      // Create user
+      // Create user with 2 free games
       const user = await storage.createUser({
         email,
         password: hashedPassword,
         name,
-        availableGames: 0,
+        availableGames: 2,
         totalGames: 0,
         isAdmin: false,
       });
@@ -129,16 +129,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      // Get 36 random questions
+      // Get 36 random questions  
       const questions = await storage.getRandomQuestions(36);
       if (questions.length < 36) {
+        console.log(`Only ${questions.length} questions available, need 36`);
         return res.status(400).json({ message: "لا توجد أسئلة كافية في قاعدة البيانات" });
       }
 
       // Create game session
       const gameSession = await storage.createGameSession({
         userId: user.id,
-        questionIds: questions.map(q => q.id.toString()),
+        questionIds: questions.map(q => q.id),
         currentQuestionIndex: 0,
         score: 0,
         isCompleted: false,
@@ -156,8 +157,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         },
         currentQuestion: questions[0] 
       });
-    } catch (error) {
-      res.status(500).json({ message: "خطأ في بدء اللعبة" });
+    } catch (error: any) {
+      console.error("Start game error:", error);
+      res.status(500).json({ message: "خطأ في بدء اللعبة: " + error.message });
+    }
+  });
+
+  app.get("/api/games/history", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    try {
+      const user = req.user as any;
+      const gameSessions = await storage.getUserGameSessions(user.id);
+      res.json({ gameSessions: gameSessions.filter(session => session.isCompleted) });
+    } catch (error: any) {
+      console.error("Games history error:", error);
+      res.status(500).json({ message: "خطأ في جلب سجل الألعاب: " + error.message });
     }
   });
 
@@ -178,7 +195,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Get current question
-      const questionId = parseInt(gameSession.questionIds[gameSession.currentQuestionIndex]);
+      const questionId = gameSession.questionIds[gameSession.currentQuestionIndex];
       const question = await storage.getQuestionById(questionId);
 
       res.json({ 
@@ -238,7 +255,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Get next question
-      const questionId = parseInt(gameSession.questionIds[newIndex]);
+      const questionId = gameSession.questionIds[newIndex];
       const question = await storage.getQuestionById(questionId);
 
       res.json({ 
@@ -253,20 +270,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       res.status(500).json({ message: "خطأ في الانتقال للسؤال التالي" });
-    }
-  });
-
-  app.get("/api/games/history", async (req, res) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "غير مسجل الدخول" });
-    }
-
-    try {
-      const user = req.user as any;
-      const gameSessions = await storage.getUserGameSessions(user.id);
-      res.json({ gameSessions: gameSessions.filter(session => session.isCompleted) });
-    } catch (error) {
-      res.status(500).json({ message: "خطأ في جلب سجل الألعاب" });
     }
   });
 
@@ -299,6 +302,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json({ clientSecret: paymentIntent.client_secret });
     } catch (error: any) {
+      console.error("Payment intent error:", error);
       res.status(500).json({ message: "خطأ في إنشاء الدفعة: " + error.message });
     }
   });
