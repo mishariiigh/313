@@ -432,6 +432,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Switch team turn
+  app.post("/api/games/:id/switch-turn", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    try {
+      const gameSession = await storage.getGameSession(parseInt(req.params.id));
+      if (!gameSession) {
+        return res.status(404).json({ message: "جلسة اللعبة غير موجودة" });
+      }
+
+      const user = req.user as any;
+      if (gameSession.userId !== user.id) {
+        return res.status(403).json({ message: "غير مصرح بالوصول" });
+      }
+
+      // Switch to next team's turn
+      const newCurrentTurn = (gameSession.currentTurn + 1) % gameSession.teams.length;
+      
+      await storage.updateGameSession(gameSession.id, {
+        currentTurn: newCurrentTurn,
+      });
+
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "خطأ في تبديل الدور" });
+    }
+  });
+
+  // Adjust team score
+  app.post("/api/games/:id/adjust-score", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    try {
+      const gameSession = await storage.getGameSession(parseInt(req.params.id));
+      if (!gameSession) {
+        return res.status(404).json({ message: "جلسة اللعبة غير موجودة" });
+      }
+
+      const user = req.user as any;
+      if (gameSession.userId !== user.id) {
+        return res.status(403).json({ message: "غير مصرح بالوصول" });
+      }
+
+      const { teamIndex, scoreChange } = req.body;
+      
+      // Validate team index
+      if (teamIndex < 0 || teamIndex >= gameSession.teams.length) {
+        return res.status(400).json({ message: "رقم الفريق غير صحيح" });
+      }
+      
+      // Update team score
+      const newTeamScores = [...gameSession.teamScores];
+      newTeamScores[teamIndex] = Math.max(0, (newTeamScores[teamIndex] || 0) + scoreChange);
+      
+      await storage.updateGameSession(gameSession.id, {
+        teamScores: newTeamScores,
+      });
+
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "خطأ في تعديل النقاط" });
+    }
+  });
+
   app.post("/api/games/:id/next", async (req, res) => {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "غير مسجل الدخول" });

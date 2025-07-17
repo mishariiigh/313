@@ -5,7 +5,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, RotateCcw, Users, Trophy, HelpCircle, Eye } from "lucide-react";
+import { ArrowLeft, RotateCcw, Users, Trophy, HelpCircle, Eye, Shuffle, Plus, Minus } from "lucide-react";
 import { Question } from "@/../../shared/schema";
 
 const CATEGORIES = [
@@ -102,6 +102,28 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       setSelectedQuestion(null);
       setShowHint(false);
       setShowAnswer(false);
+    },
+  });
+
+  // Switch team turn
+  const switchTeamTurnMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("POST", `/api/games/${id}/switch-turn`);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/games/${id}`] });
+    },
+  });
+
+  // Adjust team score
+  const adjustScoreMutation = useMutation({
+    mutationFn: async (data: { teamIndex: number; scoreChange: number }) => {
+      const response = await apiRequest("POST", `/api/games/${id}/adjust-score`, data);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/games/${id}`] });
     },
   });
 
@@ -384,22 +406,54 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
-            <div>
+            <div className="flex items-center gap-3">
               <p className="text-sm opacity-90">
                 دور: <span className="font-semibold bg-white/40 px-3 py-1 rounded-full">
                   {gameSession.teams[gameSession.currentTurn]}
                 </span>
               </p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => switchTeamTurnMutation.mutate()}
+                disabled={switchTeamTurnMutation.isPending}
+                className="bg-white/60 text-gray-800 border-gray-300 hover:bg-white/80 p-2"
+                title="تبديل الدور"
+              >
+                <Shuffle className="h-4 w-4" />
+              </Button>
             </div>
           </div>
           
           {/* Team Scores */}
           <div className="flex gap-4">
             {gameSession.teams.map((team: string, index: number) => (
-              <div key={index} className="bg-white/60 rounded-lg p-3 text-center min-w-[100px] text-gray-800">
+              <div key={index} className="bg-white/60 rounded-lg p-3 text-center min-w-[140px] text-gray-800">
                 <div className="text-sm font-semibold">{team}</div>
-                <div className="text-2xl font-bold">
-                  {gameSession.teamScores[index] || 0}
+                <div className="flex items-center justify-center gap-2 mt-1">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => adjustScoreMutation.mutate({ teamIndex: index, scoreChange: -100 })}
+                    disabled={adjustScoreMutation.isPending}
+                    className="bg-white/80 text-gray-800 border-gray-300 hover:bg-white p-1 h-6 w-6"
+                    title="تقليل النقاط"
+                  >
+                    <Minus className="h-3 w-3" />
+                  </Button>
+                  <div className="text-xl font-bold min-w-[40px]">
+                    {gameSession.teamScores[index] || 0}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => adjustScoreMutation.mutate({ teamIndex: index, scoreChange: 100 })}
+                    disabled={adjustScoreMutation.isPending}
+                    className="bg-white/80 text-gray-800 border-gray-300 hover:bg-white p-1 h-6 w-6"
+                    title="زيادة النقاط"
+                  >
+                    <Plus className="h-3 w-3" />
+                  </Button>
                 </div>
               </div>
             ))}
