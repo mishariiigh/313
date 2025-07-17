@@ -95,9 +95,9 @@ export default function GameSetupPage() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen page-transition">
       {/* Header */}
-      <header className="luxury-card mx-4 mt-4 p-6 mb-6">
+      <header className="luxury-card mx-4 mt-4 p-6 mb-6 board-transition">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center">
             <button className="luxury-button-secondary p-2 ml-4" onClick={handleBack}>
@@ -113,13 +113,13 @@ export default function GameSetupPage() {
 
       {/* Main Content */}
       <main className="max-w-2xl mx-auto px-4 py-8">
-        <div className="luxury-card p-8">
+        <div className="luxury-card p-8 question-slide-in">
           <div className="space-y-8">
             {/* Game Type Selection */}
             <div>
               <Label className="text-lg font-semibold text-luxury-green-dark mb-4 block">نوع اللعبة</Label>
               <RadioGroup value={gameType} onValueChange={setGameType}>
-                <div className="luxury-card p-4 border-2 border-luxury-green-light">
+                <div className="luxury-card p-4 border-2 border-luxury-green-light hint-reveal">
                   <div className="flex items-center space-x-reverse space-x-3">
                     <RadioGroupItem value="single" id="single" />
                     <Label htmlFor="single" className="flex-1 cursor-pointer">
@@ -134,7 +134,7 @@ export default function GameSetupPage() {
                   </div>
                 </div>
                 
-                <div className="luxury-card p-4 border-2 border-luxury-green">
+                <div className="luxury-card p-4 border-2 border-luxury-green answer-reveal">
                   <div className="flex items-center space-x-reverse space-x-3">
                     <RadioGroupItem value="team" id="team" />
                     <Label htmlFor="team" className="flex-1 cursor-pointer">
@@ -153,12 +153,12 @@ export default function GameSetupPage() {
 
             {/* Team Setup (only for team games) */}
             {gameType === "team" && (
-              <div>
+              <div className="question-slide-in">
                 <Label className="text-lg font-semibold text-luxury-green-dark mb-4 block">إعداد الفرق</Label>
                 
                 <div className="space-y-4">
                   {teams.map((team, index) => (
-                    <div key={index} className="flex items-center space-x-reverse space-x-3 luxury-card p-3">
+                    <div key={index} className="flex items-center space-x-reverse space-x-3 luxury-card p-3 hint-reveal" style={{ animationDelay: `${index * 0.1}s` }}>
                       <span className="flex-1 text-luxury-green-dark font-medium">{team}</span>
                       {teams.length > 2 && (
                         <button
@@ -172,7 +172,7 @@ export default function GameSetupPage() {
                   ))}
                   
                   {teams.length < 6 && (
-                    <div className="flex items-center space-x-reverse space-x-3">
+                    <div className="flex items-center space-x-reverse space-x-3 answer-reveal">
                       <Input
                         value={newTeamName}
                         onChange={(e) => setNewTeamName(e.target.value)}
@@ -196,7 +196,7 @@ export default function GameSetupPage() {
             <button
               onClick={handleStartGame}
               disabled={startGameMutation.isPending || user?.availableGames <= 0}
-              className="luxury-button w-full py-4 text-lg"
+              className="luxury-button w-full py-4 text-lg question-card-flip"
             >
               {startGameMutation.isPending ? (
                 <div className="luxury-spinner mx-auto" />
