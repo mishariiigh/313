@@ -256,14 +256,29 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
           {/* Back to Board */}
           <div className="text-center">
-            <Button
-              onClick={handleBackToBoard}
-              variant="outline"
-              className="luxury-button-secondary"
-            >
-              <ArrowLeft className="ml-2 h-4 w-4 text-luxury-green-dark" />
-              العودة للوحة
-            </Button>
+            <div className="flex gap-4 justify-center">
+              <Button
+                onClick={handleBackToBoard}
+                variant="outline"
+                className="luxury-button-secondary"
+              >
+                <ArrowLeft className="ml-2 h-4 w-4 text-luxury-green-dark" />
+                العودة للوحة
+              </Button>
+              
+              <Button
+                onClick={async () => {
+                  if (window.confirm("هل أنت متأكد من إنهاء اللعبة؟")) {
+                    await apiRequest("POST", `/api/games/${id}/complete`);
+                    setLocation("/dashboard");
+                  }
+                }}
+                variant="destructive"
+                className="bg-red-600 hover:bg-red-700 text-white"
+              >
+                إنهاء اللعبة
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -274,21 +289,21 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   return (
     <div className="min-h-screen page-transition">
       {/* Header */}
-      <header className="luxury-card mx-4 mt-4 p-6 mb-6 board-transition">
-        <div className="max-w-6xl mx-auto">
+      <header className="game-header-enhanced mx-4 mt-4 p-8 mb-8 rounded-2xl board-transition">
+        <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <Button
                 variant="outline"
                 onClick={() => setLocation("/dashboard")}
-                className="luxury-button-secondary p-2 ml-4"
+                className="luxury-button-secondary p-3 ml-4 hover:scale-105 transition-transform"
               >
-                <ArrowLeft className="h-5 w-5 text-luxury-green-dark" />
+                <ArrowLeft className="h-6 w-6 text-luxury-green-dark" />
               </Button>
               <div>
-                <h1 className="text-2xl font-bold text-luxury-green-dark">لوحة الأسئلة</h1>
-                <p className="text-muted-foreground">
-                  🔁 دور الفريق: <span className="font-semibold text-luxury-green turn-indicator px-3 py-1 rounded-full">
+                <h1 className="text-3xl font-bold text-luxury-green-dark mb-2">لوحة الأسئلة</h1>
+                <p className="text-muted-foreground text-lg">
+                  🔁 دور الفريق: <span className="font-semibold text-luxury-green turn-indicator px-4 py-2 rounded-full text-white bg-luxury-green shadow-lg">
                     {gameSession.teams[gameSession.currentTurn]}
                   </span>
                 </p>
@@ -296,13 +311,14 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             </div>
             
             {/* Team Scores */}
-            <div className="flex gap-4">
+            <div className="flex gap-6">
               {gameSession.teams.map((team: string, index: number) => (
-                <div key={index} className="text-center">
-                  <div className="text-sm text-muted-foreground">{team}</div>
-                  <div className="text-2xl font-bold text-luxury-green team-score-update">
+                <div key={index} className="text-center bg-white/50 backdrop-blur-sm rounded-xl p-4 shadow-lg">
+                  <div className="text-sm text-muted-foreground font-semibold">{team}</div>
+                  <div className="text-3xl font-bold text-luxury-green team-score-update">
                     {gameSession.teamScores[index] || 0}
                   </div>
+                  <div className="text-xs text-muted-foreground">نقطة</div>
                 </div>
               ))}
             </div>
@@ -314,19 +330,19 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-3 gap-8">
           {CATEGORIES.map((category, categoryIndex) => (
-            <div key={category.id} className="luxury-card p-6 question-grid-item">
+            <div key={category.id} className="category-frame p-8 question-grid-item">
               {/* Category Header */}
-              <div className="p-4 text-center bg-green-700 text-white font-bold rounded-lg border-2 border-green-600 question-category-pulse mb-6">
-                <div className="text-3xl mb-2">{category.icon}</div>
-                <div className="text-lg font-semibold">{category.name}</div>
+              <div className="p-6 text-center bg-gradient-to-br from-green-700 to-green-800 text-white font-bold rounded-xl border-2 border-green-600 question-category-pulse mb-8 shadow-lg">
+                <div className="text-4xl mb-3">{category.icon}</div>
+                <div className="text-xl font-bold">{category.name}</div>
               </div>
               
               {/* Question Groups by Difficulty */}
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {/* 200 Points (Easy) */}
-                <div className="space-y-2">
-                  <div className="text-center text-green-700 font-bold text-sm mb-2">200 نقطة</div>
-                  <div className="grid grid-cols-2 gap-2">
+                <div className="question-section">
+                  <div className="text-center text-green-700 font-bold text-lg mb-4">200 نقطة</div>
+                  <div className="grid grid-cols-2 gap-3">
                     {[0, 1].map((index) => {
                       const isUsed = gameBoard[category.id]?.[index];
                       return (
@@ -334,10 +350,10 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           key={index}
                           onClick={() => handleQuestionClick(category.id, index)}
                           disabled={isUsed}
-                          className={`w-full h-16 text-center font-bold text-lg transition-all duration-300 rounded-lg border-2 ${
+                          className={`w-full h-20 text-center font-bold text-xl transition-all duration-300 rounded-xl border-2 ${
                             isUsed
                               ? "bg-gray-400 text-gray-600 cursor-not-allowed border-gray-500 question-box-used"
-                              : "bg-green-800 text-white hover:bg-green-900 border-green-600 shadow-lg hover:shadow-xl question-box-hover transform hover:-translate-y-1"
+                              : "bg-gradient-to-br from-green-800 to-green-900 text-white hover:from-green-900 hover:to-green-800 border-green-600 shadow-lg hover:shadow-xl question-box-hover transform hover:-translate-y-2 hover:scale-105"
                           }`}
                           style={{
                             animationDelay: `${(categoryIndex * 6 + index) * 0.1}s`
@@ -355,9 +371,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 </div>
 
                 {/* 400 Points (Medium) */}
-                <div className="space-y-2">
-                  <div className="text-center text-green-700 font-bold text-sm mb-2">400 نقطة</div>
-                  <div className="grid grid-cols-2 gap-2">
+                <div className="question-section">
+                  <div className="text-center text-green-700 font-bold text-lg mb-4">400 نقطة</div>
+                  <div className="grid grid-cols-2 gap-3">
                     {[2, 3].map((index) => {
                       const isUsed = gameBoard[category.id]?.[index];
                       return (
@@ -386,9 +402,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 </div>
 
                 {/* 600 Points (Hard) */}
-                <div className="space-y-2">
-                  <div className="text-center text-green-700 font-bold text-sm mb-2">600 نقطة</div>
-                  <div className="grid grid-cols-2 gap-2">
+                <div className="question-section">
+                  <div className="text-center text-green-700 font-bold text-lg mb-4">600 نقطة</div>
+                  <div className="grid grid-cols-2 gap-3">
                     {[4, 5].map((index) => {
                       const isUsed = gameBoard[category.id]?.[index];
                       return (

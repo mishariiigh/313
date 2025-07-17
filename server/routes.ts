@@ -189,6 +189,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/games/active", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    try {
+      const user = req.user as any;
+      const gameSessions = await storage.getUserGameSessions(user.id);
+      const activeSession = gameSessions.find(session => !session.isCompleted);
+      res.json({ activeSession: activeSession || null });
+    } catch (error: any) {
+      console.error("Active games error:", error);
+      res.status(500).json({ message: "خطأ في جلب الألعاب النشطة: " + error.message });
+    }
+  });
+
   app.get("/api/games/:id", async (req, res) => {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "غير مسجل الدخول" });
@@ -244,6 +260,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       res.status(500).json({ message: "خطأ في جلب بيانات اللعبة" });
+    }
+  });
+
+  // Complete game endpoint
+  app.post("/api/games/:id/complete", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    try {
+      const gameSession = await storage.getGameSession(parseInt(req.params.id));
+      if (!gameSession) {
+        return res.status(404).json({ message: "جلسة اللعبة غير موجودة" });
+      }
+
+      const user = req.user as any;
+      if (gameSession.userId !== user.id) {
+        return res.status(403).json({ message: "غير مصرح بالوصول" });
+      }
+
+      // Mark game as completed
+      await storage.updateGameSession(gameSession.id, {
+        isCompleted: true,
+      });
+
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "خطأ في إنهاء اللعبة" });
     }
   });
 

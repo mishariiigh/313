@@ -19,6 +19,11 @@ export default function Dashboard() {
     enabled: !!user,
   });
 
+  const { data: activeGameData } = useQuery({
+    queryKey: ["/api/games/active"],
+    enabled: !!user,
+  });
+
   const startGameMutation = useMutation({
     mutationFn: async () => {
       const response = await apiRequest("POST", "/api/games/start");
@@ -183,6 +188,27 @@ export default function Dashboard() {
 
         {/* Action Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Continue Game Card (only show if active game exists) */}
+          {activeGameData?.activeSession && (
+            <div className="luxury-card p-10 text-center hint-reveal border-2 border-luxury-gold">
+              <div className="w-24 h-24 bg-luxury-gold rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-luxury floating question-category-pulse">
+                <Play className="text-luxury-green-dark h-12 w-12" />
+              </div>
+              <h3 className="text-2xl font-bold text-luxury-green-dark mb-4">متابعة اللعبة</h3>
+              <p className="text-muted-foreground mb-8 text-lg">لديك لعبة نشطة، تابع من حيث توقفت</p>
+              <button 
+                className="luxury-button w-full text-lg py-4 glow question-card-flip"
+                onClick={() => setLocation(`/game/${activeGameData.activeSession.id}`)}
+              >
+                <Play className="ml-2 h-6 w-6" />
+                متابعة اللعبة
+              </button>
+              <p className="text-sm text-muted-foreground mt-4">
+                نوع اللعبة: {activeGameData.activeSession.gameType === "team" ? "فريقين" : "فردية"}
+              </p>
+            </div>
+          )}
+
           {/* Start New Game Card */}
           <div className="luxury-card p-10 text-center hint-reveal">
             <div className="w-24 h-24 bg-luxury-green rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-luxury floating question-category-pulse">
