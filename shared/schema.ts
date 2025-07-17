@@ -22,6 +22,7 @@ export const questions = pgTable("questions", {
   difficulty: varchar("difficulty", { length: 50 }).notNull(),
   hint: text("hint"),
   explanation: text("explanation"),
+  imageUrl: text("image_url"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -74,6 +75,7 @@ export const categories = pgTable("categories", {
   name: varchar("name", { length: 100 }).notNull().unique(),
   displayName: varchar("display_name", { length: 100 }).notNull(),
   description: text("description"),
+  logoUrl: text("logo_url"),
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

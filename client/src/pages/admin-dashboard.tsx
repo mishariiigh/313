@@ -10,13 +10,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Edit, Trash2, Users, MessageSquare } from "lucide-react";
+import { Plus, Edit, Trash2, Users, MessageSquare, ArrowRight, Upload, Image as ImageIcon } from "lucide-react";
 import { useAuthRedirect } from "@/lib/auth";
+import { ImageUpload } from "@/components/ui/image-upload";
+import { useLocation } from "wouter";
 import type { Question, Category, Coupon } from "@shared/schema";
 
 export default function AdminDashboard() {
   const { user, isLoading } = useAuthRedirect();
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("questions");
 
   // States for forms
@@ -27,11 +30,13 @@ export default function AdminDashboard() {
     difficulty: "سهل",
     hint: "",
     explanation: "",
+    imageUrl: "",
   });
   const [categoryForm, setCategoryForm] = useState({
     name: "",
     displayName: "",
     description: "",
+    logoUrl: "",
   });
   const [couponForm, setCouponForm] = useState({
     code: "",
@@ -68,7 +73,7 @@ export default function AdminDashboard() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/questions"] });
-      setQuestionForm({ question: "", answer: "", category: "", difficulty: "سهل", hint: "", explanation: "" });
+      setQuestionForm({ question: "", answer: "", category: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" });
       toast({ title: "تم إنشاء السؤال بنجاح" });
     },
     onError: (error: any) => {
@@ -112,7 +117,7 @@ export default function AdminDashboard() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/categories"] });
-      setCategoryForm({ name: "", displayName: "", description: "" });
+      setCategoryForm({ name: "", displayName: "", description: "", logoUrl: "" });
       toast({ title: "تم إنشاء الفئة بنجاح" });
     },
     onError: (error: any) => {
@@ -169,6 +174,16 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-red-50 p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
+          <div className="flex items-center space-x-reverse space-x-4 mb-4">
+            <Button
+              variant="outline"
+              onClick={() => setLocation("/dashboard")}
+              className="flex items-center space-x-reverse space-x-2"
+            >
+              <ArrowRight className="h-4 w-4" />
+              العودة للوحة الرئيسية
+            </Button>
+          </div>
           <h1 className="text-4xl font-bold text-gray-800 mb-2">لوحة تحكم المدير</h1>
           <p className="text-gray-600">إدارة الأسئلة والفئات والكوبونات</p>
         </div>
@@ -264,6 +279,15 @@ export default function AdminDashboard() {
                       className="mt-1"
                     />
                   </div>
+                  <div>
+                    <Label>صورة السؤال (اختياري)</Label>
+                    <ImageUpload
+                      value={questionForm.imageUrl}
+                      onChange={(url) => setQuestionForm({ ...questionForm, imageUrl: url })}
+                      size="md"
+                      className="mt-2"
+                    />
+                  </div>
                   <Button
                     onClick={() => createQuestionMutation.mutate(questionForm)}
                     disabled={createQuestionMutation.isPending || !questionForm.question || !questionForm.answer}
@@ -288,30 +312,43 @@ export default function AdminDashboard() {
                     <div className="space-y-4 max-h-96 overflow-y-auto">
                       {questions?.questions?.map((question: Question) => (
                         <div key={question.id} className="p-4 border rounded-lg">
-                          <div className="flex justify-between items-start">
-                            <div className="flex-1">
-                              <p className="font-medium">{question.question}</p>
-                              <p className="text-sm text-gray-600 mt-1">الإجابة: {question.answer}</p>
-                              <div className="flex gap-2 mt-2">
-                                <Badge variant="secondary">{question.category}</Badge>
-                                <Badge variant="outline">{question.difficulty}</Badge>
+                          <div className="flex items-start space-x-reverse space-x-4">
+                            {question.imageUrl && (
+                              <div className="flex-shrink-0">
+                                <img
+                                  src={question.imageUrl}
+                                  alt={question.question}
+                                  className="w-16 h-16 object-cover rounded-lg border"
+                                />
                               </div>
-                            </div>
-                            <div className="flex gap-2">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => setEditingQuestion(question)}
-                              >
-                                <Edit className="w-4 h-4" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="destructive"
-                                onClick={() => deleteQuestionMutation.mutate(question.id)}
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
+                            )}
+                            <div className="flex-1">
+                              <div className="flex justify-between items-start">
+                                <div>
+                                  <p className="font-medium">{question.question}</p>
+                                  <p className="text-sm text-gray-600 mt-1">الإجابة: {question.answer}</p>
+                                  <div className="flex gap-2 mt-2">
+                                    <Badge variant="secondary">{question.category}</Badge>
+                                    <Badge variant="outline">{question.difficulty}</Badge>
+                                  </div>
+                                </div>
+                                <div className="flex gap-2">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => setEditingQuestion(question)}
+                                  >
+                                    <Edit className="w-4 h-4" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="destructive"
+                                    onClick={() => deleteQuestionMutation.mutate(question.id)}
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -362,6 +399,15 @@ export default function AdminDashboard() {
                       className="mt-1"
                     />
                   </div>
+                  <div>
+                    <Label>شعار الفئة</Label>
+                    <ImageUpload
+                      value={categoryForm.logoUrl}
+                      onChange={(url) => setCategoryForm({ ...categoryForm, logoUrl: url })}
+                      size="sm"
+                      className="mt-2"
+                    />
+                  </div>
                   <Button
                     onClick={() => createCategoryMutation.mutate(categoryForm)}
                     disabled={createCategoryMutation.isPending || !categoryForm.name || !categoryForm.displayName}
@@ -386,17 +432,34 @@ export default function AdminDashboard() {
                     <div className="space-y-4">
                       {categories?.categories?.map((category: Category) => (
                         <div key={category.id} className="p-4 border rounded-lg">
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <h3 className="font-medium">{category.displayName}</h3>
-                              <p className="text-sm text-gray-600">{category.name}</p>
-                              {category.description && (
-                                <p className="text-sm text-gray-500 mt-1">{category.description}</p>
+                          <div className="flex items-start space-x-reverse space-x-4">
+                            <div className="flex-shrink-0">
+                              {category.logoUrl ? (
+                                <img
+                                  src={category.logoUrl}
+                                  alt={category.displayName}
+                                  className="w-12 h-12 object-cover rounded-lg border"
+                                />
+                              ) : (
+                                <div className="w-12 h-12 bg-gray-100 rounded-lg border flex items-center justify-center">
+                                  <ImageIcon className="h-6 w-6 text-gray-400" />
+                                </div>
                               )}
                             </div>
-                            <Badge variant={category.isActive ? "default" : "secondary"}>
-                              {category.isActive ? "نشط" : "غير نشط"}
-                            </Badge>
+                            <div className="flex-1">
+                              <div className="flex justify-between items-start">
+                                <div>
+                                  <h3 className="font-medium">{category.displayName}</h3>
+                                  <p className="text-sm text-gray-600">{category.name}</p>
+                                  {category.description && (
+                                    <p className="text-sm text-gray-500 mt-1">{category.description}</p>
+                                  )}
+                                </div>
+                                <Badge variant={category.isActive ? "default" : "secondary"}>
+                                  {category.isActive ? "نشط" : "غير نشط"}
+                                </Badge>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       ))}
