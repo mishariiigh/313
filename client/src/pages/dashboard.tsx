@@ -147,7 +147,7 @@ export default function Dashboard() {
               {user?.isAdmin && (
                 <button
                   className="group relative px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-                  onClick={() => setLocation("/admin")}
+                  onClick={() => setLocation("/admin-dashboard")}
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-red-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="relative flex items-center">
