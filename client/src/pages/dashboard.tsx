@@ -38,7 +38,7 @@ export default function Dashboard() {
   });
 
   const handleStartGame = () => {
-    if (user.availableGames <= 0) {
+    if (user?.availableGames <= 0) {
       toast({
         title: "لا توجد ألعاب متاحة",
         description: "يرجى شراء ألعاب إضافية للمتابعة",
@@ -57,6 +57,21 @@ export default function Dashboard() {
     await logout();
   };
 
+  // Redirect if not logged in
+  React.useEffect(() => {
+    if (!user) {
+      setLocation("/auth");
+    }
+  }, [user, setLocation]);
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="luxury-spinner" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen">
       {/* Luxury Header */}
@@ -69,11 +84,11 @@ export default function Dashboard() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gradient">منصة الألعاب الثقافية</h1>
-                <p className="text-sm text-muted-foreground">مرحباً، {user.name}</p>
+                <p className="text-sm text-muted-foreground">مرحباً، {user?.name}</p>
               </div>
             </div>
             <div className="flex items-center space-x-reverse space-x-4">
-              {user.isAdmin && (
+              {user?.isAdmin && (
                 <button
                   className="luxury-button-secondary"
                   onClick={() => setLocation("/admin")}
@@ -115,7 +130,7 @@ export default function Dashboard() {
               </div>
             </div>
             <h3 className="text-2xl font-bold text-luxury-green-dark mb-2">الألعاب المتاحة</h3>
-            <p className="text-4xl font-bold text-gradient">{user.availableGames}</p>
+            <p className="text-4xl font-bold text-gradient">{user?.availableGames || 0}</p>
           </div>
 
           <div className="luxury-stats-card">
@@ -153,7 +168,7 @@ export default function Dashboard() {
             <button 
               className="luxury-button w-full text-lg py-4 glow"
               onClick={handleStartGame}
-              disabled={user.availableGames <= 0 || startGameMutation.isPending}
+              disabled={user?.availableGames <= 0 || startGameMutation.isPending}
             >
               {startGameMutation.isPending ? (
                 <div className="luxury-spinner mx-auto" />
@@ -165,7 +180,7 @@ export default function Dashboard() {
               )}
             </button>
             <p className="text-sm text-muted-foreground mt-4">
-              {user.availableGames} ألعاب متاحة
+              {user?.availableGames || 0} ألعاب متاحة
             </p>
           </div>
 
