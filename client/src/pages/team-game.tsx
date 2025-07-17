@@ -412,19 +412,19 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       if (showHint) {
                         setShowHint(false);
                       } else if (isHintUsed) {
-                        // If hint is already used, just show it
+                        // If hint is already used by any team, just show it
                         setShowHint(true);
                       } else {
-                        // If hint is not used, use it first then show it
+                        // If hint is not used by anyone, use it (consumes it for this question)
                         handleUseHint();
                       }
                     }}
                     variant="outline"
-                    className="luxury-button-secondary"
+                    className={`luxury-button-secondary ${isHintUsed ? 'opacity-75' : ''}`}
                     disabled={useHintMutation.isPending}
                   >
                     <HelpCircle className="ml-2 h-4 w-4 text-luxury-green-dark" />
-                    {showHint ? "إخفاء التلميح" : isHintUsed ? "إظهار التلميح المستخدم" : "استخدام التلميح"}
+                    {showHint ? "إخفاء التلميح" : isHintUsed ? "إظهار التلميح (مُستخدم)" : "استخدام التلميح"}
                   </Button>
                 );
               })()}
