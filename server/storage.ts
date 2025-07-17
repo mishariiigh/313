@@ -205,6 +205,10 @@ export class DatabaseStorage implements IStorage {
     return category;
   }
 
+  async deleteCategory(id: number): Promise<void> {
+    await db.delete(categories).where(eq(categories.id, id));
+  }
+
   // Coupon operations
   async getAllCoupons(): Promise<Coupon[]> {
     return db.select().from(coupons).orderBy(desc(coupons.createdAt));

@@ -848,6 +848,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.delete("/api/admin/categories/:id", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    const user = req.user as any;
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "غير مصرح بالوصول" });
+    }
+
+    try {
+      await storage.deleteCategory(parseInt(req.params.id));
+      res.json({ message: "تم حذف الفئة بنجاح" });
+    } catch (error) {
+      res.status(500).json({ message: "خطأ في حذف الفئة" });
+    }
+  });
+
   // Coupons routes
   app.get("/api/admin/coupons", async (req, res) => {
     if (!req.isAuthenticated()) {

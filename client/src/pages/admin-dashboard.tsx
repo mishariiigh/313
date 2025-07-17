@@ -21,6 +21,13 @@ export default function AdminDashboard() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("questions");
+  
+  // Search and filter states
+  const [questionSearch, setQuestionSearch] = useState("");
+  const [categorySearch, setCategorySearch] = useState("");
+  const [couponSearch, setCouponSearch] = useState("");
+  const [questionCategoryFilter, setQuestionCategoryFilter] = useState("");
+  const [questionDifficultyFilter, setQuestionDifficultyFilter] = useState("");
 
   // States for forms
   const [questionForm, setQuestionForm] = useState({
@@ -125,6 +132,36 @@ export default function AdminDashboard() {
     },
   });
 
+  const updateCategoryMutation = useMutation({
+    mutationFn: async (data: { id: number; updates: typeof categoryForm }) => {
+      const response = await apiRequest("PUT", `/api/admin/categories/${data.id}`, data.updates);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/categories"] });
+      setEditingCategory(null);
+      setCategoryForm({ name: "", displayName: "", description: "", logoUrl: "" });
+      toast({ title: "تم تحديث الفئة بنجاح" });
+    },
+    onError: (error: any) => {
+      toast({ title: "خطأ في تحديث الفئة", description: error.message, variant: "destructive" });
+    },
+  });
+
+  const deleteCategoryMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await apiRequest("DELETE", `/api/admin/categories/${id}`);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/categories"] });
+      toast({ title: "تم حذف الفئة بنجاح" });
+    },
+    onError: (error: any) => {
+      toast({ title: "خطأ في حذف الفئة", description: error.message, variant: "destructive" });
+    },
+  });
+
   const createCouponMutation = useMutation({
     mutationFn: async (data: any) => {
       const response = await apiRequest("POST", "/api/admin/coupons", data);
@@ -150,6 +187,48 @@ export default function AdminDashboard() {
       toast({ title: "تم تحديث حالة الكوبون" });
     },
   });
+
+  // Helper functions for filtering and searching
+  const filteredQuestions = questions?.questions?.filter((question: Question) => {
+    const matchesSearch = question.question.toLowerCase().includes(questionSearch.toLowerCase()) ||
+                         question.answer.toLowerCase().includes(questionSearch.toLowerCase());
+    const matchesCategory = !questionCategoryFilter || questionCategoryFilter === "all" || question.category === questionCategoryFilter;
+    const matchesDifficulty = !questionDifficultyFilter || questionDifficultyFilter === "all" || question.difficulty === questionDifficultyFilter;
+    return matchesSearch && matchesCategory && matchesDifficulty;
+  }) || [];
+
+  const filteredCategories = categories?.categories?.filter((category: Category) => {
+    return category.displayName.toLowerCase().includes(categorySearch.toLowerCase()) ||
+           category.name.toLowerCase().includes(categorySearch.toLowerCase());
+  }) || [];
+
+  const filteredCoupons = coupons?.coupons?.filter((coupon: Coupon) => {
+    return coupon.code.toLowerCase().includes(couponSearch.toLowerCase());
+  }) || [];
+
+  // Helper function to populate form when editing
+  const handleEditCategory = (category: Category) => {
+    setEditingCategory(category);
+    setCategoryForm({
+      name: category.name,
+      displayName: category.displayName,
+      description: category.description || "",
+      logoUrl: category.logoUrl || "",
+    });
+  };
+
+  const handleCategorySubmit = () => {
+    if (editingCategory) {
+      updateCategoryMutation.mutate({ id: editingCategory.id, updates: categoryForm });
+    } else {
+      createCategoryMutation.mutate(categoryForm);
+    }
+  };
+
+  const handleCancelCategoryEdit = () => {
+    setEditingCategory(null);
+    setCategoryForm({ name: "", displayName: "", description: "", logoUrl: "" });
+  };
 
   if (isLoading) {
     return (
@@ -205,6 +284,49 @@ export default function AdminDashboard() {
           </TabsList>
 
           <TabsContent value="questions" className="mt-6">
+            {/* Search and Filter Bar */}
+            <div className="mb-6 p-4 bg-white rounded-lg shadow-sm border">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="question-search">البحث في الأسئلة</Label>
+                  <Input
+                    id="question-search"
+                    placeholder="ابحث في الأسئلة والأجوبة..."
+                    value={questionSearch}
+                    onChange={(e) => setQuestionSearch(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="category-filter">فلترة بالفئة</Label>
+                  <Select value={questionCategoryFilter} onValueChange={setQuestionCategoryFilter}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="جميع الفئات" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">جميع الفئات</SelectItem>
+                      {categories?.categories?.map((cat: Category) => (
+                        <SelectItem key={cat.id} value={cat.name}>{cat.displayName}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="difficulty-filter">فلترة بالصعوبة</Label>
+                  <Select value={questionDifficultyFilter} onValueChange={setQuestionDifficultyFilter}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="جميع المستويات" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">جميع المستويات</SelectItem>
+                      <SelectItem value="سهل">سهل</SelectItem>
+                      <SelectItem value="متوسط">متوسط</SelectItem>
+                      <SelectItem value="صعب">صعب</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Add Question Form */}
               <Card>
@@ -310,7 +432,12 @@ export default function AdminDashboard() {
                     <div className="text-center">جاري التحميل...</div>
                   ) : (
                     <div className="space-y-4 max-h-96 overflow-y-auto">
-                      {questions?.questions?.map((question: Question) => (
+                      {filteredQuestions.length === 0 ? (
+                        <div className="text-center text-gray-500 py-4">
+                          لا توجد أسئلة تطابق البحث
+                        </div>
+                      ) : (
+                        filteredQuestions.map((question: Question) => (
                         <div key={question.id} className="p-4 border rounded-lg">
                           <div className="flex items-start space-x-reverse space-x-4">
                             {question.imageUrl && (
@@ -352,7 +479,8 @@ export default function AdminDashboard() {
                             </div>
                           </div>
                         </div>
-                      ))}
+                        ))
+                      )}
                     </div>
                   )}
                 </CardContent>
@@ -361,12 +489,29 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="categories" className="mt-6">
+            {/* Search Bar */}
+            <div className="mb-6 p-4 bg-white rounded-lg shadow-sm border">
+              <div>
+                <Label htmlFor="category-search">البحث في الفئات</Label>
+                <Input
+                  id="category-search"
+                  placeholder="ابحث في أسماء الفئات..."
+                  value={categorySearch}
+                  onChange={(e) => setCategorySearch(e.target.value)}
+                />
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Add Category Form */}
               <Card>
                 <CardHeader>
-                  <CardTitle>إضافة فئة جديدة</CardTitle>
-                  <CardDescription>أضف فئة جديدة للأسئلة</CardDescription>
+                  <CardTitle>
+                    {editingCategory ? "تعديل الفئة" : "إضافة فئة جديدة"}
+                  </CardTitle>
+                  <CardDescription>
+                    {editingCategory ? "تعديل بيانات الفئة المحددة" : "أضف فئة جديدة للأسئلة"}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
@@ -408,14 +553,38 @@ export default function AdminDashboard() {
                       className="mt-2"
                     />
                   </div>
-                  <Button
-                    onClick={() => createCategoryMutation.mutate(categoryForm)}
-                    disabled={createCategoryMutation.isPending || !categoryForm.name || !categoryForm.displayName}
-                    className="w-full"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    إضافة الفئة
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={handleCategorySubmit}
+                      disabled={
+                        (editingCategory ? updateCategoryMutation.isPending : createCategoryMutation.isPending) ||
+                        !categoryForm.name ||
+                        !categoryForm.displayName
+                      }
+                      className="flex-1"
+                    >
+                      {editingCategory ? (
+                        <>
+                          <Edit className="w-4 h-4 mr-2" />
+                          تحديث الفئة
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-4 h-4 mr-2" />
+                          إضافة الفئة
+                        </>
+                      )}
+                    </Button>
+                    {editingCategory && (
+                      <Button
+                        variant="outline"
+                        onClick={handleCancelCategoryEdit}
+                        className="flex-1"
+                      >
+                        إلغاء
+                      </Button>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
 
@@ -430,7 +599,12 @@ export default function AdminDashboard() {
                     <div className="text-center">جاري التحميل...</div>
                   ) : (
                     <div className="space-y-4">
-                      {categories?.categories?.map((category: Category) => (
+                      {filteredCategories.length === 0 ? (
+                        <div className="text-center text-gray-500 py-4">
+                          لا توجد فئات تطابق البحث
+                        </div>
+                      ) : (
+                        filteredCategories.map((category: Category) => (
                         <div key={category.id} className="p-4 border rounded-lg">
                           <div className="flex items-start space-x-reverse space-x-4">
                             <div className="flex-shrink-0">
@@ -455,14 +629,33 @@ export default function AdminDashboard() {
                                     <p className="text-sm text-gray-500 mt-1">{category.description}</p>
                                   )}
                                 </div>
-                                <Badge variant={category.isActive ? "default" : "secondary"}>
-                                  {category.isActive ? "نشط" : "غير نشط"}
-                                </Badge>
+                                <div className="flex items-center gap-2">
+                                  <Badge variant={category.isActive ? "default" : "secondary"}>
+                                    {category.isActive ? "نشط" : "غير نشط"}
+                                  </Badge>
+                                  <div className="flex gap-2">
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => handleEditCategory(category)}
+                                    >
+                                      <Edit className="w-4 h-4" />
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="destructive"
+                                      onClick={() => deleteCategoryMutation.mutate(category.id)}
+                                    >
+                                      <Trash2 className="w-4 h-4" />
+                                    </Button>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      ))}
+                        ))
+                      )}
                     </div>
                   )}
                 </CardContent>
@@ -471,6 +664,19 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="coupons" className="mt-6">
+            {/* Search Bar */}
+            <div className="mb-6 p-4 bg-white rounded-lg shadow-sm border">
+              <div>
+                <Label htmlFor="coupon-search">البحث في الكوبونات</Label>
+                <Input
+                  id="coupon-search"
+                  placeholder="ابحث في أكواد الكوبونات..."
+                  value={couponSearch}
+                  onChange={(e) => setCouponSearch(e.target.value)}
+                />
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Add Coupon Form */}
               <Card>
@@ -562,7 +768,12 @@ export default function AdminDashboard() {
                     <div className="text-center">جاري التحميل...</div>
                   ) : (
                     <div className="space-y-4">
-                      {coupons?.coupons?.map((coupon: Coupon) => (
+                      {filteredCoupons.length === 0 ? (
+                        <div className="text-center text-gray-500 py-4">
+                          لا توجد كوبونات تطابق البحث
+                        </div>
+                      ) : (
+                        filteredCoupons.map((coupon: Coupon) => (
                         <div key={coupon.id} className="p-4 border rounded-lg">
                           <div className="flex justify-between items-start">
                             <div>
@@ -590,7 +801,8 @@ export default function AdminDashboard() {
                             </div>
                           </div>
                         </div>
-                      ))}
+                        ))
+                      )}
                     </div>
                   )}
                 </CardContent>
