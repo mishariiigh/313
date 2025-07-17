@@ -419,7 +419,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                         // If hint is already used for this question, just show it
                         setShowHint(true);
                       } else if (currentTeamHintUsed) {
-                        // Team has already used their hint for the game - can't use it
+                        // Team has already used their hint for the game - show red message
                         toast({
                           title: "تم استخدام التلميح",
                           description: "هذا الفريق استخدم التلميح بالفعل في اللعبة",

@@ -489,7 +489,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json({ success: true });
     } catch (error) {
-      res.status(500).json({ message: "خطأ في استخدام التلميح" });
+      console.error("Use hint error:", error);
+      res.status(500).json({ message: "خطأ في استخدام التلميح: " + error.message });
     }
   });
 
