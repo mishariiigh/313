@@ -169,7 +169,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
           {/* Question Card */}
           <div className="luxury-card p-8 mb-6 text-center question-slide-in">
             <div className="text-sm text-luxury-green mb-4">
-              {selectedQuestion.category} - {selectedQuestion.difficulty}
+              {selectedQuestion.category}
             </div>
             <div className="text-lg font-bold text-green-600 mb-4">
               {(() => {
@@ -311,48 +311,111 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       </header>
 
       {/* Game Board */}
-      <main className="max-w-6xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-6 gap-4">
+      <main className="max-w-7xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-3 gap-8">
           {CATEGORIES.map((category, categoryIndex) => (
-            <div key={category.id} className="space-y-2 question-grid-item">
+            <div key={category.id} className="luxury-card p-6 question-grid-item">
               {/* Category Header */}
-              <div className="p-4 text-center bg-green-700 text-white font-bold rounded-lg border-2 border-green-600 question-category-pulse">
-                <div className="text-2xl mb-2">{category.icon}</div>
-                <div className="text-sm font-semibold">{category.name}</div>
+              <div className="p-4 text-center bg-green-700 text-white font-bold rounded-lg border-2 border-green-600 question-category-pulse mb-6">
+                <div className="text-3xl mb-2">{category.icon}</div>
+                <div className="text-lg font-semibold">{category.name}</div>
               </div>
               
-              {/* Question Boxes */}
-              {[0, 1, 2, 3, 4, 5].map((index) => {
-                const isUsed = gameBoard[category.id]?.[index];
-                const points = index < 2 ? 200 : index < 4 ? 400 : 600;
-                const difficulty = index < 2 ? "سهل" : index < 4 ? "متوسط" : "صعب";
-                return (
-                  <button
-                    key={index}
-                    onClick={() => handleQuestionClick(category.id, index)}
-                    disabled={isUsed}
-                    className={`w-full h-20 text-center font-bold text-lg transition-all duration-300 rounded-lg border-2 ${
-                      isUsed
-                        ? "bg-gray-400 text-gray-600 cursor-not-allowed border-gray-500 question-box-used"
-                        : "bg-green-800 text-white hover:bg-green-900 border-green-600 shadow-lg hover:shadow-xl question-box-hover transform hover:-translate-y-1"
-                    }`}
-                    style={{
-                      animationDelay: `${(categoryIndex * 6 + index) * 0.1}s`
-                    }}
-                  >
-                    {isUsed ? (
-                      <div className="flex flex-col items-center justify-center h-full">
-                        <span className="text-2xl">✅</span>
-                      </div>
-                    ) : (
-                      <div className="flex flex-col items-center justify-center h-full">
-                        <div className="text-2xl font-bold">{points}</div>
-                        <div className="text-xs opacity-80">{difficulty}</div>
-                      </div>
-                    )}
-                  </button>
-                );
-              })}
+              {/* Question Groups by Difficulty */}
+              <div className="space-y-4">
+                {/* 200 Points (Easy) */}
+                <div className="space-y-2">
+                  <div className="text-center text-green-700 font-bold text-sm mb-2">200 نقطة</div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[0, 1].map((index) => {
+                      const isUsed = gameBoard[category.id]?.[index];
+                      return (
+                        <button
+                          key={index}
+                          onClick={() => handleQuestionClick(category.id, index)}
+                          disabled={isUsed}
+                          className={`w-full h-16 text-center font-bold text-lg transition-all duration-300 rounded-lg border-2 ${
+                            isUsed
+                              ? "bg-gray-400 text-gray-600 cursor-not-allowed border-gray-500 question-box-used"
+                              : "bg-green-800 text-white hover:bg-green-900 border-green-600 shadow-lg hover:shadow-xl question-box-hover transform hover:-translate-y-1"
+                          }`}
+                          style={{
+                            animationDelay: `${(categoryIndex * 6 + index) * 0.1}s`
+                          }}
+                        >
+                          {isUsed ? (
+                            <span className="text-2xl">✅</span>
+                          ) : (
+                            <div className="text-xl font-bold">200</div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 400 Points (Medium) */}
+                <div className="space-y-2">
+                  <div className="text-center text-green-700 font-bold text-sm mb-2">400 نقطة</div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[2, 3].map((index) => {
+                      const isUsed = gameBoard[category.id]?.[index];
+                      return (
+                        <button
+                          key={index}
+                          onClick={() => handleQuestionClick(category.id, index)}
+                          disabled={isUsed}
+                          className={`w-full h-16 text-center font-bold text-lg transition-all duration-300 rounded-lg border-2 ${
+                            isUsed
+                              ? "bg-gray-400 text-gray-600 cursor-not-allowed border-gray-500 question-box-used"
+                              : "bg-green-800 text-white hover:bg-green-900 border-green-600 shadow-lg hover:shadow-xl question-box-hover transform hover:-translate-y-1"
+                          }`}
+                          style={{
+                            animationDelay: `${(categoryIndex * 6 + index) * 0.1}s`
+                          }}
+                        >
+                          {isUsed ? (
+                            <span className="text-2xl">✅</span>
+                          ) : (
+                            <div className="text-xl font-bold">400</div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 600 Points (Hard) */}
+                <div className="space-y-2">
+                  <div className="text-center text-green-700 font-bold text-sm mb-2">600 نقطة</div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[4, 5].map((index) => {
+                      const isUsed = gameBoard[category.id]?.[index];
+                      return (
+                        <button
+                          key={index}
+                          onClick={() => handleQuestionClick(category.id, index)}
+                          disabled={isUsed}
+                          className={`w-full h-16 text-center font-bold text-lg transition-all duration-300 rounded-lg border-2 ${
+                            isUsed
+                              ? "bg-gray-400 text-gray-600 cursor-not-allowed border-gray-500 question-box-used"
+                              : "bg-green-800 text-white hover:bg-green-900 border-green-600 shadow-lg hover:shadow-xl question-box-hover transform hover:-translate-y-1"
+                          }`}
+                          style={{
+                            animationDelay: `${(categoryIndex * 6 + index) * 0.1}s`
+                          }}
+                        >
+                          {isUsed ? (
+                            <span className="text-2xl">✅</span>
+                          ) : (
+                            <div className="text-xl font-bold">600</div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
             </div>
           ))}
         </div>
