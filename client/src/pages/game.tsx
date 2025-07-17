@@ -85,21 +85,27 @@ export default function GamePage({ params }: GamePageProps) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="luxury-card p-8 text-center">
+          <div className="luxury-spinner mx-auto mb-4" />
+          <p className="text-luxury-green-dark text-lg">جاري تحميل اللعبة...</p>
+        </div>
       </div>
     );
   }
 
   if (!gameData) {
     return (
-      <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-neutral-800 mb-4">لم يتم العثور على اللعبة</h2>
-          <Button onClick={handleReturnToDashboard}>
-            <Home className="ml-2 h-4 w-4" />
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="luxury-card p-10 text-center">
+          <div className="w-20 h-20 bg-luxury-gold rounded-full flex items-center justify-center mx-auto mb-6">
+            <Home className="text-white h-10 w-10" />
+          </div>
+          <h2 className="text-2xl font-bold text-luxury-green-dark mb-6">لم يتم العثور على اللعبة</h2>
+          <button className="luxury-button" onClick={handleReturnToDashboard}>
+            <Home className="ml-2 h-5 w-5" />
             العودة إلى الصفحة الرئيسية
-          </Button>
+          </button>
         </div>
       </div>
     );
@@ -109,30 +115,28 @@ export default function GamePage({ params }: GamePageProps) {
 
   if (completed || gameSession.isCompleted) {
     return (
-      <div className="min-h-screen bg-neutral-50">
-        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <Card className="text-center p-8">
-            <div className="w-24 h-24 bg-secondary rounded-full flex items-center justify-center mx-auto mb-6">
-              <Trophy className="text-white h-12 w-12" />
-            </div>
-            <h2 className="text-2xl font-bold text-neutral-800 mb-4">تم إكمال اللعبة!</h2>
-            <p className="text-neutral-600 mb-6">لقد أجبت على جميع الأسئلة بنجاح</p>
-            
-            {/* Final Score */}
-            <div className="bg-neutral-50 rounded-lg p-6 mb-6">
-              <h3 className="text-lg font-bold text-neutral-800 mb-2">النتيجة النهائية</h3>
-              <p className="text-4xl font-bold text-secondary">{gameSession.score}/36</p>
-              <p className="text-sm text-neutral-600 mt-2">
-                نسبة النجاح: {Math.round((gameSession.score / 36) * 100)}%
-              </p>
-            </div>
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="luxury-card p-12 text-center max-w-md w-full">
+          <div className="w-32 h-32 bg-luxury-gold rounded-full flex items-center justify-center mx-auto mb-8 floating glow">
+            <Trophy className="text-white h-16 w-16" />
+          </div>
+          <h2 className="text-3xl font-bold text-gradient mb-6">تم إكمال اللعبة!</h2>
+          <p className="text-muted-foreground mb-8 text-lg">لقد أجبت على جميع الأسئلة بنجاح</p>
+          
+          {/* Final Score */}
+          <div className="luxury-card p-8 mb-8 bg-luxury-green-light">
+            <h3 className="text-xl font-bold text-luxury-green-dark mb-4">النتيجة النهائية</h3>
+            <p className="text-5xl font-bold text-luxury-green mb-2">{gameSession.score}/36</p>
+            <p className="text-luxury-green-dark font-medium">
+              نسبة النجاح: {Math.round((gameSession.score / 36) * 100)}%
+            </p>
+          </div>
 
-            <Button className="w-full" onClick={handleReturnToDashboard}>
-              <Home className="ml-2 h-4 w-4" />
-              العودة إلى الصفحة الرئيسية
-            </Button>
-          </Card>
-        </main>
+          <button className="luxury-button w-full text-lg py-4" onClick={handleReturnToDashboard}>
+            <Home className="ml-2 h-6 w-6" />
+            العودة إلى الصفحة الرئيسية
+          </button>
+        </div>
       </div>
     );
   }
@@ -140,147 +144,159 @@ export default function GamePage({ params }: GamePageProps) {
   const progress = ((gameSession.currentQuestionIndex + 1) / gameSession.totalQuestions) * 100;
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="min-h-screen">
       {/* Game Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
+      <header className="luxury-card mx-4 mt-4 p-6 mb-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex justify-between items-center mb-6">
             <div className="flex items-center space-x-reverse space-x-4">
-              <Button variant="ghost" size="sm" onClick={handleExitGame}>
-                <ArrowRight className="h-4 w-4" />
-              </Button>
+              <button className="luxury-button-secondary p-2" onClick={handleExitGame}>
+                <ArrowRight className="h-5 w-5" />
+              </button>
               <div>
-                <h1 className="text-lg font-bold text-neutral-800">جلسة اللعبة</h1>
-                <p className="text-sm text-neutral-600">
+                <h1 className="text-xl font-bold text-luxury-green-dark">جلسة اللعبة</h1>
+                <p className="text-muted-foreground">
                   السؤال {gameSession.currentQuestionIndex + 1} من {gameSession.totalQuestions}
                 </p>
               </div>
             </div>
-            <div className="flex items-center space-x-reverse space-x-4">
-              <div className="text-left">
-                <span className="text-sm text-neutral-500">النقاط</span>
-                <p className="font-bold text-primary">{gameSession.score}/{gameSession.currentQuestionIndex + 1}</p>
-              </div>
+            <div className="text-center">
+              <span className="text-sm text-muted-foreground block">النقاط</span>
+              <p className="font-bold text-luxury-green text-xl">{gameSession.score}/{gameSession.currentQuestionIndex + 1}</p>
             </div>
           </div>
           
           {/* Progress Bar */}
-          <div className="pb-4">
-            <Progress value={progress} className="w-full" />
+          <div className="game-progress-bar">
+            <div className="game-progress-fill" style={{ width: `${progress}%` }} />
           </div>
         </div>
       </header>
 
       {/* Game Content */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Card>
-          <CardContent className="p-8">
-            {/* Category Badge */}
-            <div className="flex items-center mb-6">
-              <Badge className={getCategoryColor(currentQuestion.category)}>
-                {currentQuestion.category}
-              </Badge>
-              <Badge className={`mr-2 ${getDifficultyColor(currentQuestion.difficulty)}`}>
-                {currentQuestion.difficulty}
-              </Badge>
-            </div>
+      <main className="max-w-4xl mx-auto px-4 py-8">
+        <div className="question-card">
+          {/* Category Badge */}
+          <div className="flex items-center mb-6">
+            <span className="luxury-badge bg-luxury-green-light text-luxury-green-dark px-4 py-2 rounded-full font-medium">
+              {currentQuestion.category}
+            </span>
+            <span className="luxury-badge bg-luxury-gold text-white px-4 py-2 rounded-full font-medium mr-3">
+              {currentQuestion.difficulty}
+            </span>
+          </div>
 
-            {/* Question Text */}
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-neutral-800 leading-relaxed">
-                {currentQuestion.question}
-              </h2>
-            </div>
+          {/* Question Text */}
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-luxury-green-dark leading-relaxed">
+              {currentQuestion.question}
+            </h2>
+          </div>
 
-            {/* Action Buttons */}
-            <div className="space-y-4">
-              {/* Hint Button */}
-              {!showHint && currentQuestion.hint && (
-                <Button 
-                  variant="outline" 
-                  className="w-full py-4 border-yellow-200 text-yellow-700 hover:bg-yellow-50"
-                  onClick={handleShowHint}
-                >
-                  <Lightbulb className="ml-2 h-4 w-4" />
-                  عرض التلميح
-                </Button>
-              )}
+          {/* Action Buttons */}
+          <div className="action-buttons">
+            {/* Hint Button */}
+            {!showHint && currentQuestion.hint && (
+              <button 
+                className="luxury-button-secondary py-4 text-luxury-gold border-luxury-gold hover:bg-luxury-gold hover:text-white"
+                onClick={handleShowHint}
+              >
+                <Lightbulb className="ml-2 h-5 w-5" />
+                عرض التلميح
+              </button>
+            )}
 
-              {/* Hint Display */}
-              {showHint && currentQuestion.hint && (
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                  <div className="flex items-start space-x-reverse space-x-3">
-                    <div className="flex-shrink-0">
-                      <Lightbulb className="text-yellow-500 h-5 w-5" />
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-yellow-800 mb-1">التلميح:</h4>
-                      <p className="text-yellow-700">{currentQuestion.hint}</p>
-                    </div>
-                  </div>
+            {/* Reveal Answer Button */}
+            {!showAnswer && (
+              <button 
+                className="luxury-button py-4"
+                onClick={handleRevealAnswer}
+              >
+                <Eye className="ml-2 h-5 w-5" />
+                كشف الإجابة
+              </button>
+            )}
+
+            {/* Next Question Button */}
+            {showAnswer && (
+              <button 
+                className="luxury-button py-4 bg-luxury-green hover:bg-luxury-green/90"
+                onClick={() => handleNextQuestion(true)}
+                disabled={nextQuestionMutation.isPending}
+              >
+                {nextQuestionMutation.isPending ? (
+                  <div className="luxury-spinner mx-auto" />
+                ) : (
+                  <>
+                    <ArrowLeft className="ml-2 h-5 w-5" />
+                    السؤال التالي
+                  </>
+                )}
+              </button>
+            )}
+          </div>
+
+          {/* Hint Display */}
+          {showHint && currentQuestion.hint && (
+            <div className="hint-section">
+              <div className="flex items-start space-x-reverse space-x-3">
+                <div className="flex-shrink-0">
+                  <Lightbulb className="text-luxury-gold h-6 w-6" />
                 </div>
-              )}
-
-              {/* Reveal Answer Button */}
-              {!showAnswer && (
-                <Button 
-                  className="w-full py-4" 
-                  onClick={handleRevealAnswer}
-                >
-                  <Eye className="ml-2 h-4 w-4" />
-                  كشف الإجابة
-                </Button>
-              )}
-
-              {/* Answer Display */}
-              {showAnswer && (
-                <div className="bg-secondary/10 border border-secondary/30 rounded-lg p-6">
-                  <div className="text-center mb-4">
-                    <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Trophy className="text-white h-6 w-6" />
-                    </div>
-                    <h3 className="text-xl font-bold text-secondary mb-2">الإجابة الصحيحة</h3>
-                    <p className="text-2xl font-bold text-neutral-800">
-                      {currentQuestion.answer}
-                    </p>
-                  </div>
-                  
-                  {/* Explanation */}
-                  {currentQuestion.explanation && (
-                    <div className="bg-white rounded-lg p-4 mt-4">
-                      <h4 className="font-medium text-neutral-800 mb-2">شرح الإجابة:</h4>
-                      <p className="text-neutral-700 leading-relaxed">
-                        {currentQuestion.explanation}
-                      </p>
-                    </div>
-                  )}
+                <div>
+                  <h4 className="font-semibold text-luxury-green-dark mb-2">التلميح:</h4>
+                  <p className="text-luxury-green-dark">{currentQuestion.hint}</p>
                 </div>
-              )}
+              </div>
+            </div>
+          )}
 
-              {/* Next Question Buttons */}
-              {showAnswer && (
-                <div className="flex space-x-reverse space-x-4">
-                  <Button 
-                    variant="outline" 
-                    className="flex-1 py-4"
-                    onClick={() => handleNextQuestion(false)}
-                    disabled={nextQuestionMutation.isPending}
-                  >
-                    إجابة خاطئة
-                  </Button>
-                  <Button 
-                    className="flex-1 py-4 bg-neutral-800 hover:bg-neutral-700"
-                    onClick={() => handleNextQuestion(true)}
-                    disabled={nextQuestionMutation.isPending}
-                  >
-                    <ArrowLeft className="ml-2 h-4 w-4" />
-                    إجابة صحيحة
-                  </Button>
+          {/* Answer Display */}
+          {showAnswer && (
+            <div className="answer-section">
+              <div className="text-center mb-4">
+                <div className="w-16 h-16 bg-luxury-green rounded-full flex items-center justify-center mx-auto mb-4 floating">
+                  <Trophy className="text-white h-8 w-8" />
+                </div>
+                <h3 className="text-xl font-bold text-luxury-green-dark mb-2">الإجابة الصحيحة</h3>
+                <p className="text-2xl font-bold text-luxury-green">
+                  {currentQuestion.answer}
+                </p>
+              </div>
+              
+              {/* Explanation */}
+              {currentQuestion.explanation && (
+                <div className="luxury-card p-4 mt-4">
+                  <h4 className="font-medium text-luxury-green-dark mb-2">شرح الإجابة:</h4>
+                  <p className="text-luxury-green-dark leading-relaxed">
+                    {currentQuestion.explanation}
+                  </p>
                 </div>
               )}
             </div>
-          </CardContent>
-        </Card>
+          )}
+
+          {/* Next Question Buttons */}
+          {showAnswer && (
+            <div className="flex space-x-reverse space-x-4">
+              <button 
+                className="luxury-button-secondary flex-1 py-4"
+                onClick={() => handleNextQuestion(false)}
+                disabled={nextQuestionMutation.isPending}
+              >
+                إجابة خاطئة
+              </button>
+              <button 
+                className="luxury-button flex-1 py-4"
+                onClick={() => handleNextQuestion(true)}
+                disabled={nextQuestionMutation.isPending}
+              >
+                <ArrowLeft className="ml-2 h-4 w-4" />
+                إجابة صحيحة
+              </button>
+            </div>
+          )}
+        </div>
       </main>
     </div>
   );

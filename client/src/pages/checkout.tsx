@@ -59,17 +59,32 @@ const CheckoutForm = ({ gameCount }: { gameCount: number }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <PaymentElement />
-      <div className="flex space-x-reverse space-x-3">
-        <Button type="button" variant="outline" className="flex-1" onClick={() => setLocation("/dashboard")}>
+    <form onSubmit={handleSubmit} className="space-y-8">
+      <div className="luxury-card p-6">
+        <PaymentElement />
+      </div>
+      <div className="flex space-x-reverse space-x-4">
+        <button 
+          type="button" 
+          className="luxury-button-secondary flex-1 py-4" 
+          onClick={() => setLocation("/dashboard")}
+        >
           إلغاء
-        </Button>
-        <Button type="submit" className="flex-1 bg-secondary hover:bg-secondary/90" disabled={!stripe || isProcessing}>
-          {isProcessing && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
-          <CreditCard className="ml-2 h-4 w-4" />
-          دفع ${gameCount === 1 ? "1.99" : "8.99"}
-        </Button>
+        </button>
+        <button 
+          type="submit" 
+          className="luxury-button flex-1 py-4" 
+          disabled={!stripe || isProcessing}
+        >
+          {isProcessing ? (
+            <div className="luxury-spinner mx-auto" />
+          ) : (
+            <>
+              <CreditCard className="ml-2 h-5 w-5" />
+              دفع ${gameCount === 1 ? "1.99" : "8.99"}
+            </>
+          )}
+        </button>
       </div>
     </form>
   );
@@ -112,24 +127,27 @@ export default function CheckoutPage() {
 
   if (!clientSecret) {
     return (
-      <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="luxury-card p-8 text-center">
+          <div className="luxury-spinner mx-auto mb-4" />
+          <p className="text-luxury-green-dark text-lg">جاري إعداد عملية الدفع...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="min-h-screen">
       {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center py-4">
-            <Button variant="ghost" size="sm" onClick={handleBack}>
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-            <div className="mr-4">
-              <h1 className="text-lg font-bold text-neutral-800">شراء ألعاب إضافية</h1>
-              <p className="text-sm text-neutral-600">اختر الباقة المناسبة لك</p>
+      <header className="luxury-card mx-4 mt-4 p-6 mb-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center">
+            <button className="luxury-button-secondary p-2 ml-4" onClick={handleBack}>
+              <ArrowRight className="h-5 w-5" />
+            </button>
+            <div>
+              <h1 className="text-xl font-bold text-luxury-green-dark">شراء ألعاب إضافية</h1>
+              <p className="text-muted-foreground">اختر الباقة المناسبة لك</p>
             </div>
           </div>
         </div>
@@ -137,37 +155,45 @@ export default function CheckoutPage() {
 
       {/* Main Content */}
       <main className="max-w-md mx-auto px-4 py-8">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-center">شراء ألعاب إضافية</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
+        <div className="luxury-card p-8">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-luxury-gold rounded-full flex items-center justify-center mx-auto mb-4 floating">
+              <CreditCard className="text-white h-8 w-8" />
+            </div>
+            <h2 className="text-2xl font-bold text-gradient">شراء ألعاب إضافية</h2>
+          </div>
+
+          <div className="space-y-8">
             {/* Package Selection */}
             <div>
-              <Label className="text-sm font-medium text-neutral-700 mb-3 block">اختر الباقة</Label>
+              <Label className="text-lg font-semibold text-luxury-green-dark mb-4 block">اختر الباقة</Label>
               <RadioGroup
                 value={gameCount.toString()}
                 onValueChange={(value) => setGameCount(parseInt(value))}
               >
-                <div className="flex items-center space-x-reverse space-x-2 p-3 border border-neutral-200 rounded-lg">
-                  <RadioGroupItem value="1" id="package-1" />
-                  <Label htmlFor="package-1" className="flex-1 flex justify-between items-center cursor-pointer">
-                    <div>
-                      <span className="font-medium">لعبة واحدة</span>
-                      <span className="text-sm text-neutral-500 block">36 سؤالاً</span>
-                    </div>
-                    <span className="font-bold text-primary">$1.99</span>
-                  </Label>
+                <div className="luxury-card p-4 border-2 border-luxury-green-light">
+                  <div className="flex items-center space-x-reverse space-x-3">
+                    <RadioGroupItem value="1" id="package-1" />
+                    <Label htmlFor="package-1" className="flex-1 flex justify-between items-center cursor-pointer">
+                      <div>
+                        <span className="font-semibold text-luxury-green-dark">لعبة واحدة</span>
+                        <span className="text-sm text-muted-foreground block">36 سؤالاً</span>
+                      </div>
+                      <span className="font-bold text-luxury-green text-xl">$1.99</span>
+                    </Label>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-reverse space-x-2 p-3 border-2 border-secondary rounded-lg bg-secondary/5">
-                  <RadioGroupItem value="5" id="package-5" />
-                  <Label htmlFor="package-5" className="flex-1 flex justify-between items-center cursor-pointer">
-                    <div>
-                      <span className="font-medium">5 ألعاب</span>
-                      <span className="text-sm text-secondary font-medium block">وفر 10%</span>
-                    </div>
-                    <span className="font-bold text-secondary">$8.99</span>
-                  </Label>
+                <div className="luxury-card p-4 border-2 border-luxury-green bg-luxury-green-light">
+                  <div className="flex items-center space-x-reverse space-x-3">
+                    <RadioGroupItem value="5" id="package-5" />
+                    <Label htmlFor="package-5" className="flex-1 flex justify-between items-center cursor-pointer">
+                      <div>
+                        <span className="font-semibold text-luxury-green-dark">5 ألعاب</span>
+                        <span className="text-sm text-luxury-green-dark font-medium block">وفر 10%</span>
+                      </div>
+                      <span className="font-bold text-luxury-green-dark text-xl">$8.99</span>
+                    </Label>
+                  </div>
                 </div>
               </RadioGroup>
             </div>
@@ -194,8 +220,8 @@ export default function CheckoutPage() {
                 </div>
               </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </main>
     </div>
   );

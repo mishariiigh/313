@@ -14,19 +14,9 @@ export default function Dashboard() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
 
-  // Redirect if not logged in
-  React.useEffect(() => {
-    if (!user) {
-      setLocation("/auth");
-    }
-  }, [user, setLocation]);
-
-  if (!user) {
-    return null;
-  }
-
   const { data: historyData } = useQuery({
     queryKey: ["/api/games/history"],
+    enabled: !!user,
   });
 
   const startGameMutation = useMutation({
