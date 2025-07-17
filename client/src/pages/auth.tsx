@@ -90,7 +90,10 @@ export default function AuthPage() {
         {/* Auth Form */}
         <div className="luxury-card p-8">
           <Tabs defaultValue="login" className="w-full">
-            
+            <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsTrigger value="login" className="text-lg">تسجيل الدخول</TabsTrigger>
+              <TabsTrigger value="register" className="text-lg">إنشاء حساب</TabsTrigger>
+            </TabsList>
 
             <TabsContent value="login">
               <Form {...loginForm}>
