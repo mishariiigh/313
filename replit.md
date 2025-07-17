@@ -2,13 +2,15 @@
 
 ## Recent Changes: Latest modifications with dates
 
-- **January 17, 2025**: Major system updates
+- **January 17, 2025**: Major system updates and bug fixes
   - Fixed React hooks error that caused game crashes
-  - Simplified to team-only mode with two editable teams
-  - Added comprehensive animated transition effects
-  - Changed all icon colors to be visible (luxury-cream, luxury-green-dark, luxury-gold)
-  - Fixed API call parameter ordering issues
-  - Removed solo game mode entirely
+  - Fixed questions not opening by removing incorrect points parameter
+  - Added game completion screen with winner announcement
+  - Implemented Jeopardy-style game board layout with horizontal categories
+  - Made layout compact to fit on screen without scrolling
+  - Added automatic game completion when all 36 questions are used
+  - Changed design to red header with orange category headers and blue question buttons
+  - Shows final scores and congratulates winning team
 
 ## Overview
 
