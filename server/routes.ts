@@ -14,6 +14,11 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_...", {
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Health check endpoint for Replit
+  app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+  });
+
   app.use(session({
     secret: process.env.SESSION_SECRET || "default-secret-key-for-development",
     resave: false,
