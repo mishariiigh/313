@@ -1,0 +1,128 @@
+Project Overview
+Goal: Build a multiplayer Arabic trivia game for the web, inspired by SeenJeemKW, tailored for group gatherings (e.g., friends, family, or diwaniya settings).
+
+🧩 Core Features
+1. User Interface (Frontend)
+Landing Page:
+
+Logo, game intro, how it works.
+
+“Start Game” button.
+
+Game Lobby:
+
+Host creates a game room (generates unique room code).
+
+Players join using a room code.
+
+Display of all players joined.
+
+Game Screen:
+
+Timer for each question (e.g., 20–30 seconds).
+
+Question + multiple-choice answers.
+
+“Next Question” button (host-controlled).
+
+Progress bar (e.g., Question 12 of 36).
+
+Points per team shown after each question.
+
+Results Page:
+
+Final scores of all teams.
+
+Option to replay or share results.
+
+2. Game Logic
+Categories (6 total—e.g., History, Sports, Culture, Science, Religion, General Knowledge).
+
+Each session = 36 questions (randomized).
+
+Each team gets:
+
+3 Hints/Aids per session (e.g., 50/50, skip, extra time).
+
+Questions displayed one by one, answerable by all players.
+
+Automatic score calculation.
+
+Tie-breaker logic (optional).
+
+3. Admin Panel
+Add/edit/delete questions (with category and correct answer).
+
+Track active games.
+
+Monitor player activity.
+
+4. Multiplayer System
+Real-time using WebSocket or Socket.io (Node.js).
+
+Each game room should support:
+
+Up to 6 teams/players.
+
+Realtime sync of questions and answers.
+
+Host control for moving to next question.
+
+📱 Responsiveness
+Design for desktop, tablets, and phones.
+
+Mobile-first UI similar to app experience (touch-friendly).
+
+📂 Tech Stack Recommendation
+Frontend:
+React.js or Next.js
+
+TailwindCSS for UI
+
+Socket.io-client for realtime events
+
+Backend:
+Node.js + Express
+
+Socket.io for realtime communication
+
+MongoDB or PostgreSQL (to store questions, games, users)
+
+Admin Panel:
+Built with something like React Admin or Strapi
+
+📦 Question Format (Example)
+json
+Copy
+Edit
+{
+  "question": "من هو مؤسس الدولة السعودية الأولى؟",
+  "options": [
+    "الملك عبدالعزيز",
+    "الإمام محمد بن سعود",
+    "الملك فيصل",
+    "الملك سلمان"
+  ],
+  "correctAnswer": 1,
+  "category": "التاريخ"
+}
+🧠 Optional Features (Phase 2)
+User login and profiles (track scores)
+
+Leaderboards
+
+Question ratings (e.g., Was this question too easy/hard?)
+
+Sound effects and animations
+
+Monetization (e.g., credits to play, paid hints)
+
+📅 Suggested Milestones
+Week	Milestone
+1	UI/UX Design, Wireframes
+2-3	Game Lobby + Rooms (with Socket.io)
+4	Game Flow (Questions, Timer, Answer System)
+5	Scoring System + Hints
+6	Admin Panel + Question Management
+7	Testing + Bug Fixing
+8	Launch MVP
