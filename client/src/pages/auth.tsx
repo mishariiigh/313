@@ -76,128 +76,132 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10 p-4">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <div className="max-w-md w-full space-y-8">
         {/* Logo and Header */}
         <div className="text-center">
-          <div className="mx-auto h-16 w-16 bg-primary rounded-full flex items-center justify-center mb-4">
-            <Brain className="text-white h-8 w-8" />
+          <div className="mx-auto h-20 w-20 luxury-button rounded-full flex items-center justify-center mb-6 floating glow">
+            <Brain className="text-white h-10 w-10" />
           </div>
-          <h1 className="text-3xl font-bold text-neutral-800">منصة الألعاب الثقافية</h1>
-          <p className="text-neutral-600 mt-2">اختبر معلوماتك مع الأصدقاء والعائلة</p>
+          <h1 className="text-4xl font-bold text-gradient mb-4">منصة الألعاب الثقافية</h1>
+          <p className="text-muted-foreground text-lg">اختبر معلوماتك مع الأصدقاء والعائلة</p>
         </div>
 
         {/* Auth Form */}
-        <Card className="shadow-xl">
-          <CardContent className="p-8">
-            <Tabs defaultValue="login" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="login">تسجيل الدخول</TabsTrigger>
-                <TabsTrigger value="register">إنشاء حساب</TabsTrigger>
-              </TabsList>
+        <div className="luxury-card p-8">
+          <Tabs defaultValue="login" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-8 luxury-card p-1">
+              <TabsTrigger value="login" className="luxury-button-secondary">تسجيل الدخول</TabsTrigger>
+              <TabsTrigger value="register" className="luxury-button-secondary">إنشاء حساب</TabsTrigger>
+            </TabsList>
 
-              <TabsContent value="login">
-                <Form {...loginForm}>
-                  <form onSubmit={loginForm.handleSubmit(onLogin)} className="space-y-6">
-                    <FormField
-                      control={loginForm.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>البريد الإلكتروني</FormLabel>
-                          <FormControl>
-                            <Input placeholder="أدخل بريدك الإلكتروني" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={loginForm.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>كلمة المرور</FormLabel>
-                          <FormControl>
-                            <Input type="password" placeholder="أدخل كلمة المرور" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button type="submit" className="w-full" disabled={isLoading}>
-                      {isLoading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
-                      تسجيل الدخول
-                    </Button>
-                  </form>
-                </Form>
-              </TabsContent>
+            <TabsContent value="login">
+              <Form {...loginForm}>
+                <form onSubmit={loginForm.handleSubmit(onLogin)} className="space-y-6">
+                  <FormField
+                    control={loginForm.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-luxury-green-dark font-semibold">البريد الإلكتروني</FormLabel>
+                        <FormControl>
+                          <Input placeholder="أدخل بريدك الإلكتروني" {...field} className="luxury-input" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={loginForm.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-luxury-green-dark font-semibold">كلمة المرور</FormLabel>
+                        <FormControl>
+                          <Input type="password" placeholder="أدخل كلمة المرور" {...field} className="luxury-input" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <button type="submit" className="luxury-button w-full text-lg py-4" disabled={isLoading}>
+                    {isLoading ? (
+                      <div className="luxury-spinner mx-auto" />
+                    ) : (
+                      "تسجيل الدخول"
+                    )}
+                  </button>
+                </form>
+              </Form>
+            </TabsContent>
 
-              <TabsContent value="register">
-                <Form {...registerForm}>
-                  <form onSubmit={registerForm.handleSubmit(onRegister)} className="space-y-6">
-                    <FormField
-                      control={registerForm.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>الاسم الكامل</FormLabel>
-                          <FormControl>
-                            <Input placeholder="أدخل اسمك الكامل" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={registerForm.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>البريد الإلكتروني</FormLabel>
-                          <FormControl>
-                            <Input placeholder="أدخل بريدك الإلكتروني" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={registerForm.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>كلمة المرور</FormLabel>
-                          <FormControl>
-                            <Input type="password" placeholder="أدخل كلمة المرور" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={registerForm.control}
-                      name="confirmPassword"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>تأكيد كلمة المرور</FormLabel>
-                          <FormControl>
-                            <Input type="password" placeholder="أعد إدخال كلمة المرور" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button type="submit" className="w-full bg-secondary hover:bg-secondary/90" disabled={isLoading}>
-                      {isLoading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
-                      إنشاء حساب جديد
-                    </Button>
-                  </form>
-                </Form>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
+            <TabsContent value="register">
+              <Form {...registerForm}>
+                <form onSubmit={registerForm.handleSubmit(onRegister)} className="space-y-6">
+                  <FormField
+                    control={registerForm.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-luxury-green-dark font-semibold">الاسم الكامل</FormLabel>
+                        <FormControl>
+                          <Input placeholder="أدخل اسمك الكامل" {...field} className="luxury-input" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={registerForm.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-luxury-green-dark font-semibold">البريد الإلكتروني</FormLabel>
+                        <FormControl>
+                          <Input placeholder="أدخل بريدك الإلكتروني" {...field} className="luxury-input" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={registerForm.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-luxury-green-dark font-semibold">كلمة المرور</FormLabel>
+                        <FormControl>
+                          <Input type="password" placeholder="أدخل كلمة المرور" {...field} className="luxury-input" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={registerForm.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-luxury-green-dark font-semibold">تأكيد كلمة المرور</FormLabel>
+                        <FormControl>
+                          <Input type="password" placeholder="أعد إدخال كلمة المرور" {...field} className="luxury-input" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <button type="submit" className="luxury-button w-full text-lg py-4" disabled={isLoading}>
+                    {isLoading ? (
+                      <div className="luxury-spinner mx-auto" />
+                    ) : (
+                      "إنشاء حساب جديد"
+                    )}
+                  </button>
+                </form>
+              </Form>
+            </TabsContent>
+          </Tabs>
+        </div>
       </div>
     </div>
   );

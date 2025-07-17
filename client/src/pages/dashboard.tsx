@@ -68,163 +68,155 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
+    <div className="min-h-screen">
+      {/* Luxury Header */}
+      <header className="luxury-nav">
+        <div className="luxury-container">
+          <div className="flex justify-between items-center py-6">
             <div className="flex items-center space-x-reverse space-x-4">
-              <div className="h-10 w-10 bg-primary rounded-full flex items-center justify-center">
-                <Brain className="text-white h-5 w-5" />
+              <div className="h-12 w-12 luxury-button rounded-full flex items-center justify-center floating">
+                <Brain className="text-white h-6 w-6" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-neutral-800">منصة الألعاب الثقافية</h1>
-                <p className="text-sm text-neutral-600">مرحباً، {user.name}</p>
+                <h1 className="text-2xl font-bold text-gradient">منصة الألعاب الثقافية</h1>
+                <p className="text-sm text-muted-foreground">مرحباً، {user.name}</p>
               </div>
             </div>
             <div className="flex items-center space-x-reverse space-x-4">
               {user.isAdmin && (
-                <Button
-                  variant="outline"
-                  size="sm"
+                <button
+                  className="luxury-button-secondary"
                   onClick={() => setLocation("/admin")}
                 >
                   <Settings className="h-4 w-4 ml-2" />
                   الإدارة
-                </Button>
+                </button>
               )}
-              <Button
-                variant="outline"
-                size="sm"
+              <button
+                className="luxury-button-secondary"
                 onClick={handleLogout}
               >
                 <LogOut className="h-4 w-4 ml-2" />
                 خروج
-              </Button>
+              </button>
             </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="luxury-container py-12">
+        {/* Hero Section */}
+        <div className="hero-section rounded-2xl mb-12 relative">
+          <div className="relative z-10 text-center">
+            <h2 className="luxury-section-header">اكتشف عالم المعرفة العربية</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              تحدى نفسك مع مجموعة متنوعة من الأسئلة الثقافية والعلمية في اللغة العربية
+            </p>
+          </div>
+        </div>
+
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                    <Gamepad2 className="text-primary h-6 w-6" />
-                  </div>
-                </div>
-                <div className="mr-4">
-                  <p className="text-sm font-medium text-neutral-600">الألعاب المتاحة</p>
-                  <p className="text-2xl font-bold text-neutral-900">{user.availableGames}</p>
-                </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+          <div className="luxury-stats-card glow pulse-luxury">
+            <div className="flex items-center justify-center mb-4">
+              <div className="w-16 h-16 bg-luxury-green rounded-2xl flex items-center justify-center shadow-luxury floating">
+                <Gamepad2 className="text-white h-8 w-8" />
               </div>
-            </CardContent>
-          </Card>
+            </div>
+            <h3 className="text-2xl font-bold text-luxury-green-dark mb-2">الألعاب المتاحة</h3>
+            <p className="text-4xl font-bold text-gradient">{user.availableGames}</p>
+          </div>
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center">
-                    <Trophy className="text-secondary h-6 w-6" />
-                  </div>
-                </div>
-                <div className="mr-4">
-                  <p className="text-sm font-medium text-neutral-600">الألعاب المكتملة</p>
-                  <p className="text-2xl font-bold text-neutral-900">{historyData?.gameSessions?.length || 0}</p>
-                </div>
+          <div className="luxury-stats-card">
+            <div className="flex items-center justify-center mb-4">
+              <div className="w-16 h-16 bg-luxury-gold rounded-2xl flex items-center justify-center shadow-luxury floating">
+                <Trophy className="text-white h-8 w-8" />
               </div>
-            </CardContent>
-          </Card>
+            </div>
+            <h3 className="text-2xl font-bold text-luxury-green-dark mb-2">الألعاب المكتملة</h3>
+            <p className="text-4xl font-bold text-gradient">{historyData?.gameSessions?.length || 0}</p>
+          </div>
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="w-12 h-12 bg-yellow-500/10 rounded-lg flex items-center justify-center">
-                    <Star className="text-yellow-500 h-6 w-6" />
-                  </div>
-                </div>
-                <div className="mr-4">
-                  <p className="text-sm font-medium text-neutral-600">النقاط الإجمالية</p>
-                  <p className="text-2xl font-bold text-neutral-900">
-                    {historyData?.gameSessions?.reduce((total: number, session: any) => total + session.score, 0) || 0}
-                  </p>
-                </div>
+          <div className="luxury-stats-card">
+            <div className="flex items-center justify-center mb-4">
+              <div className="w-16 h-16 bg-luxury-green-dark rounded-2xl flex items-center justify-center shadow-luxury floating">
+                <Star className="text-white h-8 w-8" />
               </div>
-            </CardContent>
-          </Card>
+            </div>
+            <h3 className="text-2xl font-bold text-luxury-green-dark mb-2">النقاط الإجمالية</h3>
+            <p className="text-4xl font-bold text-gradient">
+              {historyData?.gameSessions?.reduce((total: number, session: any) => total + session.score, 0) || 0}
+            </p>
+          </div>
         </div>
 
         {/* Action Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Start New Game Card */}
-          <Card>
-            <CardContent className="p-8">
-              <div className="text-center">
-                <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Play className="text-primary h-8 w-8" />
-                </div>
-                <h3 className="text-xl font-bold text-neutral-800 mb-2">بدء لعبة جديدة</h3>
-                <p className="text-neutral-600 mb-6">ابدأ جلسة جديدة بـ 36 سؤالاً متنوعاً عبر 6 فئات مختلفة</p>
-                <Button 
-                  className="w-full" 
-                  onClick={handleStartGame}
-                  disabled={user.availableGames <= 0 || startGameMutation.isPending}
-                >
-                  <Gamepad2 className="ml-2 h-4 w-4" />
+          <div className="luxury-card p-10 text-center">
+            <div className="w-24 h-24 bg-luxury-green rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-luxury floating">
+              <Play className="text-white h-12 w-12" />
+            </div>
+            <h3 className="text-2xl font-bold text-luxury-green-dark mb-4">بدء لعبة جديدة</h3>
+            <p className="text-muted-foreground mb-8 text-lg">ابدأ جلسة جديدة بـ 36 سؤالاً متنوعاً عبر 6 فئات مختلفة</p>
+            <button 
+              className="luxury-button w-full text-lg py-4 glow"
+              onClick={handleStartGame}
+              disabled={user.availableGames <= 0 || startGameMutation.isPending}
+            >
+              {startGameMutation.isPending ? (
+                <div className="luxury-spinner mx-auto" />
+              ) : (
+                <>
+                  <Gamepad2 className="ml-2 h-6 w-6" />
                   بدء اللعبة الآن
-                </Button>
-                <p className="text-sm text-neutral-500 mt-2">
-                  {user.availableGames} ألعاب متاحة
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+                </>
+              )}
+            </button>
+            <p className="text-sm text-muted-foreground mt-4">
+              {user.availableGames} ألعاب متاحة
+            </p>
+          </div>
 
           {/* Purchase Games Card */}
-          <Card>
-            <CardContent className="p-8">
-              <div className="text-center">
-                <div className="w-20 h-20 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <ShoppingCart className="text-secondary h-8 w-8" />
-                </div>
-                <h3 className="text-xl font-bold text-neutral-800 mb-2">شراء ألعاب إضافية</h3>
-                <p className="text-neutral-600 mb-6">احصل على المزيد من الألعاب لتستمتع مع أصدقائك</p>
-                
-                {/* Pricing Options */}
-                <div className="space-y-3 mb-6">
-                  <div className="flex items-center justify-between p-3 border border-neutral-200 rounded-lg">
-                    <div className="text-right">
-                      <span className="font-medium">لعبة واحدة</span>
-                      <span className="text-sm text-neutral-500 block">36 سؤالاً</span>
-                    </div>
-                    <span className="font-bold text-primary">$1.99</span>
+          <div className="luxury-card p-10 text-center">
+            <div className="w-24 h-24 bg-luxury-gold rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-luxury floating">
+              <ShoppingCart className="text-white h-12 w-12" />
+            </div>
+            <h3 className="text-2xl font-bold text-luxury-green-dark mb-4">شراء ألعاب إضافية</h3>
+            <p className="text-muted-foreground mb-8 text-lg">احصل على المزيد من الألعاب لتستمتع مع أصدقائك</p>
+            
+            {/* Pricing Options */}
+            <div className="space-y-4 mb-8">
+              <div className="luxury-card p-4 border-2 border-luxury-green-light">
+                <div className="flex items-center justify-between">
+                  <div className="text-right">
+                    <span className="font-semibold text-luxury-green-dark">لعبة واحدة</span>
+                    <span className="text-sm text-muted-foreground block">36 سؤالاً</span>
                   </div>
-                  <div className="flex items-center justify-between p-3 border-2 border-secondary rounded-lg bg-secondary/5">
-                    <div className="text-right">
-                      <span className="font-medium">5 ألعاب</span>
-                      <span className="text-sm text-secondary font-medium block">وفر 10%</span>
-                    </div>
-                    <span className="font-bold text-secondary">$8.99</span>
-                  </div>
+                  <span className="font-bold text-luxury-green text-xl">$1.99</span>
                 </div>
-
-                <Button 
-                  className="w-full bg-secondary hover:bg-secondary/90" 
-                  onClick={handlePurchaseGames}
-                >
-                  <ShoppingCart className="ml-2 h-4 w-4" />
-                  شراء الآن
-                </Button>
               </div>
-            </CardContent>
-          </Card>
+              <div className="luxury-card p-4 border-2 border-luxury-green bg-luxury-green-light">
+                <div className="flex items-center justify-between">
+                  <div className="text-right">
+                    <span className="font-semibold text-luxury-green-dark">5 ألعاب</span>
+                    <span className="text-sm text-luxury-green-dark font-medium block">وفر 10%</span>
+                  </div>
+                  <span className="font-bold text-luxury-green-dark text-xl">$8.99</span>
+                </div>
+              </div>
+            </div>
+
+            <button 
+              className="luxury-button-secondary w-full text-lg py-4"
+              onClick={handlePurchaseGames}
+            >
+              <ShoppingCart className="ml-2 h-6 w-6" />
+              شراء الآن
+            </button>
+          </div>
         </div>
 
         {/* Recent Games History */}
