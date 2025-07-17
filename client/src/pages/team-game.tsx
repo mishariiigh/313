@@ -71,11 +71,6 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
           if (prevTime <= 1) {
             setIsTimerActive(false);
             setIsTimeOut(true);
-            toast({
-              title: "انتهى الوقت!",
-              description: "لم يتم الإجابة في الوقت المحدد",
-              variant: "destructive",
-            });
             return 0;
           }
           return prevTime - 1;
@@ -86,7 +81,18 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isTimerActive, timeLeft, isTimeOut, toast]);
+  }, [isTimerActive, timeLeft, isTimeOut]);
+
+  // Toast effect for time out
+  useEffect(() => {
+    if (isTimeOut) {
+      toast({
+        title: "انتهى الوقت!",
+        description: "لم يتم الإجابة في الوقت المحدد",
+        variant: "destructive",
+      });
+    }
+  }, [isTimeOut, toast]);
 
   // Mark team as correct
   const markTeamCorrectMutation = useMutation({
@@ -405,16 +411,20 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     onClick={() => {
                       if (showHint) {
                         setShowHint(false);
-                      } else if (!isHintUsed) {
+                      } else if (isHintUsed) {
+                        // If hint is already used, just show it
+                        setShowHint(true);
+                      } else {
+                        // If hint is not used, use it first then show it
                         handleUseHint();
                       }
                     }}
                     variant="outline"
-                    className={`luxury-button-secondary ${isHintUsed ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    disabled={isHintUsed || useHintMutation.isPending}
+                    className="luxury-button-secondary"
+                    disabled={useHintMutation.isPending}
                   >
                     <HelpCircle className="ml-2 h-4 w-4 text-luxury-green-dark" />
-                    {isHintUsed ? "تم استخدام التلميح" : showHint ? "إخفاء التلميح" : "إظهار التلميح"}
+                    {showHint ? "إخفاء التلميح" : isHintUsed ? "إظهار التلميح المستخدم" : "استخدام التلميح"}
                   </Button>
                 );
               })()}
@@ -428,17 +438,12 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
               </Button>
             </div>
 
-            {(() => {
-              const currentQuestionKey = getCurrentQuestionKey();
-              const isHintUsed = currentQuestionKey && gameSession.usedHints?.includes(currentQuestionKey);
-              
-              return (showHint && isHintUsed && selectedQuestion.hint) ? (
-                <div className="luxury-card p-4 mb-6 bg-blue-50 border-blue-200 hint-reveal">
-                  <h3 className="font-semibold text-blue-800 mb-2">تلميح:</h3>
-                  <p className="text-blue-700">{selectedQuestion.hint}</p>
-                </div>
-              ) : null;
-            })()}
+            {showHint && selectedQuestion.hint && (
+              <div className="luxury-card p-4 mb-6 bg-blue-50 border-blue-200 hint-reveal">
+                <h3 className="font-semibold text-blue-800 mb-2">تلميح:</h3>
+                <p className="text-blue-700">{selectedQuestion.hint}</p>
+              </div>
+            )}
 
             {showAnswer && (
               <div className="luxury-card p-4 mb-6 bg-green-50 border-green-200 answer-reveal">
