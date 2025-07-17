@@ -130,7 +130,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
   // Use hint for a question
   const useHintMutation = useMutation({
-    mutationFn: async (data: { questionKey: string }) => {
+    mutationFn: async (data: { questionKey: string; teamIndex: number }) => {
       const response = await apiRequest("POST", `/api/games/${id}/use-hint`, data);
       return response.json();
     },
@@ -277,7 +277,10 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     if (categoryIndex !== -1 && questionIndex !== -1) {
       const positionInCategory = questionIndex - (categoryIndex * 6);
       const questionKey = `${selectedQuestion.category}-${positionInCategory}`;
-      useHintMutation.mutate({ questionKey });
+      useHintMutation.mutate({ 
+        questionKey, 
+        teamIndex: gameSession.currentTurn 
+      });
     }
   };
 
@@ -405,6 +408,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
               {(() => {
                 const currentQuestionKey = getCurrentQuestionKey();
                 const isHintUsed = currentQuestionKey && gameSession.usedHints?.includes(currentQuestionKey);
+                const currentTeamHintUsed = gameSession.teamHintsUsed?.[gameSession.currentTurn];
                 
                 return (
                   <Button
@@ -412,19 +416,29 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       if (showHint) {
                         setShowHint(false);
                       } else if (isHintUsed) {
-                        // If hint is already used by any team, just show it
+                        // If hint is already used for this question, just show it
                         setShowHint(true);
+                      } else if (currentTeamHintUsed) {
+                        // Team has already used their hint for the game - can't use it
+                        toast({
+                          title: "تم استخدام التلميح",
+                          description: "هذا الفريق استخدم التلميح بالفعل في اللعبة",
+                          variant: "destructive",
+                        });
                       } else {
-                        // If hint is not used by anyone, use it (consumes it for this question)
+                        // Team hasn't used their hint yet, use it now
                         handleUseHint();
                       }
                     }}
                     variant="outline"
-                    className={`luxury-button-secondary ${isHintUsed ? 'opacity-75' : ''}`}
-                    disabled={useHintMutation.isPending}
+                    className={`luxury-button-secondary ${currentTeamHintUsed ? 'opacity-50 cursor-not-allowed' : isHintUsed ? 'opacity-75' : ''}`}
+                    disabled={useHintMutation.isPending || currentTeamHintUsed}
                   >
                     <HelpCircle className="ml-2 h-4 w-4 text-luxury-green-dark" />
-                    {showHint ? "إخفاء التلميح" : isHintUsed ? "إظهار التلميح (مُستخدم)" : "استخدام التلميح"}
+                    {showHint ? "إخفاء التلميح" : 
+                     isHintUsed ? "إظهار التلميح (مُستخدم)" : 
+                     currentTeamHintUsed ? "تم استخدام التلميح" : 
+                     "استخدام التلميح"}
                   </Button>
                 );
               })()}

@@ -168,6 +168,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           gameType,
           teams: gameType === "team" ? teams : [],
           teamScores: gameType === "team" ? teams.map(() => 0) : [],
+          teamHintsUsed: gameType === "team" ? teams.map(() => false) : [],
           currentTurn: 0,
           usedQuestions: [],
         });
@@ -208,6 +209,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         gameType,
         teams: gameType === "team" ? teams : [],
         teamScores: gameType === "team" ? teams.map(() => 0) : [],
+        teamHintsUsed: gameType === "team" ? teams.map(() => false) : [],
         currentTurn: 0,
         usedQuestions: [],
       });
@@ -298,6 +300,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             teamScores: gameSession.teamScores,
             currentTurn: gameSession.currentTurn,
             usedQuestions: gameSession.usedQuestions,
+            usedHints: gameSession.usedHints,
+            teamHintsUsed: gameSession.teamHintsUsed,
           },
           questions: questions,
         });
@@ -449,19 +453,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "غير مصرح بالوصول" });
       }
 
-      const { questionKey } = req.body;
+      const { questionKey, teamIndex } = req.body;
       
-      // Check if hint already used for this question
-      if (gameSession.usedHints?.includes(questionKey)) {
-        return res.status(400).json({ message: "تم استخدام التلميح لهذا السؤال من قبل" });
+      // For team games, check if this team has already used their hint
+      if (gameSession.gameType === "team") {
+        const teamHintsUsed = gameSession.teamHintsUsed || [];
+        if (teamHintsUsed[teamIndex]) {
+          return res.status(400).json({ message: "هذا الفريق استخدم التلميح بالفعل" });
+        }
+        
+        // Mark this team as having used their hint
+        const newTeamHintsUsed = [...teamHintsUsed];
+        newTeamHintsUsed[teamIndex] = true;
+        
+        // Also track the question for display purposes
+        const newUsedHints = [...(gameSession.usedHints || []), questionKey];
+        
+        await storage.updateGameSession(gameSession.id, {
+          usedHints: newUsedHints,
+          teamHintsUsed: newTeamHintsUsed,
+        });
+      } else {
+        // For single games, check if hint already used for this question
+        if (gameSession.usedHints?.includes(questionKey)) {
+          return res.status(400).json({ message: "تم استخدام التلميح لهذا السؤال من قبل" });
+        }
+        
+        // Mark hint as used
+        const newUsedHints = [...(gameSession.usedHints || []), questionKey];
+        
+        await storage.updateGameSession(gameSession.id, {
+          usedHints: newUsedHints,
+        });
       }
-      
-      // Mark hint as used
-      const newUsedHints = [...(gameSession.usedHints || []), questionKey];
-      
-      await storage.updateGameSession(gameSession.id, {
-        usedHints: newUsedHints,
-      });
 
       res.json({ success: true });
     } catch (error) {

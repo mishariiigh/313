@@ -19,9 +19,10 @@
   - Redesigned statistics cards with unique color schemes and real data display
   - Added progress bars, achievement stars, and score animations to stats cards
   - Improved data accuracy for completed games and total score calculations
-  - Implemented hint restriction: each question can only have its hint used once (single use per question)
-  - Added database tracking for hint usage with usedHints field in game sessions
-  - Enhanced hint button UI to show when hint is already used by any team
+  - Implemented team-based hint system: each team gets to use hint once per entire game
+  - Added teamHintsUsed field to track which teams have used their game hint
+  - Enhanced hint button UI to show team hint status and prevent reuse
+  - Teams can view previously used hints but cannot use new ones after consuming their allowance
   - Added 60-second countdown timer for each question with visual effects
   - Timer turns red and beats when 10 seconds remain, shows "time out" message at 0
   - Timer automatically starts when question is selected and stops when answered
