@@ -66,8 +66,16 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       }
 
       setGameBoard(board);
+      
+      // Check if game is completed and auto-complete if needed
+      if (gameData.gameSession?.usedQuestions?.length >= 36 && !gameData.gameSession?.isCompleted) {
+        // Auto-complete the game
+        apiRequest("POST", `/api/games/${id}/complete`).then(() => {
+          queryClient.invalidateQueries({ queryKey: [`/api/games/${id}`] });
+        });
+      }
     }
-  }, [user, gameData, setLocation]);
+  }, [user, gameData, setLocation, id]);
 
   // Mark team as correct
   const markTeamCorrectMutation = useMutation({
@@ -118,6 +126,21 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
   const gameSession = gameData.gameSession;
 
+  // Check if game is completed
+  const isGameCompleted = gameSession.usedQuestions?.length >= 36; // 6 categories * 6 questions each
+  
+  // Calculate winner
+  const getWinner = () => {
+    if (!gameSession.teamScores || gameSession.teamScores.length < 2) return null;
+    const maxScore = Math.max(...gameSession.teamScores);
+    const winnerIndex = gameSession.teamScores.indexOf(maxScore);
+    return {
+      team: gameSession.teams[winnerIndex],
+      score: maxScore,
+      index: winnerIndex
+    };
+  };
+
   const handleQuestionClick = (category: string, index: number) => {
     // Check if question is already used
     const questionKey = `${category}-${index}`;
@@ -148,8 +171,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     const categoryQuestions = gameData?.questions?.filter((q: Question) => q.category === selectedQuestion.category) || [];
     const questionIndex = categoryQuestions.findIndex(q => q.id === selectedQuestion.id);
     const questionKey = `${selectedQuestion.category}-${questionIndex}`;
-    const points = questionIndex < 2 ? 200 : questionIndex < 4 ? 400 : 600;
-    markTeamCorrectMutation.mutate({ teamIndex, questionKey, points });
+    markTeamCorrectMutation.mutate({ teamIndex, questionKey });
   };
 
   const handleSkipQuestion = () => {
@@ -160,6 +182,58 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     const questionKey = `${selectedQuestion.category}-${questionIndex}`;
     skipQuestionMutation.mutate({ questionKey });
   };
+
+  // Game completion screen
+  if (isGameCompleted) {
+    const winner = getWinner();
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100">
+        <div className="max-w-2xl mx-auto p-8">
+          <div className="luxury-card p-12 text-center">
+            <div className="text-6xl mb-6">🎉</div>
+            <h1 className="text-4xl font-bold text-luxury-green-dark mb-6">
+              تهانينا! انتهت اللعبة
+            </h1>
+            
+            {winner && (
+              <div className="mb-8">
+                <div className="text-2xl font-bold text-luxury-green mb-4">
+                  الفريق الفائز:
+                </div>
+                <div className="bg-gradient-to-r from-luxury-green to-luxury-green-dark text-white p-6 rounded-xl text-3xl font-bold mb-4">
+                  {winner.team}
+                </div>
+                <div className="text-xl text-luxury-green-dark">
+                  النتيجة النهائية: {winner.score} نقطة
+                </div>
+              </div>
+            )}
+            
+            <div className="bg-luxury-cream p-6 rounded-xl mb-8">
+              <h3 className="text-xl font-bold text-luxury-green-dark mb-4">النتائج النهائية:</h3>
+              <div className="space-y-3">
+                {gameSession.teams.map((team: string, index: number) => (
+                  <div key={index} className="flex justify-between items-center">
+                    <span className="font-semibold">{team}</span>
+                    <span className="text-luxury-green font-bold text-lg">
+                      {gameSession.teamScores[index] || 0} نقطة
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <Button
+              onClick={() => setLocation("/dashboard")}
+              className="luxury-button text-lg py-4 px-8"
+            >
+              العودة للوحة التحكم
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Question view
   if (selectedQuestion) {
@@ -285,40 +359,39 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     );
   }
 
-  // Game board view
+  // Game board view - compact layout
   return (
-    <div className="min-h-screen page-transition">
-      {/* Header */}
-      <header className="game-header-enhanced mx-4 mt-4 p-8 mb-8 rounded-2xl board-transition">
+    <div className="min-h-screen flex flex-col page-transition">
+      {/* Header - Compact */}
+      <header className="game-header-enhanced mx-2 mt-2 p-4 rounded-xl board-transition">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <Button
                 variant="outline"
                 onClick={() => setLocation("/dashboard")}
-                className="luxury-button-secondary p-3 ml-4 hover:scale-105 transition-transform"
+                className="luxury-button-secondary p-2 ml-2 hover:scale-105 transition-transform"
               >
-                <ArrowLeft className="h-6 w-6 text-luxury-green-dark" />
+                <ArrowLeft className="h-5 w-5 text-luxury-green-dark" />
               </Button>
               <div>
-                <h1 className="text-3xl font-bold text-luxury-green-dark mb-2">لوحة الأسئلة</h1>
-                <p className="text-muted-foreground text-lg">
-                  🔁 دور الفريق: <span className="font-semibold text-luxury-green turn-indicator px-4 py-2 rounded-full text-white bg-luxury-green shadow-lg">
+                <h1 className="text-xl font-bold text-luxury-green-dark mb-1">لوحة الأسئلة</h1>
+                <p className="text-muted-foreground text-sm">
+                  🔁 دور: <span className="font-semibold text-luxury-green turn-indicator px-2 py-1 rounded-full text-white bg-luxury-green shadow-lg text-sm">
                     {gameSession.teams[gameSession.currentTurn]}
                   </span>
                 </p>
               </div>
             </div>
             
-            {/* Team Scores */}
-            <div className="flex gap-6">
+            {/* Team Scores - Compact */}
+            <div className="flex gap-3">
               {gameSession.teams.map((team: string, index: number) => (
-                <div key={index} className="text-center bg-white/50 backdrop-blur-sm rounded-xl p-4 shadow-lg">
-                  <div className="text-sm text-muted-foreground font-semibold">{team}</div>
-                  <div className="text-3xl font-bold text-luxury-green team-score-update">
+                <div key={index} className="text-center bg-white/50 backdrop-blur-sm rounded-lg p-2 shadow-lg">
+                  <div className="text-xs text-muted-foreground font-semibold">{team}</div>
+                  <div className="text-xl font-bold text-luxury-green team-score-update">
                     {gameSession.teamScores[index] || 0}
                   </div>
-                  <div className="text-xs text-muted-foreground">نقطة</div>
                 </div>
               ))}
             </div>
@@ -326,23 +399,23 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
         </div>
       </header>
 
-      {/* Game Board */}
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-3 gap-8">
+      {/* Game Board - Compact */}
+      <main className="flex-1 max-w-7xl mx-auto px-2 py-2">
+        <div className="grid grid-cols-3 gap-3 h-full">
           {CATEGORIES.map((category, categoryIndex) => (
-            <div key={category.id} className="category-frame p-8 question-grid-item">
-              {/* Category Header */}
-              <div className="p-6 text-center bg-gradient-to-br from-green-700 to-green-800 text-white font-bold rounded-xl border-2 border-green-600 question-category-pulse mb-8 shadow-lg">
-                <div className="text-4xl mb-3">{category.icon}</div>
-                <div className="text-xl font-bold">{category.name}</div>
+            <div key={category.id} className="category-frame p-3 question-grid-item">
+              {/* Category Header - Compact */}
+              <div className="p-3 text-center bg-gradient-to-br from-green-700 to-green-800 text-white font-bold rounded-lg border-2 border-green-600 question-category-pulse mb-3 shadow-lg">
+                <div className="text-2xl mb-1">{category.icon}</div>
+                <div className="text-sm font-bold">{category.name}</div>
               </div>
               
-              {/* Question Groups by Difficulty */}
-              <div className="space-y-6">
+              {/* Question Groups by Difficulty - Compact */}
+              <div className="space-y-2">
                 {/* 200 Points (Easy) */}
                 <div className="question-section">
-                  <div className="text-center text-green-700 font-bold text-lg mb-4">200 نقطة</div>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="text-center text-green-700 font-bold text-sm mb-2">200 نقطة</div>
+                  <div className="grid grid-cols-2 gap-2">
                     {[0, 1].map((index) => {
                       const isUsed = gameBoard[category.id]?.[index];
                       return (
@@ -350,19 +423,19 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           key={index}
                           onClick={() => handleQuestionClick(category.id, index)}
                           disabled={isUsed}
-                          className={`w-full h-20 text-center font-bold text-xl transition-all duration-300 rounded-xl border-2 ${
+                          className={`w-full h-12 text-center font-bold text-sm transition-all duration-300 rounded-lg border-2 ${
                             isUsed
                               ? "bg-gray-400 text-gray-600 cursor-not-allowed border-gray-500 question-box-used"
-                              : "bg-gradient-to-br from-green-800 to-green-900 text-white hover:from-green-900 hover:to-green-800 border-green-600 shadow-lg hover:shadow-xl question-box-hover transform hover:-translate-y-2 hover:scale-105"
+                              : "bg-gradient-to-br from-green-800 to-green-900 text-white hover:from-green-900 hover:to-green-800 border-green-600 shadow-lg hover:shadow-xl question-box-hover transform hover:-translate-y-1 hover:scale-105"
                           }`}
                           style={{
                             animationDelay: `${(categoryIndex * 6 + index) * 0.1}s`
                           }}
                         >
                           {isUsed ? (
-                            <span className="text-2xl">✅</span>
+                            <span className="text-lg">✅</span>
                           ) : (
-                            <div className="text-xl font-bold">200</div>
+                            <div className="text-sm font-bold">200</div>
                           )}
                         </button>
                       );
@@ -372,8 +445,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
                 {/* 400 Points (Medium) */}
                 <div className="question-section">
-                  <div className="text-center text-green-700 font-bold text-lg mb-4">400 نقطة</div>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="text-center text-green-700 font-bold text-sm mb-2">400 نقطة</div>
+                  <div className="grid grid-cols-2 gap-2">
                     {[2, 3].map((index) => {
                       const isUsed = gameBoard[category.id]?.[index];
                       return (
@@ -381,7 +454,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           key={index}
                           onClick={() => handleQuestionClick(category.id, index)}
                           disabled={isUsed}
-                          className={`w-full h-16 text-center font-bold text-lg transition-all duration-300 rounded-lg border-2 ${
+                          className={`w-full h-12 text-center font-bold text-sm transition-all duration-300 rounded-lg border-2 ${
                             isUsed
                               ? "bg-gray-400 text-gray-600 cursor-not-allowed border-gray-500 question-box-used"
                               : "bg-green-800 text-white hover:bg-green-900 border-green-600 shadow-lg hover:shadow-xl question-box-hover transform hover:-translate-y-1"
@@ -391,9 +464,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           }}
                         >
                           {isUsed ? (
-                            <span className="text-2xl">✅</span>
+                            <span className="text-lg">✅</span>
                           ) : (
-                            <div className="text-xl font-bold">400</div>
+                            <div className="text-sm font-bold">400</div>
                           )}
                         </button>
                       );
@@ -403,8 +476,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
                 {/* 600 Points (Hard) */}
                 <div className="question-section">
-                  <div className="text-center text-green-700 font-bold text-lg mb-4">600 نقطة</div>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="text-center text-green-700 font-bold text-sm mb-2">600 نقطة</div>
+                  <div className="grid grid-cols-2 gap-2">
                     {[4, 5].map((index) => {
                       const isUsed = gameBoard[category.id]?.[index];
                       return (
@@ -412,7 +485,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           key={index}
                           onClick={() => handleQuestionClick(category.id, index)}
                           disabled={isUsed}
-                          className={`w-full h-16 text-center font-bold text-lg transition-all duration-300 rounded-lg border-2 ${
+                          className={`w-full h-12 text-center font-bold text-sm transition-all duration-300 rounded-lg border-2 ${
                             isUsed
                               ? "bg-gray-400 text-gray-600 cursor-not-allowed border-gray-500 question-box-used"
                               : "bg-green-800 text-white hover:bg-green-900 border-green-600 shadow-lg hover:shadow-xl question-box-hover transform hover:-translate-y-1"
@@ -422,9 +495,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           }}
                         >
                           {isUsed ? (
-                            <span className="text-2xl">✅</span>
+                            <span className="text-lg">✅</span>
                           ) : (
-                            <div className="text-xl font-bold">600</div>
+                            <div className="text-sm font-bold">600</div>
                           )}
                         </button>
                       );
