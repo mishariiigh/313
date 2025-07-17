@@ -137,7 +137,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      // Get 36 random questions  
+      // For team games, we need exactly 6 questions per category (6 categories × 6 questions = 36 total)
+      if (gameType === "team") {
+        const categories = ["التاريخ", "الجغرافيا", "الثقافة العامة", "الرياضة", "الدين", "العلوم"];
+        const questionsByCategory: { [key: string]: any[] } = {};
+        
+        // Get 6 questions for each category
+        for (const category of categories) {
+          const categoryQuestions = await storage.getQuestionsByCategory(category, 6);
+          if (categoryQuestions.length < 6) {
+            console.log(`Only ${categoryQuestions.length} questions available for ${category}, need 6`);
+            return res.status(400).json({ message: `لا توجد أسئلة كافية في فئة ${category}` });
+          }
+          questionsByCategory[category] = categoryQuestions;
+        }
+        
+        // Organize questions in the order they appear on the board
+        const organizedQuestions = [];
+        for (const category of categories) {
+          organizedQuestions.push(...questionsByCategory[category]);
+        }
+        
+        // Create game session with organized questions
+        const gameSession = await storage.createGameSession({
+          userId: user.id,
+          questionIds: organizedQuestions.map(q => q.id),
+          currentQuestionIndex: 0,
+          score: 0,
+          isCompleted: false,
+          gameType,
+          teams: gameType === "team" ? teams : [],
+          teamScores: gameType === "team" ? teams.map(() => 0) : [],
+          currentTurn: 0,
+          usedQuestions: [],
+        });
+
+        // Decrease available games
+        await storage.updateUserGames(user.id, user.availableGames - 1);
+
+        res.json({ 
+          gameSession: {
+            id: gameSession.id,
+            currentQuestionIndex: gameSession.currentQuestionIndex,
+            score: gameSession.score,
+            totalQuestions: organizedQuestions.length,
+            gameType: gameSession.gameType,
+            teams: gameSession.teams,
+            teamScores: gameSession.teamScores,
+            currentTurn: gameSession.currentTurn,
+          },
+          currentQuestion: null
+        });
+        return;
+      }
+      
+      // For single games, get random questions
       const questions = await storage.getRandomQuestions(36);
       if (questions.length < 36) {
         console.log(`Only ${questions.length} questions available, need 36`);

@@ -119,6 +119,15 @@ export class DatabaseStorage implements IStorage {
       .limit(count);
   }
 
+  async getQuestionsByCategory(category: string, count: number): Promise<Question[]> {
+    return await db
+      .select()
+      .from(questions)
+      .where(eq(questions.category, category))
+      .orderBy(sql`RANDOM()`)
+      .limit(count);
+  }
+
   async createGameSession(insertSession: InsertGameSession): Promise<GameSession> {
     const [session] = await db
       .insert(gameSessions)

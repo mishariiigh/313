@@ -148,9 +148,10 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       return;
     }
 
-    // Find the question
-    const categoryQuestions = gameData?.questions?.filter((q: Question) => q.category === category) || [];
-    const question = categoryQuestions[index];
+    // Find the question - questions are organized by category in groups of 6
+    const categoryIndex = CATEGORIES.findIndex(cat => cat.id === category);
+    const questionIndex = categoryIndex * 6 + index;
+    const question = gameData?.questions?.[questionIndex];
     
     if (question) {
       setSelectedQuestion(question);
@@ -168,19 +169,29 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   const handleTeamCorrect = (teamIndex: number) => {
     if (!selectedQuestion) return;
     
-    const categoryQuestions = gameData?.questions?.filter((q: Question) => q.category === selectedQuestion.category) || [];
-    const questionIndex = categoryQuestions.findIndex(q => q.id === selectedQuestion.id);
-    const questionKey = `${selectedQuestion.category}-${questionIndex}`;
-    markTeamCorrectMutation.mutate({ teamIndex, questionKey });
+    // Find which category and position this question is in
+    const categoryIndex = CATEGORIES.findIndex(cat => cat.id === selectedQuestion.category);
+    const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
+    
+    if (categoryIndex !== -1 && questionIndex !== -1) {
+      const positionInCategory = questionIndex - (categoryIndex * 6);
+      const questionKey = `${selectedQuestion.category}-${positionInCategory}`;
+      markTeamCorrectMutation.mutate({ teamIndex, questionKey });
+    }
   };
 
   const handleSkipQuestion = () => {
     if (!selectedQuestion) return;
     
-    const categoryQuestions = gameData?.questions?.filter((q: Question) => q.category === selectedQuestion.category) || [];
-    const questionIndex = categoryQuestions.findIndex(q => q.id === selectedQuestion.id);
-    const questionKey = `${selectedQuestion.category}-${questionIndex}`;
-    skipQuestionMutation.mutate({ questionKey });
+    // Find which category and position this question is in
+    const categoryIndex = CATEGORIES.findIndex(cat => cat.id === selectedQuestion.category);
+    const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
+    
+    if (categoryIndex !== -1 && questionIndex !== -1) {
+      const positionInCategory = questionIndex - (categoryIndex * 6);
+      const questionKey = `${selectedQuestion.category}-${positionInCategory}`;
+      skipQuestionMutation.mutate({ questionKey });
+    }
   };
 
   // Game completion screen
