@@ -13,10 +13,9 @@ import { ArrowRight, CreditCard, Loader2 } from "lucide-react";
 
 // Make sure to call `loadStripe` outside of a component's render to avoid
 // recreating the `Stripe` object on every render.
-if (!import.meta.env.VITE_STRIPE_PUBLIC_KEY) {
-  throw new Error('Missing required Stripe key: VITE_STRIPE_PUBLIC_KEY');
-}
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+const stripePromise = import.meta.env.VITE_STRIPE_PUBLIC_KEY 
+  ? loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY)
+  : null;
 
 const CheckoutForm = ({ gameCount }: { gameCount: number }) => {
   const stripe = useStripe();
@@ -174,9 +173,27 @@ export default function CheckoutPage() {
             </div>
 
             {/* Payment Form */}
-            <Elements stripe={stripePromise} options={{ clientSecret }}>
-              <CheckoutForm gameCount={gameCount} />
-            </Elements>
+            {stripePromise ? (
+              <Elements stripe={stripePromise} options={{ clientSecret }}>
+                <CheckoutForm gameCount={gameCount} />
+              </Elements>
+            ) : (
+              <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <CreditCard className="h-5 w-5 text-yellow-600" />
+                  </div>
+                  <div className="mr-3">
+                    <h3 className="text-sm font-medium text-yellow-800">
+                      معالجة الدفعات غير متاحة حالياً
+                    </h3>
+                    <p className="text-sm text-yellow-700 mt-1">
+                      يرجى المحاولة لاحقاً أو التواصل مع فريق الدعم
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       </main>
