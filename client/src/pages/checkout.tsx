@@ -11,6 +11,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, CreditCard, Loader2, Tag, CheckCircle, XCircle } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import type { GamePackage } from "@shared/schema";
 
 // Make sure to call `loadStripe` outside of a component's render to avoid
 // recreating the `Stripe` object on every render.
@@ -18,7 +20,7 @@ const stripePromise = import.meta.env.VITE_STRIPE_PUBLIC_KEY
   ? loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY)
   : null;
 
-const CheckoutForm = ({ gameCount, finalPrice }: { gameCount: number, finalPrice: number }) => {
+const CheckoutForm = ({ selectedPackage, finalPrice }: { selectedPackage: GamePackage, finalPrice: number }) => {
   const stripe = useStripe();
   const elements = useElements();
   const { toast } = useToast();
@@ -95,12 +97,17 @@ export default function CheckoutPage() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const [gameCount, setGameCount] = useState(5);
+  const [selectedPackageId, setSelectedPackageId] = useState<number | null>(null);
   const [clientSecret, setClientSecret] = useState("");
   const [couponCode, setCouponCode] = useState("");
   const [validCoupon, setValidCoupon] = useState<any>(null);
   const [couponError, setCouponError] = useState("");
   const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
+
+  // Fetch available game packages
+  const { data: gamePackages, isLoading: packagesLoading } = useQuery({
+    queryKey: ["/api/game-packages"],
+  });
 
   // Redirect if not logged in
   if (!user) {
@@ -108,10 +115,24 @@ export default function CheckoutPage() {
     return null;
   }
 
+  // Auto-select first package if available
   useEffect(() => {
-    // Create PaymentIntent when game count changes
-    if (gameCount) {
-      apiRequest("POST", "/api/create-payment-intent", { gameCount })
+    if (gamePackages?.packages && gamePackages.packages.length > 0 && !selectedPackageId) {
+      setSelectedPackageId(gamePackages.packages[0].id);
+    }
+  }, [gamePackages, selectedPackageId]);
+
+  // Selected package
+  const selectedPackage = gamePackages?.packages?.find((pkg: GamePackage) => pkg.id === selectedPackageId);
+
+  useEffect(() => {
+    // Create PaymentIntent when package changes
+    if (selectedPackage) {
+      const finalPrice = calculateDiscountedPrice(selectedPackage.priceInCents);
+      apiRequest("POST", "/api/create-payment-intent", { 
+        amount: finalPrice,
+        gameCount: selectedPackage.gameCount
+      })
         .then((res) => res.json())
         .then((data) => {
           setClientSecret(data.clientSecret);
@@ -124,7 +145,7 @@ export default function CheckoutPage() {
           });
         });
     }
-  }, [gameCount, toast]);
+  }, [selectedPackage, validCoupon, toast]);
 
   const handleBack = () => {
     setLocation("/dashboard");
@@ -165,24 +186,41 @@ export default function CheckoutPage() {
     setCouponError("");
   };
 
-  const calculateDiscountedPrice = (originalPrice: number) => {
-    if (!validCoupon) return originalPrice;
+  const calculateDiscountedPrice = (originalPriceInCents: number) => {
+    if (!validCoupon) return originalPriceInCents;
 
     if (validCoupon.discountType === 'percentage') {
-      return originalPrice * (1 - validCoupon.discountValue / 100);
+      return Math.round(originalPriceInCents * (1 - validCoupon.discountValue / 100));
     } else {
-      return Math.max(0, originalPrice - validCoupon.discountValue);
+      return Math.max(0, originalPriceInCents - (validCoupon.discountValue * 100));
     }
   };
 
-  const getOriginalPrice = (count: number) => {
-    return count === 1 ? 1.99 : 8.99;
-  };
+  if (packagesLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="luxury-card p-8 text-center">
+          <div className="luxury-spinner mx-auto mb-4" />
+          <p className="text-luxury-green-dark text-lg">جاري تحميل الباقات...</p>
+        </div>
+      </div>
+    );
+  }
 
-  const originalPrice = getOriginalPrice(gameCount);
-  const finalPrice = calculateDiscountedPrice(originalPrice);
+  if (!gamePackages?.packages || gamePackages.packages.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="luxury-card p-8 text-center">
+          <p className="text-luxury-green-dark text-lg">لا توجد باقات ألعاب متاحة حالياً</p>
+          <Button onClick={() => setLocation("/dashboard")} className="mt-4">
+            العودة للوحة التحكم
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
-  if (!clientSecret) {
+  if (!clientSecret || !selectedPackage) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="luxury-card p-8 text-center">
@@ -192,6 +230,9 @@ export default function CheckoutPage() {
       </div>
     );
   }
+
+  const finalPriceInCents = calculateDiscountedPrice(selectedPackage.priceInCents);
+  const finalPrice = finalPriceInCents / 100;
 
   return (
     <div className="min-h-screen">
@@ -225,47 +266,46 @@ export default function CheckoutPage() {
             <div>
               <Label className="text-lg font-semibold text-luxury-green-dark mb-4 block">اختر الباقة</Label>
               <RadioGroup
-                value={gameCount.toString()}
-                onValueChange={(value) => setGameCount(parseInt(value))}
+                value={selectedPackageId?.toString()}
+                onValueChange={(value) => setSelectedPackageId(parseInt(value))}
               >
-                <div className="luxury-card p-4 border-2 border-luxury-green-light">
-                  <div className="flex items-center space-x-reverse space-x-3">
-                    <RadioGroupItem value="1" id="package-1" />
-                    <Label htmlFor="package-1" className="flex-1 flex justify-between items-center cursor-pointer">
-                      <div>
-                        <span className="font-semibold text-luxury-green-dark">لعبة واحدة</span>
-                        <span className="text-sm text-muted-foreground block">36 سؤالاً</span>
+                {gamePackages.packages.map((pkg: GamePackage) => {
+                  const isSelected = pkg.id === selectedPackageId;
+                  const originalPrice = pkg.priceInCents / 100;
+                  const discountedPrice = calculateDiscountedPrice(pkg.priceInCents) / 100;
+                  const hasDiscount = validCoupon && discountedPrice !== originalPrice;
+                  
+                  return (
+                    <div key={pkg.id} className={`luxury-card p-4 border-2 ${isSelected ? 'border-luxury-green bg-luxury-green-light' : 'border-luxury-green-light'}`}>
+                      <div className="flex items-center space-x-reverse space-x-3">
+                        <RadioGroupItem value={pkg.id.toString()} id={`package-${pkg.id}`} />
+                        <Label htmlFor={`package-${pkg.id}`} className="flex-1 flex justify-between items-center cursor-pointer">
+                          <div>
+                            <span className={`font-semibold ${isSelected ? 'text-luxury-green-dark' : 'text-luxury-green-dark'}`}>
+                              {pkg.name}
+                            </span>
+                            <span className={`text-sm ${isSelected ? 'text-luxury-green-dark' : 'text-muted-foreground'} block`}>
+                              {pkg.gameCount} {pkg.gameCount === 1 ? 'لعبة' : 'ألعاب'}
+                            </span>
+                            <span className={`text-xs ${isSelected ? 'text-luxury-green-dark' : 'text-muted-foreground'} block`}>
+                              {pkg.description}
+                            </span>
+                          </div>
+                          <div className="text-left">
+                            {hasDiscount && (
+                              <span className="text-sm text-muted-foreground line-through block">
+                                ${originalPrice.toFixed(2)}
+                              </span>
+                            )}
+                            <span className={`font-bold ${isSelected ? 'text-luxury-green-dark' : 'text-luxury-green'} text-xl`}>
+                              ${discountedPrice.toFixed(2)}
+                            </span>
+                          </div>
+                        </Label>
                       </div>
-                      <div className="text-left">
-                        {validCoupon && originalPrice !== finalPrice && (
-                          <span className="text-sm text-muted-foreground line-through block">$1.99</span>
-                        )}
-                        <span className="font-bold text-luxury-green text-xl">
-                          ${gameCount === 1 ? finalPrice.toFixed(2) : '1.99'}
-                        </span>
-                      </div>
-                    </Label>
-                  </div>
-                </div>
-                <div className="luxury-card p-4 border-2 border-luxury-green bg-luxury-green-light">
-                  <div className="flex items-center space-x-reverse space-x-3">
-                    <RadioGroupItem value="5" id="package-5" />
-                    <Label htmlFor="package-5" className="flex-1 flex justify-between items-center cursor-pointer">
-                      <div>
-                        <span className="font-semibold text-luxury-green-dark">5 ألعاب</span>
-                        <span className="text-sm text-luxury-green-dark font-medium block">وفر 10%</span>
-                      </div>
-                      <div className="text-left">
-                        {validCoupon && originalPrice !== finalPrice && (
-                          <span className="text-sm text-muted-foreground line-through block">$8.99</span>
-                        )}
-                        <span className="font-bold text-luxury-green-dark text-xl">
-                          ${gameCount === 5 ? finalPrice.toFixed(2) : '8.99'}
-                        </span>
-                      </div>
-                    </Label>
-                  </div>
-                </div>
+                    </div>
+                  );
+                })}
               </RadioGroup>
 
               {/* Coupon Section */}
@@ -329,7 +369,7 @@ export default function CheckoutPage() {
             {/* Payment Form */}
             {stripePromise ? (
               <Elements stripe={stripePromise} options={{ clientSecret }}>
-                <CheckoutForm gameCount={gameCount} finalPrice={finalPrice} />
+                <CheckoutForm selectedPackage={selectedPackage} finalPrice={finalPrice} />
               </Elements>
             ) : (
               <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">

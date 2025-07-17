@@ -1,4 +1,4 @@
-import { users, questions, gameSessions, purchases, categories, coupons, type User, type InsertUser, type Question, type InsertQuestion, type GameSession, type InsertGameSession, type Purchase, type InsertPurchase, type Category, type InsertCategory, type Coupon, type InsertCoupon } from "@shared/schema";
+import { users, questions, gameSessions, purchases, categories, coupons, gamePackages, type User, type InsertUser, type Question, type InsertQuestion, type GameSession, type InsertGameSession, type Purchase, type InsertPurchase, type Category, type InsertCategory, type Coupon, type InsertCoupon, type GamePackage, type InsertGamePackage } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, desc, inArray, and, not } from "drizzle-orm";
 
@@ -38,6 +38,13 @@ export interface IStorage {
   createCoupon(coupon: InsertCoupon): Promise<Coupon>;
   updateCoupon(id: number, updates: Partial<Coupon>): Promise<Coupon>;
   incrementCouponUsage(id: number): Promise<void>;
+
+  // Game Package operations
+  getAllGamePackages(): Promise<GamePackage[]>;
+  getActiveGamePackages(): Promise<GamePackage[]>;
+  createGamePackage(gamePackage: InsertGamePackage): Promise<GamePackage>;
+  updateGamePackage(id: number, updates: Partial<GamePackage>): Promise<GamePackage>;
+  deleteGamePackage(id: number): Promise<void>;
 
   // Admin operations
   getStats(): Promise<{
@@ -241,6 +248,36 @@ export class DatabaseStorage implements IStorage {
       .update(coupons)
       .set({ usageCount: sql`${coupons.usageCount} + 1` })
       .where(eq(coupons.id, id));
+  }
+
+  // Game Package operations
+  async getAllGamePackages(): Promise<GamePackage[]> {
+    return db.select().from(gamePackages).orderBy(gamePackages.sortOrder, gamePackages.createdAt);
+  }
+
+  async getActiveGamePackages(): Promise<GamePackage[]> {
+    return db.select().from(gamePackages).where(eq(gamePackages.isActive, true)).orderBy(gamePackages.sortOrder, gamePackages.createdAt);
+  }
+
+  async createGamePackage(insertGamePackage: InsertGamePackage): Promise<GamePackage> {
+    const [gamePackage] = await db
+      .insert(gamePackages)
+      .values(insertGamePackage)
+      .returning();
+    return gamePackage;
+  }
+
+  async updateGamePackage(id: number, updates: Partial<GamePackage>): Promise<GamePackage> {
+    const [gamePackage] = await db
+      .update(gamePackages)
+      .set(updates)
+      .where(eq(gamePackages.id, id))
+      .returning();
+    return gamePackage;
+  }
+
+  async deleteGamePackage(id: number): Promise<void> {
+    await db.delete(gamePackages).where(eq(gamePackages.id, id));
   }
 
   async getStats(): Promise<{

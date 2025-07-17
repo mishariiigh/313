@@ -80,6 +80,17 @@ export const categories = pgTable("categories", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const gamePackages = pgTable("game_packages", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(),
+  description: text("description").notNull(),
+  gameCount: integer("game_count").notNull(),
+  priceInCents: integer("price_in_cents").notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
+  sortOrder: integer("sort_order").default(0).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const usersRelations = relations(users, ({ many }) => ({
   gameSessions: many(gameSessions),
   purchases: many(purchases),
@@ -129,6 +140,11 @@ export const insertCategorySchema = createInsertSchema(categories).omit({
   createdAt: true,
 });
 
+export const insertGamePackageSchema = createInsertSchema(gamePackages).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 
@@ -146,3 +162,6 @@ export type Coupon = typeof coupons.$inferSelect;
 
 export type InsertCategory = z.infer<typeof insertCategorySchema>;
 export type Category = typeof categories.$inferSelect;
+
+export type InsertGamePackage = z.infer<typeof insertGamePackageSchema>;
+export type GamePackage = typeof gamePackages.$inferSelect;

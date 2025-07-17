@@ -30,6 +30,11 @@
   - Added edit/cancel buttons to question forms with proper state management
   - All question changes reflect immediately in game sections through proper cache invalidation
   - Enhanced admin dashboard with complete search and filter functionality for all content types
+  - Added complete game packages management system for admin control over pricing
+  - Created game packages database table with name, description, game count, and pricing
+  - Updated checkout system to use dynamic game packages instead of fixed options
+  - Added game packages admin interface for creating, editing, and managing packages
+  - Created default game packages: المبتدئين (1 game, $1.99), المحترفين (5 games, $8.99), الخبراء (10 games, $14.99), الأسرة (20 games, $24.99)
 
 ## Overview
 

@@ -5,7 +5,7 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
 import { storage } from "./storage";
-import { insertUserSchema, insertQuestionSchema, insertGameSessionSchema, insertCategorySchema, insertCouponSchema } from "@shared/schema";
+import { insertUserSchema, insertQuestionSchema, insertGameSessionSchema, insertCategorySchema, insertCouponSchema, insertGamePackageSchema } from "@shared/schema";
 import { z } from "zod";
 import Stripe from "stripe";
 
@@ -959,6 +959,91 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       res.status(500).json({ message: "خطأ في التحقق من الكوبون" });
+    }
+  });
+
+  // Game packages routes
+  app.get("/api/game-packages", async (req, res) => {
+    try {
+      const packages = await storage.getActiveGamePackages();
+      res.json({ packages });
+    } catch (error) {
+      res.status(500).json({ message: "خطأ في جلب باقات الألعاب" });
+    }
+  });
+
+  // Admin Game Packages routes
+  app.get("/api/admin/game-packages", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    const user = req.user as any;
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "غير مصرح بالوصول" });
+    }
+
+    try {
+      const packages = await storage.getAllGamePackages();
+      res.json({ packages });
+    } catch (error) {
+      res.status(500).json({ message: "خطأ في جلب باقات الألعاب" });
+    }
+  });
+
+  app.post("/api/admin/game-packages", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    const user = req.user as any;
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "غير مصرح بالوصول" });
+    }
+
+    try {
+      const packageData = insertGamePackageSchema.parse(req.body);
+      const gamePackage = await storage.createGamePackage(packageData);
+      res.json({ package: gamePackage });
+    } catch (error) {
+      res.status(400).json({ message: "خطأ في إنشاء باقة الألعاب" });
+    }
+  });
+
+  app.put("/api/admin/game-packages/:id", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    const user = req.user as any;
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "غير مصرح بالوصول" });
+    }
+
+    try {
+      const packageData = insertGamePackageSchema.partial().parse(req.body);
+      const gamePackage = await storage.updateGamePackage(parseInt(req.params.id), packageData);
+      res.json({ package: gamePackage });
+    } catch (error) {
+      res.status(400).json({ message: "خطأ في تحديث باقة الألعاب" });
+    }
+  });
+
+  app.delete("/api/admin/game-packages/:id", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    const user = req.user as any;
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "غير مصرح بالوصول" });
+    }
+
+    try {
+      await storage.deleteGamePackage(parseInt(req.params.id));
+      res.json({ message: "تم حذف باقة الألعاب بنجاح" });
+    } catch (error) {
+      res.status(500).json({ message: "خطأ في حذف باقة الألعاب" });
     }
   });
 

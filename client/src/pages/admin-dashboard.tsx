@@ -14,7 +14,7 @@ import { Plus, Edit, Trash2, Users, MessageSquare, ArrowRight, Upload, Image as 
 import { useAuthRedirect } from "@/lib/auth";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { useLocation } from "wouter";
-import type { Question, Category, Coupon } from "@shared/schema";
+import type { Question, Category, Coupon, GamePackage } from "@shared/schema";
 
 export default function AdminDashboard() {
   const { user, isLoading } = useAuthRedirect();
@@ -55,6 +55,15 @@ export default function AdminDashboard() {
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [editingCoupon, setEditingCoupon] = useState<Coupon | null>(null);
+  const [gamePackageForm, setGamePackageForm] = useState({
+    name: "",
+    description: "",
+    gameCount: "",
+    priceInCents: "",
+    sortOrder: "",
+    isActive: true,
+  });
+  const [editingGamePackage, setEditingGamePackage] = useState<GamePackage | null>(null);
 
   // Queries
   const { data: questions, isLoading: questionsLoading } = useQuery({
@@ -69,6 +78,11 @@ export default function AdminDashboard() {
 
   const { data: coupons, isLoading: couponsLoading } = useQuery({
     queryKey: ["/api/admin/coupons"],
+    enabled: user?.isAdmin,
+  });
+
+  const { data: gamePackages, isLoading: gamePackagesLoading } = useQuery({
+    queryKey: ["/api/admin/game-packages"],
     enabled: user?.isAdmin,
   });
 
@@ -191,6 +205,54 @@ export default function AdminDashboard() {
     },
   });
 
+  const createGamePackageMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await apiRequest("POST", "/api/admin/game-packages", data);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/game-packages"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/game-packages"] }); // Refresh public packages
+      setGamePackageForm({ name: "", description: "", gameCount: "", priceInCents: "", sortOrder: "", isActive: true });
+      toast({ title: "تم إنشاء باقة الألعاب بنجاح" });
+    },
+    onError: (error: any) => {
+      toast({ title: "خطأ في إنشاء باقة الألعاب", description: error.message, variant: "destructive" });
+    },
+  });
+
+  const updateGamePackageMutation = useMutation({
+    mutationFn: async (data: { id: number; updates: any }) => {
+      const response = await apiRequest("PUT", `/api/admin/game-packages/${data.id}`, data.updates);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/game-packages"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/game-packages"] }); // Refresh public packages
+      setEditingGamePackage(null);
+      setGamePackageForm({ name: "", description: "", gameCount: "", priceInCents: "", sortOrder: "", isActive: true });
+      toast({ title: "تم تحديث باقة الألعاب بنجاح" });
+    },
+    onError: (error: any) => {
+      toast({ title: "خطأ في تحديث باقة الألعاب", description: error.message, variant: "destructive" });
+    },
+  });
+
+  const deleteGamePackageMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await apiRequest("DELETE", `/api/admin/game-packages/${id}`);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/game-packages"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/game-packages"] }); // Refresh public packages
+      toast({ title: "تم حذف باقة الألعاب بنجاح" });
+    },
+    onError: (error: any) => {
+      toast({ title: "خطأ في حذف باقة الألعاب", description: error.message, variant: "destructive" });
+    },
+  });
+
   // Helper functions for filtering and searching
   const filteredQuestions = questions?.questions?.filter((question: Question) => {
     const matchesSearch = question.question.toLowerCase().includes(questionSearch.toLowerCase()) ||
@@ -259,6 +321,44 @@ export default function AdminDashboard() {
     setCategoryForm({ name: "", displayName: "", description: "", logoUrl: "" });
   };
 
+  const handleEditGamePackage = (gamePackage: GamePackage) => {
+    setEditingGamePackage(gamePackage);
+    setGamePackageForm({
+      name: gamePackage.name,
+      description: gamePackage.description,
+      gameCount: gamePackage.gameCount.toString(),
+      priceInCents: gamePackage.priceInCents.toString(),
+      sortOrder: gamePackage.sortOrder.toString(),
+      isActive: gamePackage.isActive,
+    });
+  };
+
+  const handleGamePackageSubmit = () => {
+    if (editingGamePackage) {
+      updateGamePackageMutation.mutate({ 
+        id: editingGamePackage.id, 
+        updates: {
+          ...gamePackageForm,
+          gameCount: parseInt(gamePackageForm.gameCount),
+          priceInCents: parseInt(gamePackageForm.priceInCents),
+          sortOrder: parseInt(gamePackageForm.sortOrder) || 0,
+        }
+      });
+    } else {
+      createGamePackageMutation.mutate({
+        ...gamePackageForm,
+        gameCount: parseInt(gamePackageForm.gameCount),
+        priceInCents: parseInt(gamePackageForm.priceInCents),
+        sortOrder: parseInt(gamePackageForm.sortOrder) || 0,
+      });
+    }
+  };
+
+  const handleCancelGamePackageEdit = () => {
+    setEditingGamePackage(null);
+    setGamePackageForm({ name: "", description: "", gameCount: "", priceInCents: "", sortOrder: "", isActive: true });
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -297,7 +397,7 @@ export default function AdminDashboard() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="questions">
               <MessageSquare className="w-4 h-4 mr-2" />
               الأسئلة
@@ -309,6 +409,10 @@ export default function AdminDashboard() {
             <TabsTrigger value="coupons">
               <Plus className="w-4 h-4 mr-2" />
               الكوبونات
+            </TabsTrigger>
+            <TabsTrigger value="packages">
+              <Upload className="w-4 h-4 mr-2" />
+              باقات الألعاب
             </TabsTrigger>
           </TabsList>
 
@@ -859,6 +963,161 @@ export default function AdminDashboard() {
                             </div>
                           </div>
                         </div>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Game Packages Tab */}
+          <TabsContent value="packages" className="space-y-6">
+            <div className="space-y-6">
+              {/* Create Game Package Form */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>إضافة باقة جديدة</CardTitle>
+                  <CardDescription>إنشاء باقة ألعاب جديدة</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="packageName">اسم الباقة</Label>
+                      <Input
+                        id="packageName"
+                        value={gamePackageForm.name}
+                        onChange={(e) => setGamePackageForm({ ...gamePackageForm, name: e.target.value })}
+                        placeholder="مثل: باقة المبتدئين"
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="gameCount">عدد الألعاب</Label>
+                      <Input
+                        id="gameCount"
+                        type="number"
+                        value={gamePackageForm.gameCount}
+                        onChange={(e) => setGamePackageForm({ ...gamePackageForm, gameCount: e.target.value })}
+                        placeholder="مثل: 5"
+                        className="mt-1"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="packageDescription">وصف الباقة</Label>
+                    <Input
+                      id="packageDescription"
+                      value={gamePackageForm.description}
+                      onChange={(e) => setGamePackageForm({ ...gamePackageForm, description: e.target.value })}
+                      placeholder="وصف مختصر عن الباقة"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="priceInCents">السعر (بالسنتات)</Label>
+                      <Input
+                        id="priceInCents"
+                        type="number"
+                        value={gamePackageForm.priceInCents}
+                        onChange={(e) => setGamePackageForm({ ...gamePackageForm, priceInCents: e.target.value })}
+                        placeholder="مثل: 1500 (يعني 15.00$)"
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="sortOrder">ترتيب العرض</Label>
+                      <Input
+                        id="sortOrder"
+                        type="number"
+                        value={gamePackageForm.sortOrder}
+                        onChange={(e) => setGamePackageForm({ ...gamePackageForm, sortOrder: e.target.value })}
+                        placeholder="مثل: 1"
+                        className="mt-1"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="isActive"
+                      checked={gamePackageForm.isActive}
+                      onChange={(e) => setGamePackageForm({ ...gamePackageForm, isActive: e.target.checked })}
+                      className="rounded"
+                    />
+                    <Label htmlFor="isActive">الباقة نشطة</Label>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={handleGamePackageSubmit}
+                      disabled={createGamePackageMutation.isPending || updateGamePackageMutation.isPending || !gamePackageForm.name || !gamePackageForm.gameCount || !gamePackageForm.priceInCents}
+                      className="flex-1"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      {editingGamePackage ? "تحديث الباقة" : "إضافة الباقة"}
+                    </Button>
+                    {editingGamePackage && (
+                      <Button onClick={handleCancelGamePackageEdit} variant="outline">
+                        إلغاء
+                      </Button>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Game Packages List */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>باقات الألعاب المتاحة</CardTitle>
+                  <CardDescription>جميع باقات الألعاب</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {gamePackagesLoading ? (
+                    <div className="text-center">جاري التحميل...</div>
+                  ) : (
+                    <div className="space-y-4">
+                      {!gamePackages?.packages || gamePackages.packages.length === 0 ? (
+                        <div className="text-center text-gray-500 py-4">
+                          لا توجد باقات ألعاب حالياً
+                        </div>
+                      ) : (
+                        gamePackages.packages.map((gamePackage: GamePackage) => (
+                          <div key={gamePackage.id} className="p-4 border rounded-lg">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <h3 className="font-medium">{gamePackage.name}</h3>
+                                <p className="text-sm text-gray-600">{gamePackage.description}</p>
+                                <p className="text-sm text-gray-500">
+                                  {gamePackage.gameCount} ألعاب - ${(gamePackage.priceInCents / 100).toFixed(2)}
+                                </p>
+                                <p className="text-sm text-gray-400">
+                                  الترتيب: {gamePackage.sortOrder}
+                                </p>
+                              </div>
+                              <div className="flex gap-2">
+                                <Badge variant={gamePackage.isActive ? "default" : "secondary"}>
+                                  {gamePackage.isActive ? "نشط" : "غير نشط"}
+                                </Badge>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleEditGamePackage(gamePackage)}
+                                >
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => deleteGamePackageMutation.mutate(gamePackage.id)}
+                                  disabled={deleteGamePackageMutation.isPending}
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
                         ))
                       )}
                     </div>

@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { questions } from "@shared/schema";
+import { questions, gamePackages } from "@shared/schema";
 import bcrypt from "bcryptjs";
 import { users } from "@shared/schema";
 
@@ -1409,6 +1409,41 @@ const sampleQuestions = [
 
 export { sampleQuestions };
 
+const defaultGamePackages = [
+  {
+    name: "باقة المبتدئين",
+    description: "مثالية للمبتدئين في الألعاب الثقافية",
+    gameCount: 1,
+    priceInCents: 199, // $1.99
+    sortOrder: 1,
+    isActive: true,
+  },
+  {
+    name: "باقة المحترفين",
+    description: "للاعبين المتقدمين الذين يريدون تحدي أكبر",
+    gameCount: 5,
+    priceInCents: 899, // $8.99
+    sortOrder: 2,
+    isActive: true,
+  },
+  {
+    name: "باقة الخبراء",
+    description: "باقة شاملة للخبراء في الألعاب الثقافية",
+    gameCount: 10,
+    priceInCents: 1499, // $14.99
+    sortOrder: 3,
+    isActive: true,
+  },
+  {
+    name: "باقة الأسرة",
+    description: "باقة عائلية للاستمتاع مع الأصدقاء والعائلة",
+    gameCount: 20,
+    priceInCents: 2499, // $24.99
+    sortOrder: 4,
+    isActive: true,
+  },
+];
+
 export async function seedData() {
   try {
     // Insert test user first
@@ -1422,6 +1457,9 @@ export async function seedData() {
 
     // Insert questions
     await db.insert(questions).values(sampleQuestions as any);
+    
+    // Insert game packages
+    await db.insert(gamePackages).values(defaultGamePackages as any);
     
     console.log("Data seeded successfully!");
   } catch (error) {
