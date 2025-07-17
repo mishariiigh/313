@@ -1,8 +1,18 @@
 # Arabic Trivia Game Platform
 
+## Recent Changes: Latest modifications with dates
+
+- **January 17, 2025**: Major system updates
+  - Fixed React hooks error that caused game crashes
+  - Simplified to team-only mode with two editable teams
+  - Added comprehensive animated transition effects
+  - Changed all icon colors to be visible (luxury-cream, luxury-green-dark, luxury-gold)
+  - Fixed API call parameter ordering issues
+  - Removed solo game mode entirely
+
 ## Overview
 
-This is a modern web application for playing Arabic trivia games, built with React (TypeScript) on the frontend and Express.js on the backend. The platform allows users to purchase game credits, play trivia games with Arabic questions across various categories, and manage their gaming experience through a comprehensive dashboard.
+This is a modern web application for playing Arabic trivia games, built with React (TypeScript) on the frontend and Express.js on the backend. The platform supports team-based trivia games with two customizable teams, featuring animated transitions, luxury design aesthetics, and comprehensive game management through a dashboard.
 
 ## User Preferences
 

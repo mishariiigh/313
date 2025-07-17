@@ -23,7 +23,7 @@ export default function GameSetupPage() {
         gameType: "team",
         teams,
       };
-      return apiRequest("/api/games/start", "POST", gameData);
+      return apiRequest("POST", "/api/games/start", gameData);
     },
     onSuccess: (data) => {
       const gameId = data.gameSession.id;
