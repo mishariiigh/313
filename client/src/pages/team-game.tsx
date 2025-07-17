@@ -361,22 +361,21 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
   // Game board view - Jeopardy style layout
   return (
-    <div className="min-h-screen flex flex-col page-transition bg-gradient-to-br from-blue-50 to-blue-100">
+    <div className="min-h-screen flex flex-col page-transition bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header - Top navigation with scores */}
-      <header className="bg-gradient-to-r from-red-500 to-red-600 text-white p-4">
+      <header className="bg-gradient-to-r from-red-300 to-red-400 text-gray-800 p-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button
               variant="outline"
               onClick={() => setLocation("/dashboard")}
-              className="bg-white/20 text-white border-white/30 hover:bg-white/30 p-2"
+              className="bg-white/60 text-gray-800 border-gray-300 hover:bg-white/80 p-2"
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
-              <h1 className="text-2xl font-bold">سين جيم</h1>
               <p className="text-sm opacity-90">
-                دور: <span className="font-semibold bg-white/20 px-3 py-1 rounded-full">
+                دور: <span className="font-semibold bg-white/40 px-3 py-1 rounded-full">
                   {gameSession.teams[gameSession.currentTurn]}
                 </span>
               </p>
@@ -386,7 +385,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
           {/* Team Scores */}
           <div className="flex gap-4">
             {gameSession.teams.map((team: string, index: number) => (
-              <div key={index} className="bg-white/20 rounded-lg p-3 text-center min-w-[100px]">
+              <div key={index} className="bg-white/60 rounded-lg p-3 text-center min-w-[100px] text-gray-800">
                 <div className="text-sm font-semibold">{team}</div>
                 <div className="text-2xl font-bold">
                   {gameSession.teamScores[index] || 0}
@@ -404,7 +403,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             {CATEGORIES.map((category, categoryIndex) => (
               <div key={category.id} className="flex flex-col">
                 {/* Category Header with Icon */}
-                <div className="bg-gradient-to-r from-orange-400 to-orange-500 text-white p-4 rounded-t-lg text-center min-h-[120px] flex flex-col items-center justify-center shadow-lg">
+                <div className="bg-gradient-to-r from-red-200 to-red-300 text-gray-800 p-4 rounded-t-lg text-center min-h-[120px] flex flex-col items-center justify-center shadow-lg">
                   <div className="text-3xl mb-2">{category.icon}</div>
                   <div className="text-sm font-bold">{category.name}</div>
                 </div>
@@ -423,7 +422,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           className={`h-16 text-center font-bold text-lg transition-all duration-300 rounded-lg border-2 ${
                             isUsed
                               ? "bg-gray-300 text-gray-500 cursor-not-allowed border-gray-400"
-                              : "bg-blue-600 text-white hover:bg-blue-700 border-blue-500 shadow-lg hover:shadow-xl transform hover:scale-105"
+                              : "bg-gray-100 text-gray-800 hover:bg-gray-200 border-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
                           }`}
                         >
                           {isUsed ? (
@@ -448,7 +447,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           className={`h-16 text-center font-bold text-lg transition-all duration-300 rounded-lg border-2 ${
                             isUsed
                               ? "bg-gray-300 text-gray-500 cursor-not-allowed border-gray-400"
-                              : "bg-blue-600 text-white hover:bg-blue-700 border-blue-500 shadow-lg hover:shadow-xl transform hover:scale-105"
+                              : "bg-gray-100 text-gray-800 hover:bg-gray-200 border-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
                           }`}
                         >
                           {isUsed ? (
@@ -473,7 +472,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           className={`h-16 text-center font-bold text-lg transition-all duration-300 rounded-lg border-2 ${
                             isUsed
                               ? "bg-gray-300 text-gray-500 cursor-not-allowed border-gray-400"
-                              : "bg-blue-600 text-white hover:bg-blue-700 border-blue-500 shadow-lg hover:shadow-xl transform hover:scale-105"
+                              : "bg-gray-100 text-gray-800 hover:bg-gray-200 border-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
                           }`}
                         >
                           {isUsed ? (

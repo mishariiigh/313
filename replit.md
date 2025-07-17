@@ -9,7 +9,7 @@
   - Implemented Jeopardy-style game board layout with horizontal categories
   - Made layout compact to fit on screen without scrolling
   - Added automatic game completion when all 36 questions are used
-  - Changed design to red header with orange category headers and blue question buttons
+  - Changed design to light red header with off-white category headers and off-white question buttons
   - Shows final scores and congratulates winning team
 
 ## Overview
