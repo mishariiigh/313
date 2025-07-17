@@ -12,6 +12,9 @@
   - Changed entire website color scheme to off-white and light red theme
   - Updated all components, buttons, and layouts to use the new colors
   - Shows final scores and congratulates winning team
+  - Expanded question database to 172 questions (28+ per category)
+  - Fixed "insufficient questions" error that prevented game creation
+  - Updated website background to lightest shadow red for better visual appeal
 
 ## Overview
 

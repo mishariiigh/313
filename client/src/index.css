@@ -7,13 +7,13 @@
 @layer base {
   :root {
     /* Off-White & Light Red Theme */
-    --background: hsl(0, 0%, 98%);
+    --background: hsl(0, 20%, 97%);
     --foreground: hsl(0, 0%, 20%);
     
-    --card: hsl(0, 0%, 99%);
+    --card: hsl(0, 15%, 96%);
     --card-foreground: hsl(0, 0%, 20%);
     
-    --popover: hsl(0, 0%, 99%);
+    --popover: hsl(0, 15%, 96%);
     --popover-foreground: hsl(0, 0%, 20%);
     
     --primary: hsl(0, 70%, 70%);
