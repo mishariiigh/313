@@ -22,6 +22,9 @@
   - Implemented hint restriction: each team can only use a hint once per question turn
   - Added database tracking for hint usage with usedHints field in game sessions
   - Enhanced hint button UI to show disabled state when hint already used
+  - Added 60-second countdown timer for each question with visual effects
+  - Timer turns red and beats when 10 seconds remain, shows "time out" message at 0
+  - Timer automatically starts when question is selected and stops when answered
 
 ## Overview
 

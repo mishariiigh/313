@@ -32,6 +32,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
   const [showHint, setShowHint] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(60);
+  const [isTimerActive, setIsTimerActive] = useState(false);
+  const [isTimeOut, setIsTimeOut] = useState(false);
 
   // Get game session data
   const { data: gameData, isLoading } = useQuery({
@@ -58,6 +61,33 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     }
   }, [user, gameData, setLocation, id]);
 
+  // Timer effect
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    
+    if (isTimerActive && timeLeft > 0 && !isTimeOut) {
+      interval = setInterval(() => {
+        setTimeLeft((prevTime) => {
+          if (prevTime <= 1) {
+            setIsTimerActive(false);
+            setIsTimeOut(true);
+            toast({
+              title: "انتهى الوقت!",
+              description: "لم يتم الإجابة في الوقت المحدد",
+              variant: "destructive",
+            });
+            return 0;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isTimerActive, timeLeft, isTimeOut, toast]);
+
   // Mark team as correct
   const markTeamCorrectMutation = useMutation({
     mutationFn: async (data: { teamIndex: number; questionKey: string }) => {
@@ -69,6 +99,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       setSelectedQuestion(null);
       setShowHint(false);
       setShowAnswer(false);
+      setIsTimerActive(false);
+      setIsTimeOut(false);
+      setTimeLeft(60);
     },
   });
 
@@ -83,6 +116,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       setSelectedQuestion(null);
       setShowHint(false);
       setShowAnswer(false);
+      setIsTimerActive(false);
+      setIsTimeOut(false);
+      setTimeLeft(60);
     },
   });
 
@@ -181,6 +217,10 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       const isHintUsed = gameSession.usedHints?.includes(questionKey);
       setShowHint(isHintUsed);
       setShowAnswer(false);
+      // Start the timer
+      setTimeLeft(60);
+      setIsTimerActive(true);
+      setIsTimeOut(false);
     }
   };
 
@@ -188,6 +228,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     setSelectedQuestion(null);
     setShowHint(false);
     setShowAnswer(false);
+    setIsTimerActive(false);
+    setIsTimeOut(false);
+    setTimeLeft(60);
   };
 
   const handleTeamCorrect = (teamIndex: number) => {
@@ -315,6 +358,39 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 return `${points} نقطة`;
               })()}
             </div>
+            
+            {/* Timer Display */}
+            {isTimerActive && !isTimeOut && (
+              <div className="mb-6">
+                <div className={`inline-flex items-center justify-center w-20 h-20 rounded-full text-3xl font-bold transition-all duration-300 ${
+                  timeLeft <= 10 
+                    ? 'bg-red-500 text-white timer-urgent border-4 border-red-600' 
+                    : timeLeft <= 0 
+                    ? 'bg-red-600 text-white timer-danger' 
+                    : 'bg-blue-500 text-white timer-beat'
+                }`}>
+                  {timeLeft}
+                </div>
+                <p className={`text-sm mt-2 font-medium ${
+                  timeLeft <= 10 ? 'text-red-600 animate-pulse' : 'text-blue-600'
+                }`}>
+                  {timeLeft <= 10 ? 'الوقت ينفد!' : 'الوقت المتبقي'}
+                </p>
+              </div>
+            )}
+            
+            {/* Time Out Message */}
+            {isTimeOut && (
+              <div className="mb-6">
+                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full text-3xl font-bold bg-red-600 text-white border-4 border-red-700">
+                  0
+                </div>
+                <p className="text-red-600 text-lg font-bold mt-2 animate-pulse">
+                  انتهى الوقت!
+                </p>
+              </div>
+            )}
+            
             <h1 className="text-3xl font-bold text-luxury-green-dark mb-8 question-card-flip">
               {selectedQuestion.question}
             </h1>
