@@ -148,7 +148,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     const categoryQuestions = gameData?.questions?.filter((q: Question) => q.category === selectedQuestion.category) || [];
     const questionIndex = categoryQuestions.findIndex(q => q.id === selectedQuestion.id);
     const questionKey = `${selectedQuestion.category}-${questionIndex}`;
-    markTeamCorrectMutation.mutate({ teamIndex, questionKey });
+    const points = questionIndex < 2 ? 200 : questionIndex < 4 ? 400 : 600;
+    markTeamCorrectMutation.mutate({ teamIndex, questionKey, points });
   };
 
   const handleSkipQuestion = () => {
@@ -169,6 +170,14 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
           <div className="luxury-card p-8 mb-6 text-center question-slide-in">
             <div className="text-sm text-luxury-green mb-4">
               {selectedQuestion.category} - {selectedQuestion.difficulty}
+            </div>
+            <div className="text-lg font-bold text-green-600 mb-4">
+              {(() => {
+                const categoryQuestions = gameData?.questions?.filter((q: Question) => q.category === selectedQuestion.category) || [];
+                const questionIndex = categoryQuestions.findIndex(q => q.id === selectedQuestion.id);
+                const points = questionIndex < 2 ? 200 : questionIndex < 4 ? 400 : 600;
+                return `${points} نقطة`;
+              })()}
             </div>
             <h1 className="text-3xl font-bold text-luxury-green-dark mb-8 question-card-flip">
               {selectedQuestion.question}
@@ -218,16 +227,21 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             </h3>
             
             <div className="grid grid-cols-2 gap-4 mb-4">
-              {gameSession.teams.map((team: string, index: number) => (
-                <Button
-                  key={index}
-                  onClick={() => handleTeamCorrect(index)}
-                  className="luxury-button py-4 text-lg"
-                  disabled={markTeamCorrectMutation.isPending}
-                >
-                  {team} ✅
-                </Button>
-              ))}
+              {gameSession.teams.map((team: string, index: number) => {
+                const categoryQuestions = gameData?.questions?.filter((q: Question) => q.category === selectedQuestion.category) || [];
+                const questionIndex = categoryQuestions.findIndex(q => q.id === selectedQuestion.id);
+                const points = questionIndex < 2 ? 200 : questionIndex < 4 ? 400 : 600;
+                return (
+                  <Button
+                    key={index}
+                    onClick={() => handleTeamCorrect(index)}
+                    className="luxury-button py-4 text-lg"
+                    disabled={markTeamCorrectMutation.isPending}
+                  >
+                    {team} ✅ (+{points})
+                  </Button>
+                );
+              })}
             </div>
             
             <Button
@@ -302,29 +316,40 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
           {CATEGORIES.map((category, categoryIndex) => (
             <div key={category.id} className="space-y-2 question-grid-item">
               {/* Category Header */}
-              <div className="luxury-card p-4 text-center bg-luxury-green text-white font-bold question-category-pulse">
+              <div className="p-4 text-center bg-green-700 text-white font-bold rounded-lg border-2 border-green-600 question-category-pulse">
                 <div className="text-2xl mb-2">{category.icon}</div>
-                <div className="text-sm">{category.name}</div>
+                <div className="text-sm font-semibold">{category.name}</div>
               </div>
               
               {/* Question Boxes */}
               {[0, 1, 2, 3, 4, 5].map((index) => {
                 const isUsed = gameBoard[category.id]?.[index];
+                const points = index < 2 ? 200 : index < 4 ? 400 : 600;
+                const difficulty = index < 2 ? "سهل" : index < 4 ? "متوسط" : "صعب";
                 return (
                   <button
                     key={index}
                     onClick={() => handleQuestionClick(category.id, index)}
                     disabled={isUsed}
-                    className={`luxury-card w-full h-16 text-center font-bold text-lg transition-all duration-300 ${
+                    className={`w-full h-20 text-center font-bold text-lg transition-all duration-300 rounded-lg border-2 ${
                       isUsed
-                        ? "bg-gray-300 text-gray-500 cursor-not-allowed question-box-used"
-                        : "bg-luxury-green text-white hover:bg-luxury-green-dark shadow-lg hover:shadow-xl question-box-hover"
+                        ? "bg-gray-400 text-gray-600 cursor-not-allowed border-gray-500 question-box-used"
+                        : "bg-green-800 text-white hover:bg-green-900 border-green-600 shadow-lg hover:shadow-xl question-box-hover transform hover:-translate-y-1"
                     }`}
                     style={{
                       animationDelay: `${(categoryIndex * 6 + index) * 0.1}s`
                     }}
                   >
-                    {isUsed ? "✅" : `${category.name} - ${index + 1}`}
+                    {isUsed ? (
+                      <div className="flex flex-col items-center justify-center h-full">
+                        <span className="text-2xl">✅</span>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center h-full">
+                        <div className="text-2xl font-bold">{points}</div>
+                        <div className="text-xs opacity-80">{difficulty}</div>
+                      </div>
+                    )}
                   </button>
                 );
               })}

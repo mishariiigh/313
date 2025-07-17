@@ -266,9 +266,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const { teamIndex, questionKey } = req.body;
       
+      // Calculate points based on question difficulty
+      const [, questionIndex] = questionKey.split('-');
+      const index = parseInt(questionIndex);
+      const points = index < 2 ? 200 : index < 4 ? 400 : 600;
+      
       // Update team score
       const newTeamScores = [...gameSession.teamScores];
-      newTeamScores[teamIndex] = (newTeamScores[teamIndex] || 0) + 1;
+      newTeamScores[teamIndex] = (newTeamScores[teamIndex] || 0) + points;
       
       // Mark question as used
       const newUsedQuestions = [...(gameSession.usedQuestions || []), questionKey];

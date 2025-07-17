@@ -332,6 +332,11 @@
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
+  
+  .question-box-gradient {
+    background: linear-gradient(135deg, #166534 0%, #15803d 100%);
+    box-shadow: 0 4px 20px rgba(22, 101, 52, 0.4);
+  }
 
   .board-transition {
     animation: boardSlide 0.5s ease-out;
