@@ -26,8 +26,8 @@ export default function AdminDashboard() {
   const [questionSearch, setQuestionSearch] = useState("");
   const [categorySearch, setCategorySearch] = useState("");
   const [couponSearch, setCouponSearch] = useState("");
-  const [questionCategoryFilter, setQuestionCategoryFilter] = useState("");
-  const [questionDifficultyFilter, setQuestionDifficultyFilter] = useState("");
+  const [questionCategoryFilter, setQuestionCategoryFilter] = useState("all");
+  const [questionDifficultyFilter, setQuestionDifficultyFilter] = useState("all");
 
   // States for forms
   const [questionForm, setQuestionForm] = useState({
@@ -124,6 +124,7 @@ export default function AdminDashboard() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/categories"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/questions"] }); // Refresh questions for filter
       setCategoryForm({ name: "", displayName: "", description: "", logoUrl: "" });
       toast({ title: "تم إنشاء الفئة بنجاح" });
     },
@@ -139,6 +140,7 @@ export default function AdminDashboard() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/categories"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/questions"] }); // Refresh questions for filter
       setEditingCategory(null);
       setCategoryForm({ name: "", displayName: "", description: "", logoUrl: "" });
       toast({ title: "تم تحديث الفئة بنجاح" });
@@ -155,6 +157,7 @@ export default function AdminDashboard() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/categories"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/questions"] }); // Refresh questions for filter
       toast({ title: "تم حذف الفئة بنجاح" });
     },
     onError: (error: any) => {
