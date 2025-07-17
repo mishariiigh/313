@@ -32,7 +32,6 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
   const [showHint, setShowHint] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
-  const [gameBoard, setGameBoard] = useState<{ [key: string]: boolean[] }>({});
 
   // Get game session data
   const { data: gameData, isLoading } = useQuery({
@@ -49,24 +48,6 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     }
 
     if (gameData) {
-      // Initialize game board based on used questions
-      const board: { [key: string]: boolean[] } = {};
-      CATEGORIES.forEach(category => {
-        board[category.id] = [false, false, false, false, false, false];
-      });
-
-      // Mark used questions
-      if (gameData.gameSession?.usedQuestions) {
-        gameData.gameSession.usedQuestions.forEach((questionKey: string) => {
-          const [category, index] = questionKey.split('-');
-          if (board[category]) {
-            board[category][parseInt(index)] = true;
-          }
-        });
-      }
-
-      setGameBoard(board);
-      
       // Check if game is completed and auto-complete if needed
       if (gameData.gameSession?.usedQuestions?.length >= 36 && !gameData.gameSession?.isCompleted) {
         // Auto-complete the game
@@ -434,7 +415,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => adjustScoreMutation.mutate({ teamIndex: index, scoreChange: -100 })}
+                    onClick={() => adjustScoreMutation.mutate({ teamIndex: index, scoreChange: -50 })}
                     disabled={adjustScoreMutation.isPending}
                     className="bg-white/80 text-gray-800 border-gray-300 hover:bg-white p-1 h-6 w-6"
                     title="تقليل النقاط"
@@ -447,7 +428,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => adjustScoreMutation.mutate({ teamIndex: index, scoreChange: 100 })}
+                    onClick={() => adjustScoreMutation.mutate({ teamIndex: index, scoreChange: 50 })}
                     disabled={adjustScoreMutation.isPending}
                     className="bg-white/80 text-gray-800 border-gray-300 hover:bg-white p-1 h-6 w-6"
                     title="زيادة النقاط"
@@ -478,7 +459,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   {/* 200 Points */}
                   <div className="grid grid-cols-2 gap-2">
                     {[0, 1].map((index) => {
-                      const isUsed = gameBoard[category.id]?.[index];
+                      const questionKey = `${category.id}-${index}`;
+                      const isUsed = gameSession.usedQuestions?.includes(questionKey);
                       return (
                         <button
                           key={index}
@@ -503,7 +485,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   {/* 400 Points */}
                   <div className="grid grid-cols-2 gap-2">
                     {[2, 3].map((index) => {
-                      const isUsed = gameBoard[category.id]?.[index];
+                      const questionKey = `${category.id}-${index}`;
+                      const isUsed = gameSession.usedQuestions?.includes(questionKey);
                       return (
                         <button
                           key={index}
@@ -528,7 +511,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   {/* 600 Points */}
                   <div className="grid grid-cols-2 gap-2">
                     {[4, 5].map((index) => {
-                      const isUsed = gameBoard[category.id]?.[index];
+                      const questionKey = `${category.id}-${index}`;
+                      const isUsed = gameSession.usedQuestions?.includes(questionKey);
                       return (
                         <button
                           key={index}
