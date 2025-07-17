@@ -185,38 +185,113 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Stats Cards */}
+        {/* Creative Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-          <div className="luxury-stats-card glow pulse-luxury question-slide-in">
-            <div className="flex items-center justify-center mb-4">
-              <div className="w-16 h-16 bg-luxury-green rounded-2xl flex items-center justify-center shadow-luxury floating">
-                <Gamepad2 className="text-luxury-cream h-8 w-8" />
+          
+          {/* Available Games Card */}
+          <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-red-50 to-red-100 border-2 border-red-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+            {/* Decorative Background */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-4 right-4 w-20 h-20 bg-red-300 rounded-full animate-pulse"></div>
+              <div className="absolute bottom-4 left-4 w-16 h-16 bg-red-400 rounded-full animate-bounce"></div>
+            </div>
+            
+            <div className="relative z-10 p-8">
+              <div className="flex items-center justify-between mb-6">
+                <div className="w-14 h-14 bg-gradient-to-br from-red-400 to-red-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Gamepad2 className="text-white h-7 w-7" />
+                </div>
+                <div className="text-right">
+                  <div className="text-3xl font-bold text-red-700 mb-1">{user?.availableGames || 0}</div>
+                  <div className="text-sm text-red-500 font-medium">ألعاب متاحة</div>
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-red-800 mb-2">الألعاب المتاحة</h3>
+              <p className="text-red-600 text-sm">جاهز للعب والاستمتاع</p>
+              
+              {/* Progress Bar */}
+              <div className="mt-4 bg-red-200 rounded-full h-2">
+                <div 
+                  className="bg-gradient-to-r from-red-400 to-red-600 h-2 rounded-full transition-all duration-500"
+                  style={{ width: `${Math.min((user?.availableGames || 0) * 10, 100)}%` }}
+                ></div>
               </div>
             </div>
-            <h3 className="text-2xl font-bold text-luxury-green-dark mb-2">الألعاب المتاحة</h3>
-            <p className="text-4xl font-bold text-gradient">{user?.availableGames || 0}</p>
           </div>
 
-          <div className="luxury-stats-card hint-reveal">
-            <div className="flex items-center justify-center mb-4">
-              <div className="w-16 h-16 bg-luxury-gold rounded-2xl flex items-center justify-center shadow-luxury floating question-category-pulse">
-                <Trophy className="text-luxury-green-dark h-8 w-8" />
+          {/* Completed Games Card */}
+          <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-50 to-orange-100 border-2 border-orange-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+            {/* Decorative Background */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-6 left-6 w-24 h-24 bg-orange-300 rounded-full animate-pulse"></div>
+              <div className="absolute bottom-2 right-2 w-12 h-12 bg-orange-400 rounded-full animate-bounce"></div>
+            </div>
+            
+            <div className="relative z-10 p-8">
+              <div className="flex items-center justify-between mb-6">
+                <div className="w-14 h-14 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Trophy className="text-white h-7 w-7" />
+                </div>
+                <div className="text-right">
+                  <div className="text-3xl font-bold text-orange-700 mb-1">{historyData?.gameSessions?.filter((session: any) => session.isCompleted).length || 0}</div>
+                  <div className="text-sm text-orange-500 font-medium">ألعاب مكتملة</div>
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-orange-800 mb-2">الألعاب المكتملة</h3>
+              <p className="text-orange-600 text-sm">إنجازات محققة بنجاح</p>
+              
+              {/* Achievement Stars */}
+              <div className="mt-4 flex items-center space-x-1 space-x-reverse">
+                {[...Array(Math.min(historyData?.gameSessions?.filter((session: any) => session.isCompleted).length || 0, 5))].map((_, i) => (
+                  <Star key={i} className="h-4 w-4 text-orange-400 fill-current animate-pulse" style={{ animationDelay: `${i * 0.1}s` }} />
+                ))}
               </div>
             </div>
-            <h3 className="text-2xl font-bold text-luxury-green-dark mb-2">الألعاب المكتملة</h3>
-            <p className="text-4xl font-bold text-gradient team-score-update">{historyData?.gameSessions?.length || 0}</p>
           </div>
 
-          <div className="luxury-stats-card answer-reveal">
-            <div className="flex items-center justify-center mb-4">
-              <div className="w-16 h-16 bg-luxury-green-dark rounded-2xl flex items-center justify-center shadow-luxury floating question-category-pulse">
-                <Star className="text-luxury-gold h-8 w-8" />
+          {/* Total Score Card */}
+          <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-yellow-50 to-yellow-100 border-2 border-yellow-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+            {/* Decorative Background */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-2 right-8 w-18 h-18 bg-yellow-300 rounded-full animate-pulse"></div>
+              <div className="absolute bottom-6 left-2 w-14 h-14 bg-yellow-400 rounded-full animate-bounce"></div>
+            </div>
+            
+            <div className="relative z-10 p-8">
+              <div className="flex items-center justify-between mb-6">
+                <div className="w-14 h-14 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Star className="text-white h-7 w-7" />
+                </div>
+                <div className="text-right">
+                  <div className="text-3xl font-bold text-yellow-700 mb-1">
+                    {historyData?.gameSessions?.reduce((total: number, session: any) => {
+                      if (session.gameType === "team") {
+                        return total + (session.team1Score || 0) + (session.team2Score || 0);
+                      }
+                      return total + (session.score || 0);
+                    }, 0) || 0}
+                  </div>
+                  <div className="text-sm text-yellow-500 font-medium">نقطة إجمالية</div>
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-yellow-800 mb-2">النقاط الإجمالية</h3>
+              <p className="text-yellow-600 text-sm">مجموع نقاط جميع الألعاب</p>
+              
+              {/* Score Animation */}
+              <div className="mt-4 flex items-center space-x-2 space-x-reverse">
+                <div className="w-6 h-6 bg-yellow-400 rounded-full animate-ping"></div>
+                <div className="text-yellow-600 text-sm font-medium">
+                  معدل النقاط: {historyData?.gameSessions?.length > 0 ? 
+                    Math.round((historyData?.gameSessions?.reduce((total: number, session: any) => {
+                      if (session.gameType === "team") {
+                        return total + (session.team1Score || 0) + (session.team2Score || 0);
+                      }
+                      return total + (session.score || 0);
+                    }, 0) || 0) / historyData.gameSessions.length) : 0
+                  }
+                </div>
               </div>
             </div>
-            <h3 className="text-2xl font-bold text-luxury-green-dark mb-2">النقاط الإجمالية</h3>
-            <p className="text-4xl font-bold text-gradient team-score-update">
-              {historyData?.gameSessions?.reduce((total: number, session: any) => total + session.score, 0) || 0}
-            </p>
           </div>
         </div>
 
