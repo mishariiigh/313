@@ -6,75 +6,75 @@
 
 @layer base {
   :root {
-    /* Luxury Off-White & Light Green Theme */
-    --background: hsl(48, 100%, 98%);
-    --foreground: hsl(160, 12%, 20%);
+    /* Off-White & Light Red Theme */
+    --background: hsl(0, 0%, 98%);
+    --foreground: hsl(0, 0%, 20%);
     
-    --card: hsl(48, 100%, 99%);
-    --card-foreground: hsl(160, 12%, 20%);
+    --card: hsl(0, 0%, 99%);
+    --card-foreground: hsl(0, 0%, 20%);
     
-    --popover: hsl(48, 100%, 99%);
-    --popover-foreground: hsl(160, 12%, 20%);
+    --popover: hsl(0, 0%, 99%);
+    --popover-foreground: hsl(0, 0%, 20%);
     
-    --primary: hsl(142, 75%, 55%);
+    --primary: hsl(0, 70%, 70%);
     --primary-foreground: hsl(0, 0%, 100%);
     
-    --secondary: hsl(142, 25%, 90%);
-    --secondary-foreground: hsl(160, 15%, 25%);
+    --secondary: hsl(0, 25%, 90%);
+    --secondary-foreground: hsl(0, 0%, 25%);
     
-    --muted: hsl(48, 60%, 95%);
-    --muted-foreground: hsl(160, 8%, 45%);
+    --muted: hsl(0, 0%, 95%);
+    --muted-foreground: hsl(0, 0%, 45%);
     
-    --accent: hsl(142, 50%, 85%);
-    --accent-foreground: hsl(160, 15%, 25%);
+    --accent: hsl(0, 50%, 85%);
+    --accent-foreground: hsl(0, 0%, 25%);
     
     --destructive: hsl(0, 84%, 60%);
     --destructive-foreground: hsl(0, 0%, 100%);
     
-    --border: hsl(142, 25%, 88%);
-    --input: hsl(142, 25%, 92%);
-    --ring: hsl(142, 75%, 55%);
+    --border: hsl(0, 25%, 88%);
+    --input: hsl(0, 25%, 92%);
+    --ring: hsl(0, 70%, 70%);
     
     --radius: 0.75rem;
     
     /* Custom luxury colors */
-    --luxury-cream: hsl(48, 100%, 98%);
-    --luxury-green: hsl(142, 75%, 55%);
-    --luxury-green-light: hsl(142, 50%, 85%);
-    --luxury-green-dark: hsl(142, 85%, 45%);
-    --luxury-gold: hsl(43, 100%, 68%);
-    --luxury-shadow: hsl(160, 15%, 15%, 0.1);
-    --luxury-glow: hsl(142, 75%, 55%, 0.3);
+    --luxury-cream: hsl(0, 0%, 98%);
+    --luxury-green: hsl(0, 70%, 70%);
+    --luxury-green-light: hsl(0, 50%, 85%);
+    --luxury-green-dark: hsl(0, 85%, 55%);
+    --luxury-gold: hsl(0, 50%, 68%);
+    --luxury-shadow: hsl(0, 0%, 15%, 0.1);
+    --luxury-glow: hsl(0, 70%, 70%, 0.3);
   }
 
   .dark {
-    --background: hsl(160, 15%, 12%);
-    --foreground: hsl(48, 100%, 95%);
+    --background: hsl(0, 0%, 12%);
+    --foreground: hsl(0, 0%, 95%);
     
-    --card: hsl(160, 15%, 15%);
-    --card-foreground: hsl(48, 100%, 95%);
+    --card: hsl(0, 0%, 15%);
+    --card-foreground: hsl(0, 0%, 95%);
     
-    --popover: hsl(160, 15%, 12%);
-    --popover-foreground: hsl(48, 100%, 95%);
+    --popover: hsl(0, 0%, 12%);
+    --popover-foreground: hsl(0, 0%, 95%);
     
-    --primary: hsl(142, 75%, 55%);
+    --primary: hsl(0, 70%, 70%);
     --primary-foreground: hsl(0, 0%, 100%);
     
-    --secondary: hsl(160, 15%, 20%);
-    --secondary-foreground: hsl(48, 100%, 95%);
+    --secondary: hsl(0, 15%, 20%);
+    --secondary-foreground: hsl(0, 0%, 95%);
     
-    --muted: hsl(160, 15%, 20%);
-    --muted-foreground: hsl(48, 50%, 70%);
+    --muted: hsl(0, 15%, 20%);
+    --muted-foreground: hsl(0, 0%, 70%);
     
-    --accent: hsl(160, 15%, 20%);
-    --accent-foreground: hsl(48, 100%, 95%);
+    --accent: hsl(0, 15%, 20%);
+    --accent-foreground: hsl(0, 0%, 95%);
     
     --destructive: hsl(0, 62%, 30%);
     --destructive-foreground: hsl(0, 0%, 100%);
     
-    --border: hsl(160, 15%, 25%);
-    --input: hsl(160, 15%, 25%);
-    --ring: hsl(142, 75%, 55%);
+    --border: hsl(0, 15%, 25%);
+    --input: hsl(0, 15%, 25%);
+    --ring: hsl(0, 70%, 70%);
   }
 }
 
@@ -85,7 +85,7 @@
   
   body {
     @apply bg-background text-foreground font-arabic antialiased;
-    background: linear-gradient(135deg, hsl(48, 100%, 98%) 0%, hsl(142, 25%, 96%) 100%);
+    background: linear-gradient(135deg, hsl(0, 0%, 98%) 0%, hsl(0, 25%, 96%) 100%);
     min-height: 100vh;
     direction: rtl;
   }
@@ -145,8 +145,8 @@
   /* Luxury buttons */
   .luxury-button {
     @apply text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg cursor-pointer;
-    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3), 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+    box-shadow: 0 4px 16px rgba(248, 113, 113, 0.3), 0 2px 8px rgba(0, 0, 0, 0.1);
     position: relative;
     overflow: hidden;
     border: none;
@@ -169,8 +169,8 @@
   
   .luxury-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4), 0 4px 16px rgba(0, 0, 0, 0.15);
-    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+    box-shadow: 0 8px 24px rgba(248, 113, 113, 0.4), 0 4px 16px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   }
   
   .luxury-button:active {
@@ -180,15 +180,15 @@
   /* Secondary luxury button */
   .luxury-button-secondary {
     @apply px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-md cursor-pointer;
-    background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-    color: #16a34a;
-    border: 2px solid #22c55e;
+    background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+    color: #ef4444;
+    border: 2px solid #f87171;
   }
   
   .luxury-button-secondary:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.3);
-    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    box-shadow: 0 6px 20px rgba(248, 113, 113, 0.3);
+    background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
     color: white;
   }
   

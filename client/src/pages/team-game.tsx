@@ -187,35 +187,35 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   if (isGameCompleted) {
     const winner = getWinner();
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-red-50">
         <div className="max-w-2xl mx-auto p-8">
           <div className="luxury-card p-12 text-center">
             <div className="text-6xl mb-6">🎉</div>
-            <h1 className="text-4xl font-bold text-luxury-green-dark mb-6">
+            <h1 className="text-4xl font-bold text-gray-800 mb-6">
               تهانينا! انتهت اللعبة
             </h1>
             
             {winner && (
               <div className="mb-8">
-                <div className="text-2xl font-bold text-luxury-green mb-4">
+                <div className="text-2xl font-bold text-red-600 mb-4">
                   الفريق الفائز:
                 </div>
-                <div className="bg-gradient-to-r from-luxury-green to-luxury-green-dark text-white p-6 rounded-xl text-3xl font-bold mb-4">
+                <div className="bg-gradient-to-r from-red-400 to-red-500 text-white p-6 rounded-xl text-3xl font-bold mb-4">
                   {winner.team}
                 </div>
-                <div className="text-xl text-luxury-green-dark">
+                <div className="text-xl text-gray-800">
                   النتيجة النهائية: {winner.score} نقطة
                 </div>
               </div>
             )}
             
-            <div className="bg-luxury-cream p-6 rounded-xl mb-8">
-              <h3 className="text-xl font-bold text-luxury-green-dark mb-4">النتائج النهائية:</h3>
+            <div className="bg-gray-50 p-6 rounded-xl mb-8">
+              <h3 className="text-xl font-bold text-gray-800 mb-4">النتائج النهائية:</h3>
               <div className="space-y-3">
                 {gameSession.teams.map((team: string, index: number) => (
                   <div key={index} className="flex justify-between items-center">
                     <span className="font-semibold">{team}</span>
-                    <span className="text-luxury-green font-bold text-lg">
+                    <span className="text-red-600 font-bold text-lg">
                       {gameSession.teamScores[index] || 0} نقطة
                     </span>
                   </div>
@@ -225,7 +225,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             
             <Button
               onClick={() => setLocation("/dashboard")}
-              className="luxury-button text-lg py-4 px-8"
+              className="bg-red-500 hover:bg-red-600 text-white text-lg py-4 px-8"
             >
               العودة للوحة التحكم
             </Button>
