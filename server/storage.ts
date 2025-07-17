@@ -1,6 +1,6 @@
 import { users, questions, gameSessions, purchases, type User, type InsertUser, type Question, type InsertQuestion, type GameSession, type InsertGameSession, type Purchase, type InsertPurchase } from "@shared/schema";
 import { db } from "./db";
-import { eq, sql, desc, inArray } from "drizzle-orm";
+import { eq, sql, desc, inArray, and } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -65,14 +65,20 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getQuestions(category?: string, difficulty?: string): Promise<Question[]> {
-    let query = db.select().from(questions);
+    let whereCondition;
     
-    if (category) {
-      query = query.where(eq(questions.category, category));
+    if (category && difficulty) {
+      whereCondition = and(eq(questions.category, category), eq(questions.difficulty, difficulty));
+    } else if (category) {
+      whereCondition = eq(questions.category, category);
+    } else if (difficulty) {
+      whereCondition = eq(questions.difficulty, difficulty);
     }
     
-    if (difficulty) {
-      query = query.where(eq(questions.difficulty, difficulty));
+    const query = db.select().from(questions);
+    
+    if (whereCondition) {
+      return query.where(whereCondition).orderBy(desc(questions.createdAt));
     }
     
     return query.orderBy(desc(questions.createdAt));
@@ -118,8 +124,7 @@ export class DatabaseStorage implements IStorage {
         const categoryQuestions = await db
           .select()
           .from(questions)
-          .where(eq(questions.category, category))
-          .where(eq(questions.difficulty, difficulty))
+          .where(and(eq(questions.category, category), eq(questions.difficulty, difficulty)))
           .orderBy(sql`RANDOM()`)
           .limit(questionsPerDifficulty);
         
