@@ -180,7 +180,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 variant="outline"
                 className="luxury-button-secondary"
               >
-                <HelpCircle className="ml-2 h-4 w-4" />
+                <HelpCircle className="ml-2 h-4 w-4 text-luxury-green-dark" />
                 {showHint ? "إخفاء التلميح" : "إظهار التلميح"}
               </Button>
               
@@ -188,7 +188,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 onClick={() => setShowAnswer(!showAnswer)}
                 className="luxury-button"
               >
-                <Eye className="ml-2 h-4 w-4" />
+                <Eye className="ml-2 h-4 w-4 text-luxury-cream" />
                 {showAnswer ? "إخفاء الإجابة" : "إظهار الإجابة"}
               </Button>
             </div>
@@ -247,7 +247,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
               variant="outline"
               className="luxury-button-secondary"
             >
-              <ArrowLeft className="ml-2 h-4 w-4" />
+              <ArrowLeft className="ml-2 h-4 w-4 text-luxury-green-dark" />
               العودة للوحة
             </Button>
           </div>
@@ -269,7 +269,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 onClick={() => setLocation("/dashboard")}
                 className="luxury-button-secondary p-2 ml-4"
               >
-                <ArrowLeft className="h-5 w-5" />
+                <ArrowLeft className="h-5 w-5 text-luxury-green-dark" />
               </Button>
               <div>
                 <h1 className="text-2xl font-bold text-luxury-green-dark">لوحة الأسئلة</h1>

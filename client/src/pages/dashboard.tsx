@@ -105,7 +105,7 @@ export default function Dashboard() {
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center space-x-reverse space-x-4">
               <div className="h-12 w-12 luxury-button rounded-full flex items-center justify-center floating question-category-pulse">
-                <Brain className="text-white h-6 w-6" />
+                <Brain className="text-luxury-cream h-6 w-6" />
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gradient">منصة الألعاب الثقافية</h1>
@@ -151,7 +151,7 @@ export default function Dashboard() {
           <div className="luxury-stats-card glow pulse-luxury question-slide-in">
             <div className="flex items-center justify-center mb-4">
               <div className="w-16 h-16 bg-luxury-green rounded-2xl flex items-center justify-center shadow-luxury floating">
-                <Gamepad2 className="text-white h-8 w-8" />
+                <Gamepad2 className="text-luxury-cream h-8 w-8" />
               </div>
             </div>
             <h3 className="text-2xl font-bold text-luxury-green-dark mb-2">الألعاب المتاحة</h3>
@@ -161,7 +161,7 @@ export default function Dashboard() {
           <div className="luxury-stats-card hint-reveal">
             <div className="flex items-center justify-center mb-4">
               <div className="w-16 h-16 bg-luxury-gold rounded-2xl flex items-center justify-center shadow-luxury floating question-category-pulse">
-                <Trophy className="text-white h-8 w-8" />
+                <Trophy className="text-luxury-green-dark h-8 w-8" />
               </div>
             </div>
             <h3 className="text-2xl font-bold text-luxury-green-dark mb-2">الألعاب المكتملة</h3>
@@ -171,7 +171,7 @@ export default function Dashboard() {
           <div className="luxury-stats-card answer-reveal">
             <div className="flex items-center justify-center mb-4">
               <div className="w-16 h-16 bg-luxury-green-dark rounded-2xl flex items-center justify-center shadow-luxury floating question-category-pulse">
-                <Star className="text-white h-8 w-8" />
+                <Star className="text-luxury-gold h-8 w-8" />
               </div>
             </div>
             <h3 className="text-2xl font-bold text-luxury-green-dark mb-2">النقاط الإجمالية</h3>
@@ -186,7 +186,7 @@ export default function Dashboard() {
           {/* Start New Game Card */}
           <div className="luxury-card p-10 text-center hint-reveal">
             <div className="w-24 h-24 bg-luxury-green rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-luxury floating question-category-pulse">
-              <Play className="text-white h-12 w-12" />
+              <Play className="text-luxury-cream h-12 w-12" />
             </div>
             <h3 className="text-2xl font-bold text-luxury-green-dark mb-4">بدء لعبة جديدة</h3>
             <p className="text-muted-foreground mb-8 text-lg">ابدأ جلسة جديدة بـ 36 سؤالاً متنوعاً عبر 6 فئات مختلفة</p>
@@ -206,7 +206,7 @@ export default function Dashboard() {
           {/* Purchase Games Card */}
           <div className="luxury-card p-10 text-center answer-reveal">
             <div className="w-24 h-24 bg-luxury-gold rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-luxury floating question-category-pulse">
-              <ShoppingCart className="text-white h-12 w-12" />
+              <ShoppingCart className="text-luxury-green-dark h-12 w-12" />
             </div>
             <h3 className="text-2xl font-bold text-luxury-green-dark mb-4">شراء ألعاب إضافية</h3>
             <p className="text-muted-foreground mb-8 text-lg">احصل على المزيد من الألعاب لتستمتع مع أصدقائك</p>
