@@ -265,7 +265,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     console.log(`Clicking question: categoryName=${categoryName}, index=${index}, categoryIndex=${categoryIndex}, questionIndex=${questionIndex}, questionKey=${questionKey}`);
     
     if (question) {
-      setSelectedQuestion(question);
+      // Store the question key with the question so we can use it later
+      setSelectedQuestion({...question, questionKey});
       // Check if hint was already used for this question
       const isHintUsed = gameSession.usedHints?.includes(questionKey);
       setShowHint(isHintUsed);
@@ -289,73 +290,50 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   const handleTeamCorrect = (teamIndex: number) => {
     if (!selectedQuestion) return;
     
-    // Find which category and position this question is in
-    // selectedQuestion.category contains the Arabic category name from the database
-    // We need to find the corresponding English category name
-    const categoryIndex = categories.findIndex(cat => cat.displayName === selectedQuestion.category);
-    const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
-    
-    if (categoryIndex !== -1 && questionIndex !== -1) {
-      const positionInCategory = questionIndex % 6; // Position within the category (0-5)
-      const categoryName = categories[categoryIndex].name; // Use the English category name as ID
-      const questionKey = `${categoryName}-${positionInCategory}`;
+    // Use the stored question key directly
+    const questionKey = (selectedQuestion as any).questionKey;
+    if (questionKey) {
       console.log(`Team ${teamIndex} answered ${questionKey} correctly`);
       markTeamCorrectMutation.mutate({ teamIndex, questionKey });
     } else {
-      console.error(`Failed to find category "${selectedQuestion.category}" or question ID ${selectedQuestion.id}`);
+      console.error(`No question key stored for selected question`);
     }
   };
 
   const handleSkipQuestion = () => {
     if (!selectedQuestion) return;
     
-    // Find which category and position this question is in
-    // selectedQuestion.category contains the Arabic category name from the database
-    const categoryIndex = categories.findIndex(cat => cat.displayName === selectedQuestion.category);
-    const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
-    
-    if (categoryIndex !== -1 && questionIndex !== -1) {
-      const positionInCategory = questionIndex % 6; // Position within the category (0-5)
-      const categoryName = categories[categoryIndex].name; // Use the English category name as ID
-      const questionKey = `${categoryName}-${positionInCategory}`;
+    // Use the stored question key directly
+    const questionKey = (selectedQuestion as any).questionKey;
+    if (questionKey) {
       console.log(`Skipping question ${questionKey}`);
       skipQuestionMutation.mutate({ questionKey });
+    } else {
+      console.error(`No question key stored for selected question`);
     }
   };
 
   const handleUseHint = () => {
     if (!selectedQuestion) return;
     
-    // Find which category and position this question is in
-    // selectedQuestion.category contains the Arabic category name from the database
-    const categoryIndex = categories.findIndex(cat => cat.displayName === selectedQuestion.category);
-    const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
-    
-    if (categoryIndex !== -1 && questionIndex !== -1) {
-      const positionInCategory = questionIndex % 6; // Position within the category (0-5)
-      const categoryName = categories[categoryIndex].name; // Use the English category name as ID
-      const questionKey = `${categoryName}-${positionInCategory}`;
+    // Use the stored question key directly
+    const questionKey = (selectedQuestion as any).questionKey;
+    if (questionKey) {
       console.log(`Using hint for question ${questionKey}`);
       useHintMutation.mutate({ 
         questionKey, 
         teamIndex: gameSession.currentTurn 
       });
+    } else {
+      console.error(`No question key stored for selected question`);
     }
   };
 
   const getCurrentQuestionKey = () => {
     if (!selectedQuestion) return null;
     
-    // selectedQuestion.category contains the Arabic category name from the database
-    const categoryIndex = categories.findIndex(cat => cat.displayName === selectedQuestion.category);
-    const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
-    
-    if (categoryIndex !== -1 && questionIndex !== -1) {
-      const positionInCategory = questionIndex % 6; // Position within the category (0-5)
-      const categoryName = categories[categoryIndex].name; // Use the English category name as ID
-      return `${categoryName}-${positionInCategory}`;
-    }
-    return null;
+    // Use the stored question key directly
+    return (selectedQuestion as any).questionKey || null;
   };
 
   // Game completion screen
@@ -421,18 +399,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
               {selectedQuestion.category}
             </div>
             <div className="text-lg font-bold text-green-600 mb-4">
-              {(() => {
-                // Find the category and position to determine points
-                const categoryIndex = categories.findIndex(cat => cat.name === selectedQuestion.category);
-                const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
-                
-                if (categoryIndex !== -1 && questionIndex !== -1) {
-                  const positionInCategory = questionIndex - (categoryIndex * 6);
-                  const points = positionInCategory < 2 ? 200 : positionInCategory < 4 ? 400 : 600;
-                  return `${points} نقطة`;
-                }
-                return "نقطة";
-              })()}
+              {getPointsForDifficulty(selectedQuestion.difficulty)} نقطة
             </div>
             
             {/* Timer Display */}
@@ -545,15 +512,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             
             <div className="grid grid-cols-2 gap-4 mb-4">
               {gameSession.teams.map((team: string, index: number) => {
-                // Find the category and position to determine points
-                const categoryIndex = categories.findIndex(cat => cat.name === selectedQuestion.category);
-                const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
-                
-                let points = 200; // Default
-                if (categoryIndex !== -1 && questionIndex !== -1) {
-                  const positionInCategory = questionIndex - (categoryIndex * 6);
-                  points = positionInCategory < 2 ? 200 : positionInCategory < 4 ? 400 : 600;
-                }
+                const points = getPointsForDifficulty(selectedQuestion.difficulty);
                 
                 return (
                   <Button
