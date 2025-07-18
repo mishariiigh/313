@@ -93,17 +93,26 @@ export default function GameSetupPage() {
       if (prev.includes(categoryName)) {
         return prev.filter(name => name !== categoryName);
       } else {
+        // Limit to maximum 6 categories
+        if (prev.length >= 6) {
+          toast({
+            title: "الحد الأقصى للفئات",
+            description: "يمكن اختيار 6 فئات كحد أقصى",
+            variant: "destructive",
+          });
+          return prev;
+        }
         return [...prev, categoryName];
       }
     });
   };
 
   const handleStartGame = () => {
-    // Validate that all available categories are selected (up to 6)
-    if (selectedCategories.length !== requiredCategoriesCount) {
+    // Validate that exactly 6 categories are selected
+    if (selectedCategories.length !== 6) {
       toast({
-        title: "يجب اختيار جميع الفئات",
-        description: `يرجى اختيار الفئات الـ ${requiredCategoriesCount} المطلوبة لبدء اللعبة`,
+        title: "يجب اختيار 6 فئات",
+        description: "يرجى اختيار 6 فئات بالضبط لبدء اللعبة",
         variant: "destructive",
       });
       return;
@@ -172,7 +181,7 @@ export default function GameSetupPage() {
             <div className="question-slide-in">
               <Label className="text-lg font-semibold text-luxury-green-dark mb-4 block flex items-center">
                 <BookOpen className="h-5 w-5 ml-2 text-luxury-green" />
-                اختيار الفئات (مطلوب اختيار الفئات الـ {requiredCategoriesCount})
+                اختيار الفئات (يجب اختيار 6 فئات بالضبط)
               </Label>
               
               {categoriesLoading ? (
@@ -214,8 +223,8 @@ export default function GameSetupPage() {
                   </div>
                   
                   <div className="mt-3 text-sm text-center">
-                    <span className={`font-medium ${selectedCategories.length === requiredCategoriesCount ? 'text-luxury-green' : 'text-orange-600'}`}>
-                      تم اختيار {selectedCategories.length} من {requiredCategoriesCount} فئات
+                    <span className={`font-medium ${selectedCategories.length === 6 ? 'text-luxury-green' : 'text-orange-600'}`}>
+                      تم اختيار {selectedCategories.length} من 6 فئات
                     </span>
                   </div>
                 </>
@@ -287,9 +296,9 @@ export default function GameSetupPage() {
             <div className="luxury-card p-4 bg-orange-50 border-orange-200">
               <h4 className="font-semibold text-orange-800 mb-2">المتطلبات قبل بدء اللعبة:</h4>
               <ul className="text-sm text-orange-700 space-y-1">
-                <li className={`flex items-center ${selectedCategories.length === requiredCategoriesCount ? 'text-green-700' : 'text-orange-700'}`}>
-                  <span className="ml-2">{selectedCategories.length === requiredCategoriesCount ? '✓' : '○'}</span>
-                  اختيار جميع الفئات المطلوبة ({selectedCategories.length}/{requiredCategoriesCount})
+                <li className={`flex items-center ${selectedCategories.length === 6 ? 'text-green-700' : 'text-orange-700'}`}>
+                  <span className="ml-2">{selectedCategories.length === 6 ? '✓' : '○'}</span>
+                  اختيار 6 فئات بالضبط ({selectedCategories.length}/6)
                 </li>
                 <li className={`flex items-center ${teams.every(team => team.trim()) ? 'text-green-700' : 'text-orange-700'}`}>
                   <span className="ml-2">{teams.every(team => team.trim()) ? '✓' : '○'}</span>
@@ -305,11 +314,11 @@ export default function GameSetupPage() {
                 startGameMutation.isPending || 
                 editingTeam !== null || 
                 categoriesLoading ||
-                selectedCategories.length !== requiredCategoriesCount || 
+                selectedCategories.length !== 6 || 
                 teams.some(team => !team.trim())
               }
               className={`w-full py-4 text-lg question-card-flip transition-all duration-300 ${
-                selectedCategories.length === requiredCategoriesCount && teams.every(team => team.trim()) && editingTeam === null && !categoriesLoading
+                selectedCategories.length === 6 && teams.every(team => team.trim()) && editingTeam === null && !categoriesLoading
                   ? 'luxury-button' 
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}

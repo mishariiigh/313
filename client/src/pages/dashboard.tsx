@@ -297,8 +297,8 @@ export default function Dashboard() {
 
         {/* Action Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Continue Game Card (only show if active game exists) */}
-          {activeGameData?.activeSession && (
+          {/* Continue Game Card (only show if active game exists and is not completed) */}
+          {activeGameData?.activeSession && !activeGameData.activeSession.isCompleted && (
             <div className="luxury-card p-10 text-center hint-reveal border-2 border-luxury-gold">
               <div className="w-24 h-24 bg-luxury-gold rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-luxury floating question-category-pulse">
                 <Play className="text-luxury-green-dark h-12 w-12" />

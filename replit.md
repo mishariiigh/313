@@ -2,6 +2,15 @@
 
 ## Recent Changes: Latest modifications with dates
 
+- **January 18, 2025**: Fixed critical game creation and UI issues
+  - Fixed category mapping issue between English category names in database and Arabic question categories
+  - Game creation now properly maps English category names (history, culture, etc.) to Arabic category display names (التاريخ, الثقافة العامة, etc.)
+  - Limited category selection to maximum 6 categories with proper validation and user feedback
+  - Updated game setup UI to clearly show "يجب اختيار 6 فئات بالضبط" (must select exactly 6 categories)
+  - Fixed "continue game" button to only show for active incomplete games, not completed ones
+  - Added proper category selection limit with toast notification when exceeding 6 categories
+  - Game creation now successfully works with proper category validation and question retrieval
+  - Updated UI text to be clearer about category selection requirements
 - **January 18, 2025**: Implemented mandatory game startup requirements and dynamic categories
   - Added mandatory selection of all required categories before game start
   - Implemented dynamic category system using admin-managed database categories

@@ -178,10 +178,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Get 6 questions for each selected category
         for (const category of selectedCategories) {
-          const categoryQuestions = await storage.getQuestionsByCategory(category, 6);
+          // Find the category in the database to get its display name
+          const dbCategory = activeCategories.find(cat => cat.name === category);
+          const categoryDisplayName = dbCategory ? dbCategory.displayName : category;
+          
+          const categoryQuestions = await storage.getQuestionsByCategory(categoryDisplayName, 6);
           if (categoryQuestions.length < 6) {
-            console.log(`Only ${categoryQuestions.length} questions available for ${category}, need 6`);
-            return res.status(400).json({ message: `لا توجد أسئلة كافية في فئة ${category}` });
+            console.log(`Only ${categoryQuestions.length} questions available for ${categoryDisplayName}, need 6`);
+            return res.status(400).json({ message: `لا توجد أسئلة كافية في فئة ${categoryDisplayName}` });
           }
           questionsByCategory[category] = categoryQuestions;
         }
