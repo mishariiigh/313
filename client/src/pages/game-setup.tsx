@@ -47,7 +47,7 @@ export default function GameSetupPage() {
       const gameData = {
         gameType: "team",
         teams,
-        categories: selectedCategories,
+        selectedCategories,
       };
       const response = await apiRequest("POST", "/api/games/start", gameData);
       return response.json();

@@ -517,7 +517,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      const gameSession = await storage.getGameSession(parseInt(req.params.id));
+      const gameSession = await storage.getGameSession(req.params.id);
       if (!gameSession) {
         return res.status(404).json({ message: "جلسة اللعبة غير موجودة" });
       }
@@ -579,7 +579,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      const gameSession = await storage.getGameSession(parseInt(req.params.id));
+      const gameSession = await storage.getGameSession(req.params.id);
       if (!gameSession) {
         return res.status(404).json({ message: "جلسة اللعبة غير موجودة" });
       }
