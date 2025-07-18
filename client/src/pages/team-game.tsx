@@ -659,7 +659,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       const question = gameData?.questions?.[questionIndex];
                       const questionKey = `${category.name}-${index}`;
                       const isUsed = gameSession.usedQuestions?.includes(questionKey);
-                      const points = question ? getPointsForDifficulty(question.difficulty) : 200;
+                      const points = 200;
                       return (
                         <button
                           key={index}
@@ -688,7 +688,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       const question = gameData?.questions?.[questionIndex];
                       const questionKey = `${category.name}-${index}`;
                       const isUsed = gameSession.usedQuestions?.includes(questionKey);
-                      const points = question ? getPointsForDifficulty(question.difficulty) : 400;
+                      const points = 400;
                       return (
                         <button
                           key={index}
@@ -717,7 +717,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       const question = gameData?.questions?.[questionIndex];
                       const questionKey = `${category.name}-${index}`;
                       const isUsed = gameSession.usedQuestions?.includes(questionKey);
-                      const points = question ? getPointsForDifficulty(question.difficulty) : 600;
+                      const points = 600;
                       return (
                         <button
                           key={index}
