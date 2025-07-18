@@ -2,11 +2,13 @@
 
 ## Recent Changes: Latest modifications with dates
 
-- **January 18, 2025**: CRITICAL FIX - Resolved position calculation bug causing incorrect question keys
+- **January 18, 2025**: CRITICAL FIX - Resolved position calculation bug and dynamic point display
   - ✅ FIXED POSITION CALCULATION: Changed from `questionIndex - (categoryIndex * 6)` to `questionIndex % 6`
   - ✅ CORRECTED QUESTION KEY GENERATION: Now properly generates correct keys (history-0, geography-2, religion-4)
   - ✅ ELIMINATED MALFORMED KEYS: No more double-dash keys like "sports--11" or "religion--11"
   - ✅ CONSISTENT ACROSS ALL FUNCTIONS: Fixed handleTeamCorrect, handleSkipQuestion, handleUseHint, getCurrentQuestionKey
+  - ✅ DYNAMIC POINT DISPLAY: Questions now show actual points based on difficulty (سهل=200, متوسط=400, صعب=600)
+  - ✅ ADDED getPointsForDifficulty HELPER: Function maps Arabic difficulty levels to point values
   - ✅ MAINTAINED CATEGORY MAPPING: UI continues to use Arabic display names while backend uses English names
   - The root cause was that position calculation was subtracting categoryIndex*6 instead of using modulo to get position within category
   - This should now correctly award points based on question position: 0-1 = 200pts, 2-3 = 400pts, 4-5 = 600pts

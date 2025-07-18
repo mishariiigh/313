@@ -36,6 +36,20 @@ interface TeamGamePageProps {
   };
 }
 
+// Helper function to get points based on difficulty
+const getPointsForDifficulty = (difficulty: string): number => {
+  switch (difficulty) {
+    case 'سهل':
+      return 200;
+    case 'متوسط':
+      return 400;
+    case 'صعب':
+      return 600;
+    default:
+      return 200;
+  }
+};
+
 export default function TeamGamePage({ params }: TeamGamePageProps) {
   const id = params.id;
   const { user } = useAuth();
@@ -248,7 +262,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     const questionIndex = categoryIndex * 6 + index;
     const question = gameData?.questions?.[questionIndex];
     
-    console.log(`Clicking question: categoryName=${categoryName}, index=${index}, categoryIndex=${categoryIndex}, questionIndex=${questionIndex}`);
+    console.log(`Clicking question: categoryName=${categoryName}, index=${index}, categoryIndex=${categoryIndex}, questionIndex=${questionIndex}, questionKey=${questionKey}`);
     
     if (question) {
       setSelectedQuestion(question);
@@ -682,8 +696,11 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   {/* 200 Points */}
                   <div className="grid grid-cols-2 gap-2">
                     {[0, 1].map((index) => {
+                      const questionIndex = categoryIndex * 6 + index;
+                      const question = gameData?.questions?.[questionIndex];
                       const questionKey = `${category.name}-${index}`;
                       const isUsed = gameSession.usedQuestions?.includes(questionKey);
+                      const points = question ? getPointsForDifficulty(question.difficulty) : 200;
                       return (
                         <button
                           key={index}
@@ -698,7 +715,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           {isUsed ? (
                             <span className="text-xl">✓</span>
                           ) : (
-                            <div className="font-bold text-lg">200</div>
+                            <div className="font-bold text-lg">{points}</div>
                           )}
                         </button>
                       );
@@ -708,8 +725,11 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   {/* 400 Points */}
                   <div className="grid grid-cols-2 gap-2">
                     {[2, 3].map((index) => {
+                      const questionIndex = categoryIndex * 6 + index;
+                      const question = gameData?.questions?.[questionIndex];
                       const questionKey = `${category.name}-${index}`;
                       const isUsed = gameSession.usedQuestions?.includes(questionKey);
+                      const points = question ? getPointsForDifficulty(question.difficulty) : 400;
                       return (
                         <button
                           key={index}
@@ -724,7 +744,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           {isUsed ? (
                             <span className="text-xl">✓</span>
                           ) : (
-                            <div className="font-bold text-lg">400</div>
+                            <div className="font-bold text-lg">{points}</div>
                           )}
                         </button>
                       );
@@ -734,8 +754,11 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   {/* 600 Points */}
                   <div className="grid grid-cols-2 gap-2">
                     {[4, 5].map((index) => {
+                      const questionIndex = categoryIndex * 6 + index;
+                      const question = gameData?.questions?.[questionIndex];
                       const questionKey = `${category.name}-${index}`;
                       const isUsed = gameSession.usedQuestions?.includes(questionKey);
+                      const points = question ? getPointsForDifficulty(question.difficulty) : 600;
                       return (
                         <button
                           key={index}
@@ -750,7 +773,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           {isUsed ? (
                             <span className="text-xl">✓</span>
                           ) : (
-                            <div className="font-bold text-lg">600</div>
+                            <div className="font-bold text-lg">{points}</div>
                           )}
                         </button>
                       );
