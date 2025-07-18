@@ -282,7 +282,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
     
     if (categoryIndex !== -1 && questionIndex !== -1) {
-      const positionInCategory = questionIndex - (categoryIndex * 6);
+      const positionInCategory = questionIndex % 6; // Position within the category (0-5)
       const categoryName = categories[categoryIndex].name; // Use the English category name as ID
       const questionKey = `${categoryName}-${positionInCategory}`;
       console.log(`Team ${teamIndex} answered ${questionKey} correctly`);
@@ -301,7 +301,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
     
     if (categoryIndex !== -1 && questionIndex !== -1) {
-      const positionInCategory = questionIndex - (categoryIndex * 6);
+      const positionInCategory = questionIndex % 6; // Position within the category (0-5)
       const categoryName = categories[categoryIndex].name; // Use the English category name as ID
       const questionKey = `${categoryName}-${positionInCategory}`;
       console.log(`Skipping question ${questionKey}`);
@@ -318,7 +318,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
     
     if (categoryIndex !== -1 && questionIndex !== -1) {
-      const positionInCategory = questionIndex - (categoryIndex * 6);
+      const positionInCategory = questionIndex % 6; // Position within the category (0-5)
       const categoryName = categories[categoryIndex].name; // Use the English category name as ID
       const questionKey = `${categoryName}-${positionInCategory}`;
       console.log(`Using hint for question ${questionKey}`);
@@ -337,7 +337,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
     
     if (categoryIndex !== -1 && questionIndex !== -1) {
-      const positionInCategory = questionIndex - (categoryIndex * 6);
+      const positionInCategory = questionIndex % 6; // Position within the category (0-5)
       const categoryName = categories[categoryIndex].name; // Use the English category name as ID
       return `${categoryName}-${positionInCategory}`;
     }
