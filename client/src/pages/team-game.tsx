@@ -276,9 +276,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     if (!selectedQuestion) return;
     
     // Find which category and position this question is in
-    // selectedQuestion.category contains the English category name (e.g., "sports"), 
-    // so we need to find by the English name property
-    const categoryIndex = categories.findIndex(cat => cat.name === selectedQuestion.category);
+    // selectedQuestion.category contains the Arabic category name from the database
+    // We need to find the corresponding English category name
+    const categoryIndex = categories.findIndex(cat => cat.displayName === selectedQuestion.category);
     const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
     
     if (categoryIndex !== -1 && questionIndex !== -1) {
@@ -296,8 +296,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     if (!selectedQuestion) return;
     
     // Find which category and position this question is in
-    // selectedQuestion.category contains the English category name
-    const categoryIndex = categories.findIndex(cat => cat.name === selectedQuestion.category);
+    // selectedQuestion.category contains the Arabic category name from the database
+    const categoryIndex = categories.findIndex(cat => cat.displayName === selectedQuestion.category);
     const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
     
     if (categoryIndex !== -1 && questionIndex !== -1) {
@@ -313,8 +313,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     if (!selectedQuestion) return;
     
     // Find which category and position this question is in
-    // selectedQuestion.category contains the English category name
-    const categoryIndex = categories.findIndex(cat => cat.name === selectedQuestion.category);
+    // selectedQuestion.category contains the Arabic category name from the database
+    const categoryIndex = categories.findIndex(cat => cat.displayName === selectedQuestion.category);
     const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
     
     if (categoryIndex !== -1 && questionIndex !== -1) {
@@ -332,8 +332,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   const getCurrentQuestionKey = () => {
     if (!selectedQuestion) return null;
     
-    // selectedQuestion.category contains the English category name
-    const categoryIndex = categories.findIndex(cat => cat.name === selectedQuestion.category);
+    // selectedQuestion.category contains the Arabic category name from the database
+    const categoryIndex = categories.findIndex(cat => cat.displayName === selectedQuestion.category);
     const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
     
     if (categoryIndex !== -1 && questionIndex !== -1) {
