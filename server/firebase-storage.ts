@@ -321,9 +321,17 @@ export class FirebaseStorage implements IFirebaseStorage {
   }
 
   // Purchase operations
-  async createPurchase(purchase: InsertPurchase): Promise<Purchase> {
+  async createPurchase(purchase: any): Promise<Purchase> {
+    // Clean the purchase object to remove undefined values for Firebase
+    const cleanPurchase = Object.keys(purchase).reduce((acc, key) => {
+      if (purchase[key] !== undefined) {
+        acc[key] = purchase[key];
+      }
+      return acc;
+    }, {} as any);
+    
     const docRef = await addDoc(collection(db, "purchases"), {
-      ...purchase,
+      ...cleanPurchase,
       createdAt: serverTimestamp(),
     });
     const purchaseDoc = await getDoc(docRef);

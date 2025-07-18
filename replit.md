@@ -72,16 +72,17 @@ Preferred communication style: Simple, everyday language.
 1. User selects game type and categories
 2. Backend generates questions from Firebase collections
 3. Game session created with unique string ID
-4. Real-time question display and scoring
-5. Team scores updated in Firebase documents
-6. Game completion triggers credit deduction
+4. **AUTOMATIC DECREASE**: User's available games reduced by 1 when game starts
+5. Real-time question display and scoring
+6. Team scores updated in Firebase documents
 
 ### Payment Flow
 1. User selects game package on frontend
-2. Stripe payment intent created on backend
-3. Payment processed via Stripe Elements
-4. Successful payment triggers credit addition
-5. Purchase record stored in Firebase
+2. Stripe payment intent created on backend (with coupon support)
+3. Payment processed via Stripe Elements or mock for testing
+4. **AUTOMATIC INCREASE**: User's available games increased by purchased amount
+5. Purchase record stored in Firebase with coupon tracking
+6. Coupon usage incremented if discount applied
 
 ### Data Synchronization
 - **Auto-sync**: Automatic Firebase synchronization on server startup

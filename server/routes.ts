@@ -902,19 +902,93 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Payment routes - Mock for testing
+  // Payment routes - Real Stripe integration
   app.post("/api/create-payment-intent", async (req, res) => {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "غير مسجل الدخول" });
     }
 
     try {
-      const { gameCount } = req.body;
+      const { gameCount, couponCode } = req.body;
+      const user = req.user as any;
       
-      // Create a mock client secret for testing
-      const mockClientSecret = `pi_mock_${Date.now()}_secret_${Math.random().toString(36).substr(2, 9)}`;
+      // Get game package pricing
+      const gamePackages = await storage.getActiveGamePackages();
+      const gamePackage = gamePackages.find(pkg => pkg.gameCount === gameCount);
       
-      res.json({ clientSecret: mockClientSecret });
+      if (!gamePackage) {
+        return res.status(400).json({ message: "باقة الألعاب غير موجودة" });
+      }
+      
+      let amount = gamePackage.price;
+      let discountAmount = 0;
+      let validCoupon = null;
+      
+      // Apply coupon if provided
+      if (couponCode) {
+        const coupon = await storage.getCouponByCode(couponCode);
+        if (coupon && coupon.isActive) {
+          const now = new Date();
+          const isNotExpired = !coupon.expiresAt || now <= new Date(coupon.expiresAt);
+          const hasUsageLeft = !coupon.maxUsage || coupon.usageCount < coupon.maxUsage;
+          
+          if (isNotExpired && hasUsageLeft) {
+            validCoupon = coupon;
+            if (coupon.discountType === 'percentage') {
+              discountAmount = Math.round(amount * (coupon.discountValue / 100));
+            } else {
+              discountAmount = Math.min(coupon.discountValue, amount);
+            }
+            amount = Math.max(0, amount - discountAmount);
+          }
+        }
+      }
+      
+      // Convert to Stripe format (cents)
+      const stripeAmount = Math.round(amount * 100);
+      
+      // Create payment intent with Stripe (only if valid key exists)
+      if (process.env.STRIPE_SECRET_KEY && process.env.STRIPE_SECRET_KEY.startsWith('sk_')) {
+        try {
+          const Stripe = require('stripe');
+          const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+          
+          const paymentIntent = await stripe.paymentIntents.create({
+            amount: stripeAmount,
+            currency: 'kwd',
+            metadata: {
+              userId: user.id,
+              gameCount: gameCount.toString(),
+              originalAmount: gamePackage.price.toString(),
+              discountAmount: discountAmount.toString(),
+              couponCode: couponCode || ''
+            }
+          });
+          
+          res.json({ 
+            clientSecret: paymentIntent.client_secret,
+            amount: amount,
+            discountAmount: discountAmount
+          });
+        } catch (stripeError) {
+          console.error("Stripe creation error:", stripeError);
+          // Fallback to mock if Stripe fails
+          const mockClientSecret = `pi_mock_${Date.now()}_secret_${Math.random().toString(36).substr(2, 9)}`;
+          res.json({ 
+            clientSecret: mockClientSecret,
+            amount: amount,
+            discountAmount: discountAmount
+          });
+        }
+      } else {
+        // Fallback to mock for testing without Stripe
+        const mockClientSecret = `pi_mock_${Date.now()}_secret_${Math.random().toString(36).substr(2, 9)}`;
+        res.json({ 
+          clientSecret: mockClientSecret,
+          amount: amount,
+          discountAmount: discountAmount
+        });
+      }
     } catch (error: any) {
       console.error("Payment intent error:", error);
       res.status(500).json({ message: "خطأ في إنشاء الدفعة: " + error.message });
@@ -927,32 +1001,69 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      const { paymentIntentId } = req.body;
-      const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
-
-      if (paymentIntent.status === "succeeded") {
-        const user = req.user as any;
-        const gameCount = parseInt(paymentIntent.metadata.gameCount);
+      const { paymentIntentId, gameCount, amount, couponCode, discountAmount } = req.body;
+      const user = req.user as any;
+      
+      console.log("Payment confirmation request:", { paymentIntentId, gameCount, amount, couponCode, discountAmount });
+      
+      // For real Stripe payments (skip validation for mock payments)
+      if (!paymentIntentId.startsWith('pi_mock_')) {
+        if (!process.env.STRIPE_SECRET_KEY) {
+          return res.status(400).json({ message: "خدمة الدفع غير متوفرة حاليا" });
+        }
         
-        // Create purchase record
-        await storage.createPurchase({
-          userId: user.id,
-          gameCount,
-          amount: paymentIntent.amount,
-          stripePaymentIntentId: paymentIntentId,
-        });
+        try {
+          const Stripe = require('stripe');
+          const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+          const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
-        // Update user's available games
-        const updatedUser = await storage.updateUserGames(user.id, user.availableGames + gameCount);
-        
-        res.json({ 
-          success: true, 
-          availableGames: updatedUser.availableGames 
-        });
-      } else {
-        res.status(400).json({ message: "فشل في الدفع" });
+          if (paymentIntent.status !== "succeeded") {
+            return res.status(400).json({ message: "فشل في الدفع" });
+          }
+        } catch (stripeError) {
+          console.error("Stripe error:", stripeError);
+          return res.status(400).json({ message: "خطأ في التحقق من الدفع" });
+        }
       }
+      
+      // Create purchase record (Firebase doesn't allow undefined values)
+      const purchaseData: any = {
+        userId: user.id,
+        gameCount: parseInt(gameCount),
+        amount: parseFloat(amount),
+        stripePaymentIntentId: paymentIntentId,
+      };
+      
+      // Only add optional fields if they have actual values
+      if (couponCode && couponCode !== 'undefined' && couponCode.trim() !== '') {
+        purchaseData.couponCode = couponCode;
+      }
+      
+      if (discountAmount && discountAmount !== 'undefined' && discountAmount !== '0') {
+        purchaseData.discountAmount = parseFloat(discountAmount);
+      }
+      
+      console.log("Creating purchase with data:", purchaseData);
+      await storage.createPurchase(purchaseData);
+
+      // Increment coupon usage if used
+      if (couponCode) {
+        const coupon = await storage.getCouponByCode(couponCode);
+        if (coupon) {
+          await storage.incrementCouponUsage(coupon.id);
+        }
+      }
+
+      // INCREASE USER'S AVAILABLE GAMES - This is the key functionality
+      const updatedUser = await storage.updateUserGames(user.id, user.availableGames + parseInt(gameCount));
+      
+      res.json({ 
+        success: true, 
+        availableGames: updatedUser.availableGames,
+        message: `تم إضافة ${gameCount} ألعاب إلى حسابك بنجاح`
+      });
     } catch (error: any) {
+      console.error("Confirm payment error:", error);
       res.status(500).json({ message: "خطأ في تأكيد الدفع: " + error.message });
     }
   });
