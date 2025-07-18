@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { useLocation } from "wouter";
 import { useForm } from "react-hook-form";
@@ -10,6 +10,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Brain, Loader2 } from "lucide-react";
+import { FaGoogle } from "react-icons/fa";
+import { signInWithGoogle, handleGoogleRedirect } from "@/lib/firebase";
+import { useToast } from "@/hooks/use-toast";
 
 const loginSchema = z.object({
   email: z.string().email("البريد الإلكتروني غير صحيح"),
@@ -29,6 +32,8 @@ const registerSchema = z.object({
 export default function AuthPage() {
   const { user, login, register, isLoading } = useAuth();
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const loginForm = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -47,6 +52,28 @@ export default function AuthPage() {
       confirmPassword: "",
     },
   });
+
+  // Handle Google redirect result
+  useEffect(() => {
+    const handleRedirect = async () => {
+      try {
+        const result = await handleGoogleRedirect();
+        if (result) {
+          // User signed in with Google, redirect to dashboard
+          setLocation("/dashboard");
+        }
+      } catch (error) {
+        console.error('Error handling Google redirect:', error);
+        toast({
+          title: "خطأ في تسجيل الدخول",
+          description: "حدث خطأ أثناء تسجيل الدخول بجوجل",
+          variant: "destructive",
+        });
+      }
+    };
+
+    handleRedirect();
+  }, [setLocation, toast]);
 
   // Redirect if already logged in
   React.useEffect(() => {
@@ -72,6 +99,43 @@ export default function AuthPage() {
       await register(values.email, values.password, values.name);
     } catch (error) {
       // Error handling is done in the auth context
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      setGoogleLoading(true);
+      const user = await signInWithGoogle();
+      
+      // Get the ID token from the user
+      const idToken = await user.getIdToken();
+      
+      // Send the ID token to our backend
+      const response = await fetch('/api/auth/google', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ idToken }),
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        // Redirect to dashboard on successful authentication
+        window.location.href = '/dashboard';
+      } else {
+        const error = await response.json();
+        throw new Error(error.message || 'Authentication failed');
+      }
+    } catch (error) {
+      console.error('Error signing in with Google:', error);
+      toast({
+        title: "خطأ في تسجيل الدخول",
+        description: "حدث خطأ أثناء تسجيل الدخول بجوجل",
+        variant: "destructive",
+      });
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -129,6 +193,31 @@ export default function AuthPage() {
                       <div className="luxury-spinner mx-auto" />
                     ) : (
                       "تسجيل الدخول"
+                    )}
+                  </button>
+                  
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-background px-2 text-muted-foreground">أو</span>
+                    </div>
+                  </div>
+                  
+                  <button
+                    type="button"
+                    onClick={handleGoogleSignIn}
+                    disabled={googleLoading}
+                    className="luxury-button-outline w-full text-lg py-4 flex items-center justify-center gap-3"
+                  >
+                    {googleLoading ? (
+                      <div className="luxury-spinner mx-auto" />
+                    ) : (
+                      <>
+                        <FaGoogle className="h-5 w-5 text-red-500" />
+                        تسجيل الدخول بجوجل
+                      </>
                     )}
                   </button>
                 </form>

@@ -8,6 +8,7 @@ import { storage } from "./firebase-storage";
 import { insertUserSchema, insertQuestionSchema, insertGameSessionSchema, insertCategorySchema, insertCouponSchema, insertGamePackageSchema } from "@shared/firebase-schema";
 import { z } from "zod";
 import Stripe from "stripe";
+import { verifyIdToken, createOrUpdateFirebaseUser } from "./firebase-auth";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_...", {
   apiVersion: "2024-06-20" as any,
@@ -124,6 +125,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ user: { id: user.id, email: user.email, name: user.name, availableGames: user.availableGames, isAdmin: user.isAdmin } });
     } else {
       res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+  });
+
+  // Google Authentication route
+  app.post("/api/auth/google", async (req, res) => {
+    try {
+      const { idToken } = req.body;
+      
+      if (!idToken) {
+        return res.status(400).json({ message: "معرف التوكن مطلوب" });
+      }
+
+      // Verify the Google ID token
+      const decodedToken = await verifyIdToken(idToken);
+      
+      // Create or update user in our database
+      const user = await createOrUpdateFirebaseUser(decodedToken);
+      
+      // Create session for the user
+      req.login(user, (err) => {
+        if (err) {
+          console.error('Error creating session:', err);
+          return res.status(500).json({ message: "خطأ في إنشاء الجلسة" });
+        }
+        res.json({ user: { id: user.id, email: user.email, name: user.name, availableGames: user.availableGames, isAdmin: user.isAdmin } });
+      });
+    } catch (error) {
+      console.error('Google auth error:', error);
+      res.status(401).json({ message: "خطأ في التحقق من هوية جوجل" });
     }
   });
 
