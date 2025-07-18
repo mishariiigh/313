@@ -157,6 +157,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Seed data endpoint for admin
+  app.post("/api/admin/seed-data", async (req, res) => {
+    if (!req.isAuthenticated() || !(req.user as any)?.isAdmin) {
+      return res.status(403).json({ message: "غير مصرح لك بالوصول" });
+    }
+
+    try {
+      const { seedBasicData } = await import('./simple-seed');
+      const result = await seedBasicData();
+      res.json({ message: "تم إنشاء البيانات بنجاح", result });
+    } catch (error) {
+      console.error('Error seeding data:', error);
+      res.status(500).json({ message: "خطأ في إنشاء البيانات" });
+    }
+  });
+
   // Game routes
   app.post("/api/games/start", async (req, res) => {
     if (!req.isAuthenticated()) {
