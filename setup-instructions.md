@@ -49,7 +49,7 @@ service cloud.firestore {
 
 1. Go to: https://console.firebase.google.com/project/game-aad88/authentication/settings
 2. Add authorized domains:
-   - Your Replit domain (copy from browser URL)
+   - Your deployment domain (copy from browser URL)
    - `localhost` (for testing)
 
 3. Go to: https://console.firebase.google.com/project/game-aad88/authentication/providers

@@ -15,7 +15,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_...", {
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Health check endpoint for Replit
+  // Health check endpoint
   app.get('/health', (req, res) => {
     res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
   });
