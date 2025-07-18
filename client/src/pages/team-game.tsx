@@ -63,8 +63,12 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
   // Questions are included in the game data for team games
 
-  // Create categories array from database data
-  const categories = categoriesData?.categories?.filter((cat: any) => cat.isActive).map((cat: any) => ({
+  // Create categories array from selected categories in game session
+  const gameSession = gameData?.gameSession;
+  const selectedCategoryNames = gameSession?.selectedCategories || [];
+  const categories = categoriesData?.categories?.filter((cat: any) => 
+    cat.isActive && selectedCategoryNames.includes(cat.name)
+  ).map((cat: any) => ({
     id: cat.name,
     name: cat.displayName,
     icon: CATEGORY_ICONS[cat.name] || CATEGORY_ICONS[cat.displayName] || "📝"
@@ -214,8 +218,6 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       </div>
     );
   }
-
-  const gameSession = gameData.gameSession;
 
   // Check if game is completed
   const totalQuestions = categories.length * 6; // 6 questions per category

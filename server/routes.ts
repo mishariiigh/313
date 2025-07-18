@@ -205,6 +205,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           teamHintsUsed: gameType === "team" ? teams.map(() => false) : [],
           currentTurn: 0,
           usedQuestions: [],
+          selectedCategories: gameType === "team" ? selectedCategories : [],
         });
 
         // Decrease available games
@@ -336,6 +337,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             usedQuestions: gameSession.usedQuestions,
             usedHints: gameSession.usedHints,
             teamHintsUsed: gameSession.teamHintsUsed,
+            selectedCategories: gameSession.selectedCategories,
           },
           questions: questions,
         });
