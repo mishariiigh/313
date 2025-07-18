@@ -14,12 +14,15 @@ export interface IStorage {
   
   // Question operations
   getQuestions(category?: string, difficulty?: string): Promise<Question[]>;
+  getPublishedQuestions(category?: string, difficulty?: string): Promise<Question[]>;
   getQuestionById(id: number): Promise<Question | undefined>;
   createQuestion(question: InsertQuestion): Promise<Question>;
   updateQuestion(id: number, question: Partial<InsertQuestion>): Promise<Question>;
   deleteQuestion(id: number): Promise<void>;
   getRandomQuestions(count: number): Promise<Question[]>;
   getQuestionsByCategory(category: string, count: number): Promise<Question[]>;
+  publishAllQuestions(): Promise<void>;
+  unpublishAllQuestions(): Promise<void>;
   
   // Game session operations
   createGameSession(session: InsertGameSession): Promise<GameSession>;
@@ -127,6 +130,22 @@ export class DatabaseStorage implements IStorage {
     return query.orderBy(desc(questions.createdAt));
   }
 
+  async getPublishedQuestions(category?: string, difficulty?: string): Promise<Question[]> {
+    let whereCondition;
+    
+    if (category && difficulty) {
+      whereCondition = and(eq(questions.category, category), eq(questions.difficulty, difficulty), eq(questions.published, true));
+    } else if (category) {
+      whereCondition = and(eq(questions.category, category), eq(questions.published, true));
+    } else if (difficulty) {
+      whereCondition = and(eq(questions.difficulty, difficulty), eq(questions.published, true));
+    } else {
+      whereCondition = eq(questions.published, true);
+    }
+    
+    return db.select().from(questions).where(whereCondition).orderBy(desc(questions.createdAt));
+  }
+
   async getQuestionById(id: number): Promise<Question | undefined> {
     const [question] = await db.select().from(questions).where(eq(questions.id, id));
     return question || undefined;
@@ -169,21 +188,21 @@ export class DatabaseStorage implements IStorage {
     const easyQuestions = await db
       .select()
       .from(questions)
-      .where(and(eq(questions.category, category), eq(questions.difficulty, 'سهل')))
+      .where(and(eq(questions.category, category), eq(questions.difficulty, 'سهل'), eq(questions.published, true)))
       .orderBy(sql`RANDOM()`)
       .limit(2);
     
     const mediumQuestions = await db
       .select()
       .from(questions)
-      .where(and(eq(questions.category, category), eq(questions.difficulty, 'متوسط')))
+      .where(and(eq(questions.category, category), eq(questions.difficulty, 'متوسط'), eq(questions.published, true)))
       .orderBy(sql`RANDOM()`)
       .limit(2);
     
     const hardQuestions = await db
       .select()
       .from(questions)
-      .where(and(eq(questions.category, category), eq(questions.difficulty, 'صعب')))
+      .where(and(eq(questions.category, category), eq(questions.difficulty, 'صعب'), eq(questions.published, true)))
       .orderBy(sql`RANDOM()`)
       .limit(2);
     
@@ -198,6 +217,14 @@ export class DatabaseStorage implements IStorage {
     }
     
     return allQuestions.slice(0, count);
+  }
+
+  async publishAllQuestions(): Promise<void> {
+    await db.update(questions).set({ published: true });
+  }
+
+  async unpublishAllQuestions(): Promise<void> {
+    await db.update(questions).set({ published: false });
   }
 
   async createGameSession(insertSession: InsertGameSession): Promise<GameSession> {

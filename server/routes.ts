@@ -854,6 +854,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Publish all questions
+  app.post("/api/admin/questions/publish", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    const user = req.user as any;
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "غير مصرح بالوصول" });
+    }
+
+    try {
+      await storage.publishAllQuestions();
+      res.json({ message: "تم نشر جميع الأسئلة بنجاح" });
+    } catch (error) {
+      res.status(500).json({ message: "خطأ في نشر الأسئلة" });
+    }
+  });
+
+  // Unpublish all questions
+  app.post("/api/admin/questions/unpublish", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    const user = req.user as any;
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "غير مصرح بالوصول" });
+    }
+
+    try {
+      await storage.unpublishAllQuestions();
+      res.json({ message: "تم إلغاء نشر جميع الأسئلة بنجاح" });
+    } catch (error) {
+      res.status(500).json({ message: "خطأ في إلغاء نشر الأسئلة" });
+    }
+  });
+
   // Categories routes
   app.get("/api/categories", async (req, res) => {
     if (!req.isAuthenticated()) {

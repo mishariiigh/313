@@ -492,6 +492,38 @@ export default function AdminDashboard() {
     setUserForm({ email: "", name: "", password: "", availableGames: "", isAdmin: false });
   };
 
+  const handlePublishQuestions = async () => {
+    try {
+      await apiRequest("POST", "/api/admin/questions/publish");
+      toast({
+        title: "تم النشر",
+        description: "تم نشر جميع الأسئلة بنجاح. الآن يمكن للمستخدمين رؤيتها في الألعاب",
+      });
+    } catch (error: any) {
+      toast({
+        title: "خطأ",
+        description: error.message || "حدث خطأ في نشر الأسئلة",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleUnpublishQuestions = async () => {
+    try {
+      await apiRequest("POST", "/api/admin/questions/unpublish");
+      toast({
+        title: "تم إلغاء النشر",
+        description: "تم إلغاء نشر جميع الأسئلة. لن تظهر للمستخدمين في الألعاب",
+      });
+    } catch (error: any) {
+      toast({
+        title: "خطأ",
+        description: error.message || "حدث خطأ في إلغاء نشر الأسئلة",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -645,6 +677,34 @@ export default function AdminDashboard() {
                       </div>
                     );
                   })}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Publishing Controls */}
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle>نشر الأسئلة</CardTitle>
+                <CardDescription>
+                  بعد إكمال جميع الأسئلة، انقر على "نشر الأسئلة" لتصبح متاحة للمستخدمين في الألعاب
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex gap-4">
+                  <Button
+                    onClick={() => handlePublishQuestions()}
+                    className="flex-1"
+                    variant="default"
+                  >
+                    نشر جميع الأسئلة
+                  </Button>
+                  <Button
+                    onClick={() => handleUnpublishQuestions()}
+                    className="flex-1"
+                    variant="outline"
+                  >
+                    إلغاء نشر الأسئلة
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -849,6 +909,9 @@ export default function AdminDashboard() {
                                   <div className="flex gap-2 mt-2">
                                     <Badge variant="secondary">{question.category}</Badge>
                                     <Badge variant="outline">{question.difficulty}</Badge>
+                                    <Badge variant={(question as any).published ? "default" : "destructive"}>
+                                      {(question as any).published ? "منشور" : "مسودة"}
+                                    </Badge>
                                   </div>
                                 </div>
                                 <div className="flex gap-2">

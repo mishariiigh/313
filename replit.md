@@ -2,6 +2,14 @@
 
 ## Recent Changes: Latest modifications with dates
 
+- **January 18, 2025**: PUBLISHING SYSTEM COMPLETE - Implemented draft/published workflow for questions
+  - ✅ DRAFT/PUBLISHED SYSTEM: Questions are saved as drafts by default, then published when ready
+  - ✅ PUBLISHING CONTROLS: Admin can publish/unpublish all questions with dedicated buttons
+  - ✅ GAMES USE PUBLISHED ONLY: Only published questions appear in user games
+  - ✅ VISUAL STATUS INDICATORS: Questions show "منشور" (published) or "مسودة" (draft) badges
+  - ✅ BACKEND VALIDATION: Games only retrieve published questions from database
+  - ✅ ADMIN WORKFLOW: Admin fills all questions → publishes → users can see in games
+  - Admin now has complete control over question release timing and content visibility
 - **January 18, 2025**: ENHANCED QUESTION MANAGEMENT - Implemented structured question system with limits and validation
   - ✅ ENFORCED QUESTION STRUCTURE: Each category requires exactly 6 questions (2 easy=200pts, 2 medium=400pts, 2 hard=600pts)
   - ✅ MANDATORY HINT SYSTEM: All questions must include hints (required field)

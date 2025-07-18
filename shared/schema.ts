@@ -23,6 +23,7 @@ export const questions = pgTable("questions", {
   hint: text("hint"),
   explanation: text("explanation"),
   imageUrl: text("image_url"),
+  published: boolean("published").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
