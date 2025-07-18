@@ -140,23 +140,41 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getQuestionsByCategory(category: string, count: number): Promise<Question[]> {
-    // Get questions ordered by difficulty: سهل (easy), متوسط (medium), صعب (hard)
-    // This ensures positions 0-1 are سهل (200 pts), 2-3 are متوسط (400 pts), 4-5 are صعب (600 pts)
-    const difficultyOrder = sql`
-      CASE 
-        WHEN difficulty = 'سهل' THEN 1
-        WHEN difficulty = 'متوسط' THEN 2
-        WHEN difficulty = 'صعب' THEN 3
-        ELSE 4
-      END
-    `;
+    // Get exactly 2 questions per difficulty level to ensure proper point distribution
+    // Positions 0-1: سهل (200 pts), Positions 2-3: متوسط (400 pts), Positions 4-5: صعب (600 pts)
     
-    return await db
+    const easyQuestions = await db
       .select()
       .from(questions)
-      .where(eq(questions.category, category))
-      .orderBy(difficultyOrder, sql`RANDOM()`)
-      .limit(count);
+      .where(and(eq(questions.category, category), eq(questions.difficulty, 'سهل')))
+      .orderBy(sql`RANDOM()`)
+      .limit(2);
+    
+    const mediumQuestions = await db
+      .select()
+      .from(questions)
+      .where(and(eq(questions.category, category), eq(questions.difficulty, 'متوسط')))
+      .orderBy(sql`RANDOM()`)
+      .limit(2);
+    
+    const hardQuestions = await db
+      .select()
+      .from(questions)
+      .where(and(eq(questions.category, category), eq(questions.difficulty, 'صعب')))
+      .orderBy(sql`RANDOM()`)
+      .limit(2);
+    
+    // Combine in the correct order: easy, medium, hard
+    const allQuestions = [...easyQuestions, ...mediumQuestions, ...hardQuestions];
+    
+    // Ensure we have exactly 6 questions (2 per difficulty)
+    if (allQuestions.length < 6) {
+      console.log(`Category ${category}: Easy=${easyQuestions.length}, Medium=${mediumQuestions.length}, Hard=${hardQuestions.length}`);
+      // If we don't have enough questions in a difficulty, we need to add more questions to the database
+      // For now, we'll return what we have and let the game creation fail gracefully
+    }
+    
+    return allQuestions.slice(0, count);
   }
 
   async createGameSession(insertSession: InsertGameSession): Promise<GameSession> {

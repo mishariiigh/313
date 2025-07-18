@@ -248,6 +248,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     const question = gameData?.questions?.[questionIndex];
     
     console.log(`Clicking question: categoryName=${categoryName}, index=${index}, categoryIndex=${categoryIndex}, questionIndex=${questionIndex}`);
+    console.log(`Categories:`, categories.map(c => ({id: c.id, name: c.name, displayName: c.displayName})));
     
     if (question) {
       setSelectedQuestion(question);
