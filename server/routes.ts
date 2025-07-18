@@ -607,7 +607,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      const gameSession = await storage.getGameSession(parseInt(req.params.id));
+      const gameSession = await storage.getGameSession(req.params.id);
       if (!gameSession) {
         return res.status(404).json({ message: "جلسة اللعبة غير موجودة" });
       }
@@ -641,8 +641,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       res.json({ success: true });
-    } catch (error) {
-      res.status(500).json({ message: "خطأ في تسجيل النقطة" });
+    } catch (error: any) {
+      res.status(500).json({ message: "خطأ في تسجيل النقطة: " + error.message });
     }
   });
 
@@ -652,7 +652,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      const gameSession = await storage.getGameSession(parseInt(req.params.id));
+      const gameSession = await storage.getGameSession(req.params.id);
       if (!gameSession) {
         return res.status(404).json({ message: "جلسة اللعبة غير موجودة" });
       }
@@ -688,7 +688,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      const gameSession = await storage.getGameSession(parseInt(req.params.id));
+      const gameSession = await storage.getGameSession(req.params.id);
       if (!gameSession) {
         return res.status(404).json({ message: "جلسة اللعبة غير موجودة" });
       }
@@ -746,7 +746,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      const gameSession = await storage.getGameSession(parseInt(req.params.id));
+      const gameSession = await storage.getGameSession(req.params.id);
       if (!gameSession) {
         return res.status(404).json({ message: "جلسة اللعبة غير موجودة" });
       }
@@ -776,7 +776,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      const gameSession = await storage.getGameSession(parseInt(req.params.id));
+      const gameSession = await storage.getGameSession(req.params.id);
       if (!gameSession) {
         return res.status(404).json({ message: "جلسة اللعبة غير موجودة" });
       }
@@ -813,7 +813,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      const gameSession = await storage.getGameSession(parseInt(req.params.id));
+      const gameSession = await storage.getGameSession(req.params.id);
       if (!gameSession) {
         return res.status(404).json({ message: "جلسة اللعبة غير موجودة" });
       }
