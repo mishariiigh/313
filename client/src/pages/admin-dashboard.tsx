@@ -562,7 +562,7 @@ export default function AdminDashboard() {
               العودة للوحة الرئيسية
             </Button>
           </div>
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">لوحة تحكم المدير</h1>
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">لوحة تحكم المدير - 313</h1>
           <p className="text-gray-600">إدارة الأسئلة والفئات والكوبونات</p>
         </div>
 

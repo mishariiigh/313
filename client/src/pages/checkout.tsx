@@ -244,7 +244,7 @@ export default function CheckoutPage() {
               <ArrowRight className="h-5 w-5" />
             </button>
             <div>
-              <h1 className="text-xl font-bold text-luxury-green-dark">شراء ألعاب إضافية</h1>
+              <h1 className="text-xl font-bold text-luxury-green-dark">شراء ألعاب إضافية - 313</h1>
               <p className="text-muted-foreground">اختر الباقة المناسبة لك</p>
             </div>
           </div>

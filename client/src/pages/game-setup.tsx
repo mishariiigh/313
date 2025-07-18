@@ -166,7 +166,7 @@ export default function GameSetupPage() {
               <ArrowRight className="h-5 w-5 text-luxury-green-dark" />
             </button>
             <div>
-              <h1 className="text-xl font-bold text-luxury-green-dark">إعداد لعبة جديدة</h1>
+              <h1 className="text-xl font-bold text-luxury-green-dark">إعداد لعبة جديدة - 313</h1>
               <p className="text-muted-foreground">أدخل أسماء الفريقين</p>
             </div>
           </div>

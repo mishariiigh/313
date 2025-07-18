@@ -132,7 +132,7 @@ export default function Dashboard() {
               {/* Enhanced Title */}
               <div className="space-y-1">
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-red-600 via-red-700 to-red-800 bg-clip-text text-transparent">
-                  منصة الألعاب الثقافية
+                  313
                 </h1>
                 <div className="flex items-center space-x-2 space-x-reverse">
                   <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>

@@ -83,7 +83,7 @@ export default function AuthPage() {
           <div className="mx-auto h-20 w-20 luxury-button rounded-full flex items-center justify-center mb-6 floating glow">
             <Brain className="text-white h-10 w-10" />
           </div>
-          <h1 className="text-4xl font-bold text-gradient mb-4">منصة الألعاب الثقافية</h1>
+          <h1 className="text-4xl font-bold text-gradient mb-4">313</h1>
           <p className="text-muted-foreground text-lg">اختبر معلوماتك مع الأصدقاء والعائلة</p>
         </div>
 
