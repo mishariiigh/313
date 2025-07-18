@@ -157,19 +157,123 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Seed data endpoint for admin
-  app.post("/api/admin/seed-data", async (req, res) => {
+  // Seed data endpoint for admin - Push to Firebase
+  app.post("/api/admin/seed-firebase", async (req, res) => {
     if (!req.isAuthenticated() || !(req.user as any)?.isAdmin) {
       return res.status(403).json({ message: "غير مصرح لك بالوصول" });
     }
 
     try {
-      const { seedBasicData } = await import('./simple-seed');
-      const result = await seedBasicData();
-      res.json({ message: "تم إنشاء البيانات بنجاح", result });
+      // Switch to Firebase storage temporarily
+      const { storage: firebaseStorage } = await import('./firebase-storage');
+      const tempStorage = storage;
+      
+      // Get all data from temp storage
+      const users = await tempStorage.getAllUsers();
+      const categories = await tempStorage.getAllCategories();
+      const questions = await tempStorage.getAllQuestions();
+      const gamePackages = await tempStorage.getAllGamePackages();
+      const coupons = await tempStorage.getAllCoupons();
+      
+      // Push to Firebase
+      let results = {
+        users: 0,
+        categories: 0,
+        questions: 0,
+        gamePackages: 0,
+        coupons: 0
+      };
+      
+      // Create users in Firebase
+      for (const user of users) {
+        try {
+          await firebaseStorage.createUser({
+            email: user.email,
+            name: user.name,
+            password: user.password,
+            availableGames: user.availableGames,
+            isAdmin: user.isAdmin
+          });
+          results.users++;
+        } catch (error) {
+          console.log('User already exists:', user.email);
+        }
+      }
+      
+      // Create categories in Firebase
+      for (const category of categories) {
+        try {
+          await firebaseStorage.createCategory({
+            name: category.name,
+            displayName: category.displayName,
+            description: category.description,
+            isActive: category.isActive
+          });
+          results.categories++;
+        } catch (error) {
+          console.log('Category already exists:', category.name);
+        }
+      }
+      
+      // Create questions in Firebase
+      for (const question of questions) {
+        try {
+          await firebaseStorage.createQuestion({
+            question: question.question,
+            answer: question.answer,
+            category: question.category,
+            difficulty: question.difficulty,
+            hint: question.hint,
+            explanation: question.explanation
+          });
+          results.questions++;
+        } catch (error) {
+          console.log('Question creation failed:', error.message);
+        }
+      }
+      
+      // Create game packages in Firebase
+      for (const pkg of gamePackages) {
+        try {
+          await firebaseStorage.createGamePackage({
+            name: pkg.name,
+            description: pkg.description,
+            gameCount: pkg.gameCount,
+            priceInCents: pkg.priceInCents,
+            sortOrder: pkg.sortOrder,
+            isActive: pkg.isActive
+          });
+          results.gamePackages++;
+        } catch (error) {
+          console.log('Package already exists:', pkg.name);
+        }
+      }
+      
+      // Create coupons in Firebase
+      for (const coupon of coupons) {
+        try {
+          await firebaseStorage.createCoupon({
+            code: coupon.code,
+            discountType: coupon.discountType,
+            discountValue: coupon.discountValue,
+            maxUsage: coupon.maxUsage,
+            expiresAt: coupon.expiresAt,
+            isActive: coupon.isActive
+          });
+          results.coupons++;
+        } catch (error) {
+          console.log('Coupon already exists:', coupon.code);
+        }
+      }
+      
+      res.json({ 
+        message: "تم رفع البيانات إلى Firebase بنجاح", 
+        results,
+        total: results.users + results.categories + results.questions + results.gamePackages + results.coupons
+      });
     } catch (error) {
-      console.error('Error seeding data:', error);
-      res.status(500).json({ message: "خطأ في إنشاء البيانات" });
+      console.error('Error seeding Firebase:', error);
+      res.status(500).json({ message: "خطأ في رفع البيانات إلى Firebase: " + error.message });
     }
   });
 

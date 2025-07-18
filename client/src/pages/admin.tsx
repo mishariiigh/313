@@ -147,6 +147,26 @@ export default function AdminPage() {
     },
   });
 
+  const seedFirebaseMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("POST", "/api/admin/seed-firebase");
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "تم رفع البيانات بنجاح",
+        description: `تم رفع ${data.total} عنصر إلى Firebase بنجاح`,
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "خطأ في رفع البيانات",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleAddQuestion = (data: z.infer<typeof questionSchema>) => {
     createQuestionMutation.mutate(data);
   };
@@ -196,6 +216,13 @@ export default function AdminPage() {
               </div>
             </div>
             <div className="flex items-center space-x-reverse space-x-4">
+              <Button
+                onClick={() => seedFirebaseMutation.mutate()}
+                disabled={seedFirebaseMutation.isPending}
+                className="bg-green-600 hover:bg-green-700"
+              >
+                {seedFirebaseMutation.isPending ? "جاري الرفع..." : "رفع البيانات إلى Firebase"}
+              </Button>
               <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
                 <DialogTrigger asChild>
                   <Button>
