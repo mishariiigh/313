@@ -29,11 +29,19 @@ service cloud.firestore {
 
 3. Click "Publish" to save the rules
 
-## ⚠️ Current Status:
-- Firebase connected but security rules blocking writes
-- 36 questions ready to push (6 per category: التاريخ, الجغرافيا, الدين, الرياضة, الثقافة العامة, العلوم)
-- All user data, game packages, and coupons ready
-- Admin account ready: `mishariiigh@hotmail.com`
+## ⚠️ FIREBASE INDEXES NEEDED - Auto-create with these links:
+
+**Click these links to auto-create required indexes:**
+
+1. **Questions Index:** https://console.firebase.google.com/v1/r/project/game-aad88/firestore/indexes?create_composite=Ckxwcm9qZWN0cy9nYW1lLWFhZDg4L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9xdWVzdGlvbnMvaW5kZXhlcy9fEAEaDAoIY2F0ZWdvcnkQARoOCgpkaWZmaWN1bHR5EAEaDAoIX19uYW1lX18QAQ
+
+2. **Game Sessions Index:** https://console.firebase.google.com/v1/r/project/game-aad88/firestore/indexes?create_composite=Ck9wcm9qZWN0cy9nYW1lLWFhZDg4L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9nYW1lU2Vzc2lvbnMvaW5kZXhlcy9fEAEaCgoGdXNlcklkEAEaDQoJY3JlYXRlZEF0EAIaDAoIX19uYW1lX18QAg
+
+**Current Status:**
+✅ Firebase connected and auto-sync working
+✅ All data operations push to Firebase automatically
+✅ Security rules need updating (see above)
+✅ Admin account: `mishariiigh@hotmail.com`
 
 ## 🔐 Enable Google Authentication (Optional)
 

@@ -170,18 +170,21 @@ export class FirebaseStorage implements IFirebaseStorage {
   }
 
   async getQuestionsByCategory(category: string, limitCount?: number): Promise<Question[]> {
-    let q = query(
+    const q = query(
       collection(db, "questions"),
-      where("category", "==", category),
-      orderBy("difficulty", "asc")
+      where("category", "==", category)
     );
     
-    if (limitCount) {
-      q = query(q, limit(limitCount));
-    }
-    
     const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Question));
+    let questions = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Question));
+    
+    // Sort by difficulty in memory to avoid composite index requirement
+    const difficultyOrder = { 'سهل': 1, 'متوسط': 2, 'صعب': 3 };
+    questions = questions.sort((a, b) => {
+      return (difficultyOrder[a.difficulty] || 4) - (difficultyOrder[b.difficulty] || 4);
+    });
+    
+    return limitCount ? questions.slice(0, limitCount) : questions;
   }
 
   async getQuestions(category?: string, difficulty?: string): Promise<Question[]> {
@@ -219,11 +222,16 @@ export class FirebaseStorage implements IFirebaseStorage {
     const q = query(
       collection(db, "questions"),
       where("category", "==", category),
-      where("isPublished", "==", true),
-      orderBy("difficulty", "asc")
+      where("isPublished", "==", true)
     );
     const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Question));
+    let questions = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Question));
+    
+    // Sort by difficulty in memory
+    const difficultyOrder = { 'سهل': 1, 'متوسط': 2, 'صعب': 3 };
+    return questions.sort((a, b) => {
+      return (difficultyOrder[a.difficulty] || 4) - (difficultyOrder[b.difficulty] || 4);
+    });
   }
 
   async createQuestion(insertQuestion: InsertQuestion): Promise<Question> {
@@ -299,11 +307,17 @@ export class FirebaseStorage implements IFirebaseStorage {
   async getUserGameSessions(userId: string): Promise<GameSession[]> {
     const q = query(
       collection(db, "gameSessions"),
-      where("userId", "==", userId),
-      orderBy("createdAt", "desc")
+      where("userId", "==", userId)
     );
     const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as GameSession));
+    const sessions = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as GameSession));
+    
+    // Sort in memory to avoid composite index requirement
+    return sessions.sort((a, b) => {
+      const aDate = a.createdAt instanceof Timestamp ? a.createdAt.toDate() : new Date(a.createdAt);
+      const bDate = b.createdAt instanceof Timestamp ? b.createdAt.toDate() : new Date(b.createdAt);
+      return bDate.getTime() - aDate.getTime();
+    });
   }
 
   // Purchase operations
