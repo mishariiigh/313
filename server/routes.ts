@@ -178,6 +178,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Cleanup Firebase duplicates
+  app.post("/api/admin/cleanup-firebase", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    const user = req.user as any;
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "غير مصرح بالوصول" });
+    }
+
+    try {
+      const { cleanupFirebaseData } = await import("./firebase-cleanup");
+      const result = await cleanupFirebaseData();
+      res.json({ 
+        message: "تم تنظيف Firebase بنجاح", 
+        ...result 
+      });
+    } catch (error: any) {
+      console.error("Cleanup error:", error);
+      res.status(500).json({ message: "خطأ في تنظيف Firebase: " + error.message });
+    }
+  });
+
   // Seed data endpoint for admin - Push to Firebase
   app.post("/api/admin/seed-firebase", async (req, res) => {
     if (!req.isAuthenticated() || !(req.user as any)?.isAdmin) {
@@ -305,7 +329,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     const user = req.user as any;
-    const { gameType = "single", teams = [], categories = [] } = req.body;
+    const { gameType = "single", teams = [], selectedCategories = [] } = req.body;
     
     if (user.availableGames <= 0) {
       return res.status(400).json({ message: "لا توجد ألعاب متاحة" });
@@ -319,12 +343,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const activeCategories = allCategories.filter(cat => cat.isActive);
         
         // Validate that categories are provided
-        if (!categories || categories.length === 0) {
+        if (!selectedCategories || selectedCategories.length === 0) {
           return res.status(400).json({ message: "يجب اختيار الفئات المطلوبة" });
         }
         
-        // Use provided categories or default to all active categories
-        const selectedCategories = categories.length > 0 ? categories : activeCategories.map(cat => cat.name);
+        // Use the provided selectedCategories
         const requiredCategoriesCount = Math.min(6, activeCategories.length);
         
         // Validate that the required number of categories are selected
@@ -352,9 +375,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const dbCategory = activeCategories.find(cat => cat.name === category);
           const categoryDisplayName = dbCategory ? dbCategory.displayName : category;
           
-          const categoryQuestions = await storage.getQuestionsByCategory(categoryDisplayName, 6);
+          // Try to get questions by both English name and Arabic display name
+          let categoryQuestions = await storage.getQuestionsByCategory(category, 6);
           if (categoryQuestions.length < 6) {
-            console.log(`Only ${categoryQuestions.length} questions available for ${categoryDisplayName}, need 6`);
+            categoryQuestions = await storage.getQuestionsByCategory(categoryDisplayName, 6);
+          }
+          
+          if (categoryQuestions.length < 6) {
+            console.log(`Only ${categoryQuestions.length} questions available for ${category}/${categoryDisplayName}, need 6`);
             return res.status(400).json({ message: `لا توجد أسئلة كافية في فئة ${categoryDisplayName}` });
           }
           
