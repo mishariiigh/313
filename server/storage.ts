@@ -16,6 +16,7 @@ export interface IStorage {
   updateQuestion(id: number, question: Partial<InsertQuestion>): Promise<Question>;
   deleteQuestion(id: number): Promise<void>;
   getRandomQuestions(count: number): Promise<Question[]>;
+  getQuestionsByCategory(category: string, count: number): Promise<Question[]>;
   
   // Game session operations
   createGameSession(session: InsertGameSession): Promise<GameSession>;
@@ -139,11 +140,22 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getQuestionsByCategory(category: string, count: number): Promise<Question[]> {
+    // Get questions ordered by difficulty: سهل (easy), متوسط (medium), صعب (hard)
+    // This ensures positions 0-1 are سهل (200 pts), 2-3 are متوسط (400 pts), 4-5 are صعب (600 pts)
+    const difficultyOrder = sql`
+      CASE 
+        WHEN difficulty = 'سهل' THEN 1
+        WHEN difficulty = 'متوسط' THEN 2
+        WHEN difficulty = 'صعب' THEN 3
+        ELSE 4
+      END
+    `;
+    
     return await db
       .select()
       .from(questions)
       .where(eq(questions.category, category))
-      .orderBy(sql`RANDOM()`)
+      .orderBy(difficultyOrder, sql`RANDOM()`)
       .limit(count);
   }
 

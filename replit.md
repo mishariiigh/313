@@ -2,6 +2,14 @@
 
 ## Recent Changes: Latest modifications with dates
 
+- **January 18, 2025**: Fixed team scoring system to ensure consistent points across all categories
+  - Fixed question ordering by difficulty: questions are now retrieved in proper order (سهل, متوسط, صعب)
+  - Updated getQuestionsByCategory to order questions by difficulty instead of random
+  - Fixed frontend scoring calculation to use correct position-based scoring
+  - All categories now consistently award 200, 400, 600 points based on difficulty level
+  - Positions 0-1: سهل (easy) = 200 points, Positions 2-3: متوسط (medium) = 400 points, Positions 4-5: صعب (hard) = 600 points
+  - Updated team scoring buttons to display correct points for each question
+  - Fixed question key generation to properly map between Arabic category names and English IDs
 - **January 18, 2025**: Fixed critical game creation and UI issues
   - Fixed category mapping issue between English category names in database and Arabic question categories
   - Game creation now properly maps English category names (history, culture, etc.) to Arabic category display names (التاريخ, الثقافة العامة, etc.)

@@ -395,10 +395,16 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             </div>
             <div className="text-lg font-bold text-green-600 mb-4">
               {(() => {
-                const categoryQuestions = gameData?.questions?.filter((q: Question) => q.category === selectedQuestion.category) || [];
-                const questionIndex = categoryQuestions.findIndex(q => q.id === selectedQuestion.id);
-                const points = questionIndex < 2 ? 200 : questionIndex < 4 ? 400 : 600;
-                return `${points} نقطة`;
+                // Find the category and position to determine points
+                const categoryIndex = categories.findIndex(cat => cat.name === selectedQuestion.category);
+                const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
+                
+                if (categoryIndex !== -1 && questionIndex !== -1) {
+                  const positionInCategory = questionIndex - (categoryIndex * 6);
+                  const points = positionInCategory < 2 ? 200 : positionInCategory < 4 ? 400 : 600;
+                  return `${points} نقطة`;
+                }
+                return "نقطة";
               })()}
             </div>
             
@@ -512,9 +518,16 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             
             <div className="grid grid-cols-2 gap-4 mb-4">
               {gameSession.teams.map((team: string, index: number) => {
-                const categoryQuestions = gameData?.questions?.filter((q: Question) => q.category === selectedQuestion.category) || [];
-                const questionIndex = categoryQuestions.findIndex(q => q.id === selectedQuestion.id);
-                const points = questionIndex < 2 ? 200 : questionIndex < 4 ? 400 : 600;
+                // Find the category and position to determine points
+                const categoryIndex = categories.findIndex(cat => cat.name === selectedQuestion.category);
+                const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
+                
+                let points = 200; // Default
+                if (categoryIndex !== -1 && questionIndex !== -1) {
+                  const positionInCategory = questionIndex - (categoryIndex * 6);
+                  points = positionInCategory < 2 ? 200 : positionInCategory < 4 ? 400 : 600;
+                }
+                
                 return (
                   <Button
                     key={index}
