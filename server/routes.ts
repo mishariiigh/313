@@ -187,7 +187,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
             console.log(`Only ${categoryQuestions.length} questions available for ${categoryDisplayName}, need 6`);
             return res.status(400).json({ message: `لا توجد أسئلة كافية في فئة ${categoryDisplayName}` });
           }
-          questionsByCategory[category] = categoryQuestions;
+          
+          // Ensure questions are properly ordered by difficulty for consistent scoring
+          const orderedQuestions = categoryQuestions.sort((a, b) => {
+            const difficultyOrder = { 'سهل': 1, 'متوسط': 2, 'صعب': 3 };
+            return (difficultyOrder[a.difficulty] || 4) - (difficultyOrder[b.difficulty] || 4);
+          });
+          
+          questionsByCategory[category] = orderedQuestions;
         }
         
         // Organize questions in the order they appear on the board
