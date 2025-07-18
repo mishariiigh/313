@@ -4,8 +4,8 @@ import session from "express-session";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
-import { storage } from "./storage";
-import { insertUserSchema, insertQuestionSchema, insertGameSessionSchema, insertCategorySchema, insertCouponSchema, insertGamePackageSchema } from "@shared/schema";
+import { storage } from "./firebase-storage";
+import { insertUserSchema, insertQuestionSchema, insertGameSessionSchema, insertCategorySchema, insertCouponSchema, insertGamePackageSchema } from "@shared/firebase-schema";
 import { z } from "zod";
 import Stripe from "stripe";
 
@@ -61,7 +61,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     done(null, user.id);
   });
 
-  passport.deserializeUser(async (id: number, done) => {
+  passport.deserializeUser(async (id: string, done) => {
     try {
       const user = await storage.getUser(id);
       done(null, user);
@@ -90,7 +90,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         password: hashedPassword,
         name,
         availableGames: 2,
-        totalGames: 0,
         isAdmin: false,
       });
 
