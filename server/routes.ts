@@ -157,6 +157,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Debug Firebase data
+  app.get("/api/admin/debug-firebase", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    const user = req.user as any;
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "غير مصرح بالوصول" });
+    }
+
+    try {
+      const { debugFirebaseData } = await import("./firebase-debug");
+      await debugFirebaseData();
+      res.json({ message: "تم فحص البيانات، تحقق من سجل الخادم" });
+    } catch (error: any) {
+      console.error("Debug error:", error);
+      res.status(500).json({ message: "خطأ في فحص البيانات: " + error.message });
+    }
+  });
+
   // Seed data endpoint for admin - Push to Firebase
   app.post("/api/admin/seed-firebase", async (req, res) => {
     if (!req.isAuthenticated() || !(req.user as any)?.isAdmin) {

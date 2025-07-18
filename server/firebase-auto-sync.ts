@@ -66,8 +66,18 @@ export class FirebaseAutoSync {
         }
       }
 
-      // Seed questions
+      // Seed questions - force reseed if insufficient
       const tempQuestions = await tempStorage.getAllQuestions();
+      console.log(`📊 Found ${tempQuestions.length} questions in temp storage`);
+      
+      // Check questions per category
+      const categoryCounts: { [key: string]: number } = {};
+      tempQuestions.forEach(q => {
+        categoryCounts[q.category] = (categoryCounts[q.category] || 0) + 1;
+      });
+      
+      console.log("📈 Questions per category in temp storage:", categoryCounts);
+      
       for (const question of tempQuestions) {
         try {
           await firebaseStorage.createQuestion({
