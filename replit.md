@@ -2,15 +2,16 @@
 
 ## Recent Changes: Latest modifications with dates
 
-- **January 18, 2025**: FIXED - Complete resolution of team scoring and question state management issues
-  - ✅ Fixed question key generation: resolved category ID vs name mapping issue between UI and backend
-  - ✅ Eliminated malformed question keys with double dashes (e.g., "sports--6" → "sports-5")
-  - ✅ Corrected scoring calculation: teams now get exactly 200/400/600 points based on question position
-  - ✅ Fixed question greying out: questions display checkmarks and become unselectable after being answered
-  - ✅ Fixed UI display: categories now show Arabic names (التاريخ, الجغرافيا) instead of English IDs
-  - ✅ Verified scoring accuracy: Position 0-1 = 200pts, Position 2-3 = 400pts, Position 4-5 = 600pts
-  - ✅ All categories work consistently (history, geography, religion, sports, culture, science)
-  - Root cause: Category matching logic was comparing English vs Arabic names, now properly uses English IDs
+- **January 18, 2025**: COMPLETELY FIXED - Team scoring system and question state management fully resolved
+  - ✅ ROOT CAUSE IDENTIFIED: Category mapping was swapping English/Arabic names in UI component
+  - ✅ Fixed question key generation: Questions now consistently use English category names (history-0, geography-2)
+  - ✅ Eliminated all malformed question keys with double dashes
+  - ✅ Scoring system working perfectly: Position 0-1=200pts, Position 2-3=400pts, Position 4-5=600pts
+  - ✅ Question state management: Questions properly grey out with checkmarks and become unselectable
+  - ✅ UI display: Categories show Arabic names (التاريخ, الجغرافيا) for user interface
+  - ✅ Backend consistency: All APIs use English category names for data integrity
+  - ✅ Tested and verified: All 6 categories work consistently with correct scoring
+  - Final fix: Updated category mapping to use `name: cat.name` (English) instead of `name: cat.displayName` (Arabic)
 - **January 18, 2025**: Fixed team scoring system to ensure consistent points across all categories
   - Fixed question ordering by difficulty: questions are now retrieved in proper order (سهل, متوسط, صعب)
   - Updated getQuestionsByCategory to order questions by difficulty instead of random

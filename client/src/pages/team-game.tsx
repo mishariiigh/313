@@ -235,17 +235,19 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     };
   };
 
-  const handleQuestionClick = (category: string, index: number) => {
+  const handleQuestionClick = (categoryName: string, index: number) => {
     // Check if question is already used
-    const questionKey = `${category}-${index}`;
+    const questionKey = `${categoryName}-${index}`;
     if (gameSession.usedQuestions?.includes(questionKey)) {
       return;
     }
 
     // Find the question - questions are organized by category in groups of 6
-    const categoryIndex = categories.findIndex(cat => cat.id === category);
+    const categoryIndex = categories.findIndex(cat => cat.name === categoryName);
     const questionIndex = categoryIndex * 6 + index;
     const question = gameData?.questions?.[questionIndex];
+    
+    console.log(`Clicking question: categoryName=${categoryName}, index=${index}, categoryIndex=${categoryIndex}, questionIndex=${questionIndex}`);
     
     if (question) {
       setSelectedQuestion(question);
@@ -670,7 +672,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 {/* Category Header with Icon */}
                 <div className="bg-gradient-to-r from-red-200 to-red-300 text-gray-800 p-4 rounded-t-lg text-center min-h-[120px] flex flex-col items-center justify-center shadow-lg">
                   <div className="text-3xl mb-2">{category.icon}</div>
-                  <div className="text-sm font-bold">{category.displayName}</div>
+                  <div className="text-sm font-bold">{category.displayName || category.name}</div>
+                  <div className="text-xs text-gray-600">DEBUG: {category.name}</div>
                 </div>
                 
                 {/* Question Buttons - Vertical Layout */}
