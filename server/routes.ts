@@ -794,10 +794,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     try {
       const questionData = insertQuestionSchema.parse(req.body);
+      
+      // Check if category/difficulty combination has reached the limit (2 questions max)
+      const existingQuestions = await storage.getQuestions(questionData.category, questionData.difficulty);
+      if (existingQuestions.length >= 2) {
+        return res.status(400).json({ 
+          message: `تم الوصول للحد الأقصى من الأسئلة لهذه الفئة والصعوبة (2/2). لا يمكن إضافة المزيد من الأسئلة.` 
+        });
+      }
+      
+      // Validate that hint is provided
+      if (!questionData.hint || questionData.hint.trim() === '') {
+        return res.status(400).json({ 
+          message: "التلميح مطلوب لكل سؤال" 
+        });
+      }
+      
       const question = await storage.createQuestion(questionData);
       res.json({ question });
-    } catch (error) {
-      res.status(400).json({ message: "خطأ في إضافة السؤال" });
+    } catch (error: any) {
+      res.status(400).json({ message: "خطأ في إضافة السؤال: " + error.message });
     }
   });
 

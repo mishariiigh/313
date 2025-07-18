@@ -335,6 +335,39 @@ export default function AdminDashboard() {
            user.name.toLowerCase().includes(userSearch.toLowerCase());
   }) || [];
 
+  // Helper function to count questions per category and difficulty
+  const getQuestionCount = (category: string, difficulty?: string) => {
+    if (!questions?.questions) return 0;
+    return questions.questions.filter((q: Question) => {
+      const matchesCategory = q.category === category;
+      const matchesDifficulty = !difficulty || q.difficulty === difficulty;
+      return matchesCategory && matchesDifficulty;
+    }).length;
+  };
+
+  // Helper function to check if we can add more questions to a category/difficulty
+  const canAddQuestion = (category: string, difficulty: string) => {
+    if (!category || !difficulty) return false;
+    const currentCount = getQuestionCount(category, difficulty);
+    return currentCount < 2; // Max 2 questions per difficulty per category
+  };
+
+  // Helper function to get category status
+  const getCategoryStatus = (category: string) => {
+    const easyCount = getQuestionCount(category, "سهل");
+    const mediumCount = getQuestionCount(category, "متوسط");
+    const hardCount = getQuestionCount(category, "صعب");
+    const totalCount = easyCount + mediumCount + hardCount;
+    
+    return {
+      easy: easyCount,
+      medium: mediumCount,
+      hard: hardCount,
+      total: totalCount,
+      isComplete: totalCount === 6 && easyCount === 2 && mediumCount === 2 && hardCount === 2
+    };
+  };
+
   // Helper functions for editing
   const handleEditQuestion = (question: Question) => {
     setEditingQuestion(question);
@@ -564,6 +597,58 @@ export default function AdminDashboard() {
               </div>
             </div>
 
+            {/* Category Overview */}
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle>نظرة عامة على الفئات</CardTitle>
+                <CardDescription>
+                  كل فئة تحتاج 6 أسئلة بالضبط: 2 سهل (200 نقطة) + 2 متوسط (400 نقطة) + 2 صعب (600 نقطة)
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {categories?.categories?.map((category: Category) => {
+                    const status = getCategoryStatus(category.name);
+                    return (
+                      <div key={category.id} className="p-4 border rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="font-medium">{category.displayName}</h3>
+                          <Badge variant={status.isComplete ? "default" : "secondary"}>
+                            {status.total}/6
+                          </Badge>
+                        </div>
+                        <div className="space-y-1 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-green-600">سهل (200):</span>
+                            <span className={status.easy === 2 ? "text-green-600" : "text-gray-500"}>
+                              {status.easy}/2
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-yellow-600">متوسط (400):</span>
+                            <span className={status.medium === 2 ? "text-green-600" : "text-gray-500"}>
+                              {status.medium}/2
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-red-600">صعب (600):</span>
+                            <span className={status.hard === 2 ? "text-green-600" : "text-gray-500"}>
+                              {status.hard}/2
+                            </span>
+                          </div>
+                        </div>
+                        {status.isComplete && (
+                          <div className="mt-2 text-xs text-green-600 font-medium">
+                            ✓ مكتملة
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Add Question Form */}
               <Card>
@@ -572,7 +657,7 @@ export default function AdminDashboard() {
                     {editingQuestion ? "تعديل السؤال" : "إضافة سؤال جديد"}
                   </CardTitle>
                   <CardDescription>
-                    {editingQuestion ? "تعديل بيانات السؤال المحدد" : "أضف سؤالاً جديداً إلى قاعدة البيانات"}
+                    {editingQuestion ? "تعديل بيانات السؤال المحدد" : "أضف سؤالاً جديداً - كل فئة تحتاج 6 أسئلة: 2 سهل (200 نقطة) + 2 متوسط (400 نقطة) + 2 صعب (600 نقطة)"}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -603,42 +688,72 @@ export default function AdminDashboard() {
                         <SelectValue placeholder="اختر الفئة" />
                       </SelectTrigger>
                       <SelectContent>
-                        {categories?.categories?.map((cat: Category) => (
-                          <SelectItem key={cat.id} value={cat.name}>{cat.displayName}</SelectItem>
-                        ))}
+                        {categories?.categories?.map((cat: Category) => {
+                          const status = getCategoryStatus(cat.name);
+                          return (
+                            <SelectItem key={cat.id} value={cat.name}>
+                              <div className="flex items-center justify-between w-full">
+                                <span>{cat.displayName}</span>
+                                <span className="text-xs text-gray-500 ml-2">
+                                  ({status.total}/6)
+                                </span>
+                              </div>
+                            </SelectItem>
+                          );
+                        })}
                       </SelectContent>
                     </Select>
+                    
+                    {/* Category Status Display */}
+                    {questionForm.category && (
+                      <div className="mt-2 p-2 bg-gray-50 rounded text-sm">
+                        <div className="font-medium mb-1">
+                          حالة الفئة: {categories?.categories?.find(c => c.name === questionForm.category)?.displayName}
+                        </div>
+                        <div className="grid grid-cols-3 gap-2 text-xs">
+                          <div>
+                            <span className="text-green-600">سهل:</span> {getQuestionCount(questionForm.category, "سهل")}/2
+                          </div>
+                          <div>
+                            <span className="text-yellow-600">متوسط:</span> {getQuestionCount(questionForm.category, "متوسط")}/2
+                          </div>
+                          <div>
+                            <span className="text-red-600">صعب:</span> {getQuestionCount(questionForm.category, "صعب")}/2
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div>
-                    <Label htmlFor="difficulty">الصعوبة</Label>
+                    <Label htmlFor="difficulty">الصعوبة والنقاط</Label>
                     <Select value={questionForm.difficulty} onValueChange={(value) => setQuestionForm({ ...questionForm, difficulty: value })}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="سهل">سهل</SelectItem>
-                        <SelectItem value="متوسط">متوسط</SelectItem>
-                        <SelectItem value="صعب">صعب</SelectItem>
+                        <SelectItem value="سهل">سهل (200 نقطة)</SelectItem>
+                        <SelectItem value="متوسط">متوسط (400 نقطة)</SelectItem>
+                        <SelectItem value="صعب">صعب (600 نقطة)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div>
-                    <Label htmlFor="hint">التلميح</Label>
+                    <Label htmlFor="hint">التلميح (مطلوب)</Label>
                     <Input
                       id="hint"
                       value={questionForm.hint}
                       onChange={(e) => setQuestionForm({ ...questionForm, hint: e.target.value })}
-                      placeholder="تلميح للسؤال (اختياري)"
+                      placeholder="تلميح مساعد للسؤال"
                       className="mt-1"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="explanation">الشرح</Label>
+                    <Label htmlFor="explanation">الوصف/الشرح (اختياري)</Label>
                     <Textarea
                       id="explanation"
                       value={questionForm.explanation}
                       onChange={(e) => setQuestionForm({ ...questionForm, explanation: e.target.value })}
-                      placeholder="شرح الإجابة (اختياري)"
+                      placeholder="شرح أو وصف إضافي للسؤال"
                       className="mt-1"
                     />
                   </div>
@@ -651,6 +766,15 @@ export default function AdminDashboard() {
                       className="mt-2"
                     />
                   </div>
+                  {/* Validation Warning */}
+                  {questionForm.category && questionForm.difficulty && !editingQuestion && 
+                   !canAddQuestion(questionForm.category, questionForm.difficulty) && (
+                    <div className="p-3 bg-red-50 border border-red-200 rounded text-sm text-red-700">
+                      <strong>تحذير:</strong> لقد تم الوصول للحد الأقصى من الأسئلة لهذه الفئة والصعوبة (2/2). 
+                      لا يمكن إضافة المزيد من الأسئلة.
+                    </div>
+                  )}
+                  
                   <div className="flex gap-2">
                     <Button
                       onClick={handleQuestionSubmit}
@@ -658,7 +782,9 @@ export default function AdminDashboard() {
                         (editingQuestion ? updateQuestionMutation.isPending : createQuestionMutation.isPending) ||
                         !questionForm.question ||
                         !questionForm.answer ||
-                        !questionForm.category
+                        !questionForm.category ||
+                        !questionForm.hint ||
+                        (!editingQuestion && !canAddQuestion(questionForm.category, questionForm.difficulty))
                       }
                       className="flex-1"
                     >
