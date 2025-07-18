@@ -1060,7 +1060,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     try {
       const questionData = insertQuestionSchema.partial().parse(req.body);
-      const question = await storage.updateQuestion(parseInt(req.params.id), questionData);
+      const question = await storage.updateQuestion(req.params.id, questionData);
       res.json({ question });
     } catch (error) {
       res.status(400).json({ message: "خطأ في تحديث السؤال" });
@@ -1078,7 +1078,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      await storage.deleteQuestion(parseInt(req.params.id));
+      await storage.deleteQuestion(req.params.id);
       res.json({ message: "تم حذف السؤال بنجاح" });
     } catch (error) {
       res.status(500).json({ message: "خطأ في حذف السؤال" });
@@ -1188,7 +1188,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     try {
       const categoryData = insertCategorySchema.partial().parse(req.body);
-      const category = await storage.updateCategory(parseInt(req.params.id), categoryData);
+      const category = await storage.updateCategory(req.params.id, categoryData);
       res.json({ category });
     } catch (error) {
       res.status(400).json({ message: "خطأ في تحديث الفئة" });
@@ -1206,7 +1206,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      await storage.deleteCategory(parseInt(req.params.id));
+      await storage.deleteCategory(req.params.id);
       res.json({ message: "تم حذف الفئة بنجاح" });
     } catch (error) {
       res.status(500).json({ message: "خطأ في حذف الفئة" });
@@ -1263,7 +1263,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     try {
       const couponData = insertCouponSchema.partial().parse(req.body);
-      const coupon = await storage.updateCoupon(parseInt(req.params.id), couponData);
+      const coupon = await storage.updateCoupon(req.params.id, couponData);
       res.json({ coupon });
     } catch (error) {
       res.status(400).json({ message: "خطأ في تحديث الكوبون" });
@@ -1369,7 +1369,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     try {
       const packageData = insertGamePackageSchema.partial().parse(req.body);
-      const gamePackage = await storage.updateGamePackage(parseInt(req.params.id), packageData);
+      const gamePackage = await storage.updateGamePackage(req.params.id, packageData);
       res.json({ package: gamePackage });
     } catch (error) {
       res.status(400).json({ message: "خطأ في تحديث باقة الألعاب" });
@@ -1387,7 +1387,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      await storage.deleteGamePackage(parseInt(req.params.id));
+      await storage.deleteGamePackage(req.params.id);
       res.json({ message: "تم حذف باقة الألعاب بنجاح" });
     } catch (error) {
       res.status(500).json({ message: "خطأ في حذف باقة الألعاب" });
@@ -1461,7 +1461,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      const userId = parseInt(req.params.id);
+      const userId = req.params.id; // Use string ID for Firebase
       const { email, name, password, availableGames, isAdmin } = req.body;
       
       // Don't allow admin to modify their own admin status
@@ -1499,7 +1499,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      const userId = parseInt(req.params.id);
+      const userId = req.params.id; // Use string ID for Firebase
       
       // Don't allow admin to delete themselves
       if (userId === user.id) {
