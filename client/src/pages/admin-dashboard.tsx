@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Edit, Trash2, Users, MessageSquare, ArrowRight, Upload, Image as ImageIcon } from "lucide-react";
+import { Plus, Edit, Trash2, Users, MessageSquare, ArrowRight, Upload, Image as ImageIcon, BarChart } from "lucide-react";
 import { useAuthRedirect } from "@/lib/auth";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { useLocation } from "wouter";
@@ -20,7 +20,7 @@ export default function AdminDashboard() {
   const { user, isLoading } = useAuthRedirect();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
-  const [activeTab, setActiveTab] = useState("questions");
+  const [activeTab, setActiveTab] = useState("analytics");
   
   // Search and filter states
   const [questionSearch, setQuestionSearch] = useState("");
@@ -97,6 +97,11 @@ export default function AdminDashboard() {
 
   const { data: users, isLoading: usersLoading } = useQuery({
     queryKey: ["/api/admin/users"],
+    enabled: user?.isAdmin,
+  });
+
+  const { data: analytics, isLoading: analyticsLoading } = useQuery({
+    queryKey: ["/api/admin/sales-analytics"],
     enabled: user?.isAdmin,
   });
 
@@ -562,7 +567,11 @@ export default function AdminDashboard() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="analytics">
+              <BarChart className="w-4 h-4 mr-2" />
+              تحليلات المبيعات
+            </TabsTrigger>
             <TabsTrigger value="questions">
               <MessageSquare className="w-4 h-4 mr-2" />
               الأسئلة
@@ -584,6 +593,158 @@ export default function AdminDashboard() {
               المستخدمين
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="analytics" className="mt-6">
+            {analyticsLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[...Array(4)].map((_, i) => (
+                  <Card key={i} className="animate-pulse">
+                    <CardContent className="p-6">
+                      <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                      <div className="h-8 bg-gray-200 rounded w-1/2"></div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {/* Key Metrics */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm text-blue-600">إجمالي الإيرادات</p>
+                          <p className="text-2xl font-bold text-blue-800">${analytics?.totalRevenue || 0}</p>
+                        </div>
+                        <BarChart className="h-8 w-8 text-blue-500" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm text-green-600">إجمالي المبيعات</p>
+                          <p className="text-2xl font-bold text-green-800">{analytics?.totalSales || 0}</p>
+                        </div>
+                        <Users className="h-8 w-8 text-green-500" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm text-purple-600">متوسط قيمة الطلب</p>
+                          <p className="text-2xl font-bold text-purple-800">${analytics?.averageOrderValue || 0}</p>
+                        </div>
+                        <ArrowRight className="h-8 w-8 text-purple-500" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm text-orange-600">باقات الألعاب الأكثر مبيعاً</p>
+                          <p className="text-2xl font-bold text-orange-800">{analytics?.topGamePackages?.[0]?.name || 'لا يوجد'}</p>
+                        </div>
+                        <Upload className="h-8 w-8 text-orange-500" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Monthly Revenue Chart */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>الإيرادات الشهرية</CardTitle>
+                    <CardDescription>آخر 12 شهر</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-64 flex items-end justify-between gap-2">
+                      {analytics?.monthlyRevenue?.map((month, index) => (
+                        <div key={index} className="flex-1 flex flex-col items-center">
+                          <div 
+                            className="bg-blue-500 rounded-t w-full min-h-2 transition-all duration-300 hover:bg-blue-600"
+                            style={{ height: `${Math.max((month.revenue / Math.max(...analytics.monthlyRevenue.map(m => m.revenue))) * 240, 8)}px` }}
+                          ></div>
+                          <div className="text-xs text-gray-500 mt-2">{month.month}</div>
+                          <div className="text-sm font-semibold text-gray-700">${month.revenue}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Top Game Packages */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>باقات الألعاب الأكثر مبيعاً</CardTitle>
+                      <CardDescription>أفضل 5 باقات</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {analytics?.topGamePackages?.map((pkg, index) => (
+                          <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+                                {index + 1}
+                              </div>
+                              <div>
+                                <p className="font-semibold">{pkg.name}</p>
+                                <p className="text-sm text-gray-600">{pkg.sales} مبيعات</p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <p className="font-bold text-green-600">${pkg.revenue}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Recent Sales */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>المبيعات الأخيرة</CardTitle>
+                      <CardDescription>آخر 10 مبيعات</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {analytics?.recentSales?.map((sale) => (
+                          <div key={sale.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div>
+                              <p className="font-semibold">{sale.userName}</p>
+                              <p className="text-sm text-gray-600">{sale.packageName}</p>
+                              <p className="text-xs text-gray-500">{sale.date}</p>
+                              {sale.couponCode && (
+                                <Badge variant="secondary" className="text-xs mt-1">
+                                  {sale.couponCode}
+                                </Badge>
+                              )}
+                            </div>
+                            <div className="text-right">
+                              <p className="font-bold text-green-600">${sale.amount}</p>
+                              {sale.discountAmount && (
+                                <p className="text-xs text-red-500">-${sale.discountAmount}</p>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            )}
+          </TabsContent>
 
           <TabsContent value="questions" className="mt-6">
             {/* Search and Filter Bar */}

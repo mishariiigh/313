@@ -60,6 +60,25 @@ export interface IStorage {
     totalGamesPlayed: number;
     monthlyRevenue: number;
   }>;
+  
+  // Analytics operations
+  getSalesAnalytics(): Promise<{
+    totalRevenue: number;
+    totalSales: number;
+    averageOrderValue: number;
+    monthlyRevenue: Array<{ month: string; revenue: number; sales: number }>;
+    topGamePackages: Array<{ name: string; sales: number; revenue: number }>;
+    recentSales: Array<{ 
+      id: number; 
+      userName: string; 
+      packageName: string; 
+      amount: number; 
+      gameCount: number; 
+      date: string;
+      couponCode?: string;
+      discountAmount?: number;
+    }>;
+  }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -383,6 +402,103 @@ export class DatabaseStorage implements IStorage {
       totalQuestions: questionCount.count,
       totalGamesPlayed: gameCount.count,
       monthlyRevenue: Math.round((revenueResult.total || 0) / 100), // Convert cents to dollars
+    };
+  }
+
+  async getSalesAnalytics(): Promise<{
+    totalRevenue: number;
+    totalSales: number;
+    averageOrderValue: number;
+    monthlyRevenue: Array<{ month: string; revenue: number; sales: number }>;
+    topGamePackages: Array<{ name: string; sales: number; revenue: number }>;
+    recentSales: Array<{ 
+      id: number; 
+      userName: string; 
+      packageName: string; 
+      amount: number; 
+      gameCount: number; 
+      date: string;
+      couponCode?: string;
+      discountAmount?: number;
+    }>;
+  }> {
+    // Get total revenue and sales count
+    const [totalStats] = await db
+      .select({ 
+        totalRevenue: sql<number>`sum(${purchases.amount})`,
+        totalSales: sql<number>`count(*)`
+      })
+      .from(purchases);
+
+    const totalRevenue = totalStats.totalRevenue || 0;
+    const totalSales = totalStats.totalSales || 0;
+    const averageOrderValue = totalSales > 0 ? Math.round(totalRevenue / totalSales) : 0;
+
+    // Get monthly revenue for the last 12 months
+    const monthlyRevenue = await db
+      .select({
+        month: sql<string>`to_char(${purchases.createdAt}, 'YYYY-MM')`,
+        revenue: sql<number>`sum(${purchases.amount})`,
+        sales: sql<number>`count(*)`
+      })
+      .from(purchases)
+      .where(sql`${purchases.createdAt} >= current_date - interval '12 months'`)
+      .groupBy(sql`to_char(${purchases.createdAt}, 'YYYY-MM')`)
+      .orderBy(sql`to_char(${purchases.createdAt}, 'YYYY-MM')`);
+
+    // Get top game packages by sales
+    const topGamePackages = await db
+      .select({
+        name: sql<string>`'باقة ' || ${purchases.gameCount} || ' ألعاب'`,
+        sales: sql<number>`count(*)`,
+        revenue: sql<number>`sum(${purchases.amount})`
+      })
+      .from(purchases)
+      .groupBy(purchases.gameCount)
+      .orderBy(sql`count(*) desc`)
+      .limit(5);
+
+    // Get recent sales with user info
+    const recentSales = await db
+      .select({
+        id: purchases.id,
+        userName: users.name,
+        packageName: sql<string>`'باقة ' || ${purchases.gameCount} || ' ألعاب'`,
+        amount: purchases.amount,
+        gameCount: purchases.gameCount,
+        date: sql<string>`to_char(${purchases.createdAt}, 'YYYY-MM-DD HH24:MI')`,
+        couponCode: purchases.couponCode,
+        discountAmount: purchases.discountAmount
+      })
+      .from(purchases)
+      .leftJoin(users, eq(purchases.userId, users.id))
+      .orderBy(desc(purchases.createdAt))
+      .limit(10);
+
+    return {
+      totalRevenue: Math.round(totalRevenue / 100), // Convert cents to dollars
+      totalSales,
+      averageOrderValue: Math.round(averageOrderValue / 100), // Convert cents to dollars
+      monthlyRevenue: monthlyRevenue.map(row => ({
+        month: row.month,
+        revenue: Math.round(row.revenue / 100),
+        sales: row.sales
+      })),
+      topGamePackages: topGamePackages.map(pkg => ({
+        name: pkg.name,
+        sales: pkg.sales,
+        revenue: Math.round(pkg.revenue / 100)
+      })),
+      recentSales: recentSales.map(sale => ({
+        id: sale.id,
+        userName: sale.userName || 'Unknown',
+        packageName: sale.packageName,
+        amount: Math.round(sale.amount / 100),
+        gameCount: sale.gameCount,
+        date: sale.date,
+        couponCode: sale.couponCode || undefined,
+        discountAmount: sale.discountAmount ? Math.round(sale.discountAmount / 100) : undefined
+      }))
     };
   }
 }
