@@ -273,12 +273,13 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     if (!selectedQuestion) return;
     
     // Find which category and position this question is in
-    const categoryIndex = categories.findIndex(cat => cat.id === selectedQuestion.category);
+    const categoryIndex = categories.findIndex(cat => cat.name === selectedQuestion.category);
     const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
     
     if (categoryIndex !== -1 && questionIndex !== -1) {
       const positionInCategory = questionIndex - (categoryIndex * 6);
-      const questionKey = `${selectedQuestion.category}-${positionInCategory}`;
+      const categoryId = categories[categoryIndex].id; // Use the English category ID
+      const questionKey = `${categoryId}-${positionInCategory}`;
       markTeamCorrectMutation.mutate({ teamIndex, questionKey });
     }
   };
@@ -287,12 +288,13 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     if (!selectedQuestion) return;
     
     // Find which category and position this question is in
-    const categoryIndex = categories.findIndex(cat => cat.id === selectedQuestion.category);
+    const categoryIndex = categories.findIndex(cat => cat.name === selectedQuestion.category);
     const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
     
     if (categoryIndex !== -1 && questionIndex !== -1) {
       const positionInCategory = questionIndex - (categoryIndex * 6);
-      const questionKey = `${selectedQuestion.category}-${positionInCategory}`;
+      const categoryId = categories[categoryIndex].id; // Use the English category ID
+      const questionKey = `${categoryId}-${positionInCategory}`;
       skipQuestionMutation.mutate({ questionKey });
     }
   };
@@ -301,12 +303,13 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     if (!selectedQuestion) return;
     
     // Find which category and position this question is in
-    const categoryIndex = categories.findIndex(cat => cat.id === selectedQuestion.category);
+    const categoryIndex = categories.findIndex(cat => cat.name === selectedQuestion.category);
     const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
     
     if (categoryIndex !== -1 && questionIndex !== -1) {
       const positionInCategory = questionIndex - (categoryIndex * 6);
-      const questionKey = `${selectedQuestion.category}-${positionInCategory}`;
+      const categoryId = categories[categoryIndex].id; // Use the English category ID
+      const questionKey = `${categoryId}-${positionInCategory}`;
       useHintMutation.mutate({ 
         questionKey, 
         teamIndex: gameSession.currentTurn 
@@ -317,12 +320,13 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   const getCurrentQuestionKey = () => {
     if (!selectedQuestion) return null;
     
-    const categoryIndex = categories.findIndex(cat => cat.id === selectedQuestion.category);
+    const categoryIndex = categories.findIndex(cat => cat.name === selectedQuestion.category);
     const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
     
     if (categoryIndex !== -1 && questionIndex !== -1) {
       const positionInCategory = questionIndex - (categoryIndex * 6);
-      return `${selectedQuestion.category}-${positionInCategory}`;
+      const categoryId = categories[categoryIndex].id; // Use the English category ID
+      return `${categoryId}-${positionInCategory}`;
     }
     return null;
   };
