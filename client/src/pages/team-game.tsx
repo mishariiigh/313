@@ -70,7 +70,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     cat.isActive && selectedCategoryNames.includes(cat.name) && cat.name && cat.displayName
   ).map((cat: any) => ({
     id: cat.name,
-    name: cat.displayName,
+    name: cat.name,        // Use English name for backend API compatibility
+    displayName: cat.displayName, // Use Arabic name for UI display
     icon: CATEGORY_ICONS[cat.name] || CATEGORY_ICONS[cat.displayName] || "📝"
   })) || [];
 
@@ -248,7 +249,6 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     const question = gameData?.questions?.[questionIndex];
     
     console.log(`Clicking question: categoryName=${categoryName}, index=${index}, categoryIndex=${categoryIndex}, questionIndex=${questionIndex}`);
-    console.log(`Categories:`, categories.map(c => ({id: c.id, name: c.name, displayName: c.displayName})));
     
     if (question) {
       setSelectedQuestion(question);
@@ -674,7 +674,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 <div className="bg-gradient-to-r from-red-200 to-red-300 text-gray-800 p-4 rounded-t-lg text-center min-h-[120px] flex flex-col items-center justify-center shadow-lg">
                   <div className="text-3xl mb-2">{category.icon}</div>
                   <div className="text-sm font-bold">{category.displayName || category.name}</div>
-                  <div className="text-xs text-gray-600">DEBUG: {category.name}</div>
+
                 </div>
                 
                 {/* Question Buttons - Vertical Layout */}
