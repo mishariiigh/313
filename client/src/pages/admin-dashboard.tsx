@@ -26,6 +26,7 @@ export default function AdminDashboard() {
   const [questionSearch, setQuestionSearch] = useState("");
   const [categorySearch, setCategorySearch] = useState("");
   const [couponSearch, setCouponSearch] = useState("");
+  const [userSearch, setUserSearch] = useState("");
   const [questionCategoryFilter, setQuestionCategoryFilter] = useState("all");
   const [questionDifficultyFilter, setQuestionDifficultyFilter] = useState("all");
 
@@ -64,6 +65,14 @@ export default function AdminDashboard() {
     isActive: true,
   });
   const [editingGamePackage, setEditingGamePackage] = useState<GamePackage | null>(null);
+  const [userForm, setUserForm] = useState({
+    email: "",
+    name: "",
+    password: "",
+    availableGames: "",
+    isAdmin: false,
+  });
+  const [editingUser, setEditingUser] = useState<any>(null);
 
   // Queries
   const { data: questions, isLoading: questionsLoading } = useQuery({
@@ -83,6 +92,11 @@ export default function AdminDashboard() {
 
   const { data: gamePackages, isLoading: gamePackagesLoading } = useQuery({
     queryKey: ["/api/admin/game-packages"],
+    enabled: user?.isAdmin,
+  });
+
+  const { data: users, isLoading: usersLoading } = useQuery({
+    queryKey: ["/api/admin/users"],
     enabled: user?.isAdmin,
   });
 
@@ -253,6 +267,51 @@ export default function AdminDashboard() {
     },
   });
 
+  const createUserMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await apiRequest("POST", "/api/admin/users", data);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      setUserForm({ email: "", name: "", password: "", availableGames: "", isAdmin: false });
+      toast({ title: "تم إنشاء المستخدم بنجاح" });
+    },
+    onError: (error: any) => {
+      toast({ title: "خطأ في إنشاء المستخدم", description: error.message, variant: "destructive" });
+    },
+  });
+
+  const updateUserMutation = useMutation({
+    mutationFn: async (data: { id: number; updates: any }) => {
+      const response = await apiRequest("PUT", `/api/admin/users/${data.id}`, data.updates);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      setEditingUser(null);
+      setUserForm({ email: "", name: "", password: "", availableGames: "", isAdmin: false });
+      toast({ title: "تم تحديث المستخدم بنجاح" });
+    },
+    onError: (error: any) => {
+      toast({ title: "خطأ في تحديث المستخدم", description: error.message, variant: "destructive" });
+    },
+  });
+
+  const deleteUserMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await apiRequest("DELETE", `/api/admin/users/${id}`);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      toast({ title: "تم حذف المستخدم بنجاح" });
+    },
+    onError: (error: any) => {
+      toast({ title: "خطأ في حذف المستخدم", description: error.message, variant: "destructive" });
+    },
+  });
+
   // Helper functions for filtering and searching
   const filteredQuestions = questions?.questions?.filter((question: Question) => {
     const matchesSearch = question.question.toLowerCase().includes(questionSearch.toLowerCase()) ||
@@ -269,6 +328,11 @@ export default function AdminDashboard() {
 
   const filteredCoupons = coupons?.coupons?.filter((coupon: Coupon) => {
     return coupon.code.toLowerCase().includes(couponSearch.toLowerCase());
+  }) || [];
+
+  const filteredUsers = users?.users?.filter((user: any) => {
+    return user.email.toLowerCase().includes(userSearch.toLowerCase()) ||
+           user.name.toLowerCase().includes(userSearch.toLowerCase());
   }) || [];
 
   // Helper functions for editing
@@ -359,6 +423,42 @@ export default function AdminDashboard() {
     setGamePackageForm({ name: "", description: "", gameCount: "", priceInCents: "", sortOrder: "", isActive: true });
   };
 
+  const handleEditUser = (user: any) => {
+    setEditingUser(user);
+    setUserForm({
+      email: user.email,
+      name: user.name,
+      password: "",
+      availableGames: user.availableGames.toString(),
+      isAdmin: user.isAdmin,
+    });
+  };
+
+  const handleUserSubmit = () => {
+    if (editingUser) {
+      const updates: any = {
+        email: userForm.email,
+        name: userForm.name,
+        availableGames: parseInt(userForm.availableGames),
+        isAdmin: userForm.isAdmin,
+      };
+      if (userForm.password && userForm.password.trim() !== "") {
+        updates.password = userForm.password;
+      }
+      updateUserMutation.mutate({ id: editingUser.id, updates });
+    } else {
+      createUserMutation.mutate({
+        ...userForm,
+        availableGames: parseInt(userForm.availableGames),
+      });
+    }
+  };
+
+  const handleCancelUserEdit = () => {
+    setEditingUser(null);
+    setUserForm({ email: "", name: "", password: "", availableGames: "", isAdmin: false });
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -397,7 +497,7 @@ export default function AdminDashboard() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="questions">
               <MessageSquare className="w-4 h-4 mr-2" />
               الأسئلة
@@ -413,6 +513,10 @@ export default function AdminDashboard() {
             <TabsTrigger value="packages">
               <Upload className="w-4 h-4 mr-2" />
               باقات الألعاب
+            </TabsTrigger>
+            <TabsTrigger value="users">
+              <Users className="w-4 h-4 mr-2" />
+              المستخدمين
             </TabsTrigger>
           </TabsList>
 
@@ -1125,6 +1229,183 @@ export default function AdminDashboard() {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          <TabsContent value="users" className="mt-6">
+            {/* User Search Bar */}
+            <div className="mb-6 p-4 bg-white rounded-lg shadow-sm border">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="user-search">البحث في المستخدمين</Label>
+                  <Input
+                    id="user-search"
+                    placeholder="ابحث بالبريد الإلكتروني أو الاسم..."
+                    value={userSearch}
+                    onChange={(e) => setUserSearch(e.target.value)}
+                  />
+                </div>
+                <div className="flex items-end">
+                  <div className="text-sm text-gray-600">
+                    إجمالي المستخدمين: {filteredUsers.length}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Add User Form */}
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle>
+                  {editingUser ? "تحديث المستخدم" : "إضافة مستخدم جديد"}
+                </CardTitle>
+                <CardDescription>
+                  {editingUser ? "قم بتحديث بيانات المستخدم المحدد" : "أضف مستخدم جديد للنظام"}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="user-email">البريد الإلكتروني</Label>
+                    <Input
+                      id="user-email"
+                      type="email"
+                      placeholder="user@example.com"
+                      value={userForm.email}
+                      onChange={(e) => setUserForm({ ...userForm, email: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="user-name">الاسم</Label>
+                    <Input
+                      id="user-name"
+                      placeholder="اسم المستخدم"
+                      value={userForm.name}
+                      onChange={(e) => setUserForm({ ...userForm, name: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="user-password">
+                      كلمة المرور {editingUser && "(اتركها فارغة لعدم التغيير)"}
+                    </Label>
+                    <Input
+                      id="user-password"
+                      type="password"
+                      placeholder="كلمة المرور"
+                      value={userForm.password}
+                      onChange={(e) => setUserForm({ ...userForm, password: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="user-games">عدد الألعاب المتاحة</Label>
+                    <Input
+                      id="user-games"
+                      type="number"
+                      placeholder="0"
+                      value={userForm.availableGames}
+                      onChange={(e) => setUserForm({ ...userForm, availableGames: e.target.value })}
+                    />
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="user-admin"
+                      checked={userForm.isAdmin}
+                      onChange={(e) => setUserForm({ ...userForm, isAdmin: e.target.checked })}
+                      className="h-4 w-4"
+                    />
+                    <Label htmlFor="user-admin">مدير النظام</Label>
+                  </div>
+                </div>
+                <div className="flex gap-2 mt-4">
+                  <Button
+                    onClick={handleUserSubmit}
+                    disabled={createUserMutation.isPending || updateUserMutation.isPending}
+                    className="bg-red-600 hover:bg-red-700"
+                  >
+                    {editingUser ? "تحديث المستخدم" : "إضافة المستخدم"}
+                  </Button>
+                  {editingUser && (
+                    <Button
+                      variant="outline"
+                      onClick={handleCancelUserEdit}
+                    >
+                      إلغاء التحديث
+                    </Button>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Users List */}
+            <Card>
+              <CardHeader>
+                <CardTitle>المستخدمون المسجلون</CardTitle>
+                <CardDescription>
+                  قائمة بجميع المستخدمين في النظام
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {usersLoading ? (
+                  <div className="flex justify-center py-8">
+                    <div className="luxury-spinner" />
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {filteredUsers.length === 0 ? (
+                      <div className="text-center py-8 text-gray-500">
+                        لم يتم العثور على مستخدمين
+                      </div>
+                    ) : (
+                      filteredUsers.map((user: any) => (
+                        <div
+                          key={user.id}
+                          className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
+                        >
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-reverse space-x-2">
+                              <h3 className="font-medium text-gray-900">{user.name}</h3>
+                              {user.isAdmin && (
+                                <Badge variant="secondary" className="bg-red-100 text-red-800">
+                                  مدير
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-sm text-gray-600">{user.email}</p>
+                            <p className="text-sm text-gray-500">
+                              الألعاب المتاحة: {user.availableGames}
+                            </p>
+                            <p className="text-sm text-gray-400">
+                              تاريخ التسجيل: {new Date(user.createdAt).toLocaleDateString('ar-EG')}
+                            </p>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleEditUser(user)}
+                            >
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => {
+                                if (confirm(`هل أنت متأكد من حذف المستخدم ${user.name}؟`)) {
+                                  deleteUserMutation.mutate(user.id);
+                                }
+                              }}
+                              disabled={deleteUserMutation.isPending}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>

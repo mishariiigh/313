@@ -1109,6 +1109,125 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // User management routes
+  app.get("/api/admin/users", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    const user = req.user as any;
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "غير مصرح بالوصول" });
+    }
+
+    try {
+      const users = await storage.getAllUsers();
+      res.json({ users });
+    } catch (error) {
+      res.status(500).json({ message: "خطأ في جلب المستخدمين" });
+    }
+  });
+
+  app.post("/api/admin/users", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    const user = req.user as any;
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "غير مصرح بالوصول" });
+    }
+
+    try {
+      const { email, name, password, availableGames = 0, isAdmin = false } = req.body;
+      
+      // Check if user already exists
+      const existingUser = await storage.getUserByEmail(email);
+      if (existingUser) {
+        return res.status(400).json({ message: "المستخدم موجود بالفعل" });
+      }
+
+      // Hash password
+      const hashedPassword = await bcrypt.hash(password, 10);
+      
+      const userData = insertUserSchema.parse({
+        email,
+        name,
+        password: hashedPassword,
+        availableGames,
+        isAdmin
+      });
+      
+      const newUser = await storage.createUser(userData);
+      res.json({ user: newUser });
+    } catch (error: any) {
+      res.status(400).json({ message: "خطأ في إنشاء المستخدم: " + error.message });
+    }
+  });
+
+  app.put("/api/admin/users/:id", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    const user = req.user as any;
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "غير مصرح بالوصول" });
+    }
+
+    try {
+      const userId = parseInt(req.params.id);
+      const { email, name, password, availableGames, isAdmin } = req.body;
+      
+      // Don't allow admin to modify their own admin status
+      if (userId === user.id && isAdmin !== undefined) {
+        return res.status(400).json({ message: "لا يمكن تعديل صلاحيات المدير الخاص بك" });
+      }
+
+      const updates: Partial<InsertUser> = {};
+      
+      if (email !== undefined) updates.email = email;
+      if (name !== undefined) updates.name = name;
+      if (availableGames !== undefined) updates.availableGames = availableGames;
+      if (isAdmin !== undefined) updates.isAdmin = isAdmin;
+      
+      // Hash password if provided
+      if (password && password.trim() !== "") {
+        updates.password = await bcrypt.hash(password, 10);
+      }
+      
+      const updatedUser = await storage.updateUser(userId, updates);
+      res.json({ user: updatedUser });
+    } catch (error: any) {
+      res.status(400).json({ message: "خطأ في تحديث المستخدم: " + error.message });
+    }
+  });
+
+  app.delete("/api/admin/users/:id", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    const user = req.user as any;
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "غير مصرح بالوصول" });
+    }
+
+    try {
+      const userId = parseInt(req.params.id);
+      
+      // Don't allow admin to delete themselves
+      if (userId === user.id) {
+        return res.status(400).json({ message: "لا يمكن حذف حسابك الخاص" });
+      }
+
+      await storage.deleteUser(userId);
+      res.json({ message: "تم حذف المستخدم بنجاح" });
+    } catch (error: any) {
+      res.status(500).json({ message: "خطأ في حذف المستخدم: " + error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
