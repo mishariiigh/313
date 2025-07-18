@@ -169,14 +169,50 @@ export class FirebaseStorage implements IFirebaseStorage {
     return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Question));
   }
 
-  async getQuestionsByCategory(category: string): Promise<Question[]> {
-    const q = query(
+  async getQuestionsByCategory(category: string, limitCount?: number): Promise<Question[]> {
+    let q = query(
       collection(db, "questions"),
       where("category", "==", category),
       orderBy("difficulty", "asc")
     );
+    
+    if (limitCount) {
+      q = query(q, limit(limitCount));
+    }
+    
     const snapshot = await getDocs(q);
     return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Question));
+  }
+
+  async getQuestions(category?: string, difficulty?: string): Promise<Question[]> {
+    let q = query(collection(db, "questions"));
+    
+    if (category) {
+      q = query(q, where("category", "==", category));
+    }
+    
+    if (difficulty) {
+      q = query(q, where("difficulty", "==", difficulty));
+    }
+    
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Question));
+  }
+
+  async getQuestionById(id: string): Promise<Question | undefined> {
+    const questionDoc = await getDoc(doc(db, "questions", id));
+    if (questionDoc.exists()) {
+      return { id: questionDoc.id, ...questionDoc.data() } as Question;
+    }
+    return undefined;
+  }
+
+  async getRandomQuestions(count: number): Promise<Question[]> {
+    const snapshot = await getDocs(collection(db, "questions"));
+    const questions = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Question));
+    
+    const shuffled = questions.sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
   }
 
   async getPublishedQuestionsByCategory(category: string): Promise<Question[]> {
@@ -524,6 +560,12 @@ export class FirebaseStorage implements IFirebaseStorage {
       topGamePackages,
       recentSales,
     };
+  }
+
+  async getActiveCategories(): Promise<Category[]> {
+    const q = query(collection(db, "categories"), where("isActive", "==", true));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Category));
   }
 }
 
