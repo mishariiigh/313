@@ -211,8 +211,23 @@ class TempStorage {
     return Array.from(this.questions.values());
   }
 
-  async getQuestionsByCategory(category: string): Promise<Question[]> {
-    return Array.from(this.questions.values()).filter(q => q.category === category);
+  async getQuestions(category?: string, difficulty?: string): Promise<Question[]> {
+    let questions = Array.from(this.questions.values());
+    
+    if (category) {
+      questions = questions.filter(q => q.category === category);
+    }
+    
+    if (difficulty) {
+      questions = questions.filter(q => q.difficulty === difficulty);
+    }
+    
+    return questions;
+  }
+
+  async getQuestionsByCategory(category: string, limit?: number): Promise<Question[]> {
+    const questions = Array.from(this.questions.values()).filter(q => q.category === category);
+    return limit ? questions.slice(0, limit) : questions;
   }
 
   async getPublishedQuestionsByCategory(category: string): Promise<Question[]> {
@@ -241,6 +256,16 @@ class TempStorage {
 
   async deleteQuestion(id: string): Promise<void> {
     this.questions.delete(id);
+  }
+
+  async getQuestionById(id: string): Promise<Question | undefined> {
+    return this.questions.get(id);
+  }
+
+  async getRandomQuestions(count: number): Promise<Question[]> {
+    const questions = Array.from(this.questions.values());
+    const shuffled = questions.sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
   }
 
   async publishAllQuestions(): Promise<void> {
