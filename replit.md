@@ -2,6 +2,14 @@
 
 ## Recent Changes: Latest modifications with dates
 
+- **January 18, 2025**: Implemented mandatory game startup requirements
+  - Added mandatory selection of all 6 categories before game start
+  - Added mandatory team name input validation
+  - Updated game setup UI with category selection checkboxes
+  - Added real-time validation feedback showing requirements status
+  - Enhanced backend validation for categories and team names
+  - Start game button now disabled until all requirements are met
+  - Added visual indicators for completed/incomplete requirements
 - **January 17, 2025**: Major system updates and bug fixes
   - Fixed React hooks error that caused game crashes
   - Fixed questions not opening by removing incorrect points parameter

@@ -135,7 +135,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     const user = req.user as any;
-    const { gameType = "single", teams = [] } = req.body;
+    const { gameType = "single", teams = [], categories = [] } = req.body;
     
     if (user.availableGames <= 0) {
       return res.status(400).json({ message: "لا توجد ألعاب متاحة" });
@@ -144,11 +144,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // For team games, we need exactly 6 questions per category (6 categories × 6 questions = 36 total)
       if (gameType === "team") {
-        const categories = ["التاريخ", "الجغرافيا", "الثقافة العامة", "الرياضة", "الدين", "العلوم"];
+        // Validate that all required categories are selected
+        const requiredCategories = ["التاريخ", "الجغرافيا", "الثقافة العامة", "الرياضة", "الدين", "العلوم"];
+        
+        // If categories are provided, use them; otherwise use all default categories
+        const selectedCategories = categories.length === 6 ? categories : requiredCategories;
+        
+        // Validate that all 6 categories are selected
+        if (selectedCategories.length !== 6) {
+          return res.status(400).json({ message: "يجب اختيار جميع الفئات الست" });
+        }
+        
+        // Validate that provided categories are valid
+        const invalidCategories = selectedCategories.filter(cat => !requiredCategories.includes(cat));
+        if (invalidCategories.length > 0) {
+          return res.status(400).json({ message: `فئات غير صحيحة: ${invalidCategories.join(', ')}` });
+        }
+
+        // Validate team names
+        if (!teams || teams.length !== 2 || teams.some(team => !team || !team.trim())) {
+          return res.status(400).json({ message: "يجب إدخال اسمين صحيحين للفريقين" });
+        }
+
         const questionsByCategory: { [key: string]: any[] } = {};
         
-        // Get 6 questions for each category
-        for (const category of categories) {
+        // Get 6 questions for each selected category
+        for (const category of selectedCategories) {
           const categoryQuestions = await storage.getQuestionsByCategory(category, 6);
           if (categoryQuestions.length < 6) {
             console.log(`Only ${categoryQuestions.length} questions available for ${category}, need 6`);
@@ -159,7 +180,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Organize questions in the order they appear on the board
         const organizedQuestions = [];
-        for (const category of categories) {
+        for (const category of selectedCategories) {
           organizedQuestions.push(...questionsByCategory[category]);
         }
         
