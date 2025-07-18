@@ -2,6 +2,13 @@
 
 ## Recent Changes: Latest modifications with dates
 
+- **January 18, 2025**: KUWAITI DINAR PRICING IMPLEMENTATION - Updated all pricing to use Kuwaiti Dinar currency
+  - ✅ PRICING UPDATED: 1 game = 1.900 KWD, 5 games = 7.900 KWD (converted from previous USD pricing)
+  - ✅ CURRENCY DISPLAY: All frontend displays now show "د.ك" (KWD) instead of USD symbols
+  - ✅ CHECKOUT PAGE: Package selection shows proper KWD pricing with 3 decimal places
+  - ✅ DASHBOARD PRICING: Preview cards display correct KWD amounts
+  - ✅ COUPON DISCOUNTS: Discount notifications updated to show KWD currency format
+  - Platform now operates entirely in Kuwaiti Dinar for local market compatibility
 - **January 18, 2025**: COMPLETE TEAM SCORING SYSTEM FIX - All game functionality now operational
   - ✅ TEAM SCORING FIXED: All team scoring endpoints now work properly with Firebase string IDs
   - ✅ POINTS SYSTEM WORKING: Teams correctly receive 200, 400, 600 points based on question difficulty

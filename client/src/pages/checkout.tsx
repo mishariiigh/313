@@ -168,7 +168,7 @@ export default function CheckoutPage() {
         setValidCoupon(data.coupon);
         toast({
           title: "تم تطبيق الكوبون بنجاح",
-          description: `خصم ${data.coupon.discountType === 'percentage' ? data.coupon.discountValue + '%' : '$' + data.coupon.discountValue}`,
+          description: `خصم ${data.coupon.discountType === 'percentage' ? data.coupon.discountValue + '%' : data.coupon.discountValue + ' د.ك'}`,
         });
       } else {
         setCouponError(data.message || "كوبون غير صحيح");
@@ -271,9 +271,10 @@ export default function CheckoutPage() {
               >
                 {gamePackages.packages.map((pkg: GamePackage) => {
                   const isSelected = pkg.id === selectedPackageId;
-                  const originalPrice = pkg.priceInCents / 100;
-                  const discountedPrice = calculateDiscountedPrice(pkg.priceInCents) / 100;
-                  const hasDiscount = validCoupon && discountedPrice !== originalPrice;
+                  // Convert to KWD - treat stored cents as KWD fils (1000 fils = 1 KWD)
+                  const originalPriceKWD = pkg.gameCount === 1 ? 1.900 : pkg.gameCount === 5 ? 7.900 : pkg.priceInCents / 100;
+                  const discountedPriceKWD = pkg.gameCount === 1 ? 1.900 : pkg.gameCount === 5 ? 7.900 : calculateDiscountedPrice(pkg.priceInCents) / 100;
+                  const hasDiscount = validCoupon && discountedPriceKWD !== originalPriceKWD;
                   
                   return (
                     <div key={pkg.id} className={`luxury-card p-4 border-2 ${isSelected ? 'border-luxury-green bg-luxury-green-light' : 'border-luxury-green-light'}`}>
@@ -294,11 +295,11 @@ export default function CheckoutPage() {
                           <div className="text-left">
                             {hasDiscount && (
                               <span className="text-sm text-muted-foreground line-through block">
-                                ${originalPrice.toFixed(2)}
+                                {originalPriceKWD.toFixed(3)} د.ك
                               </span>
                             )}
                             <span className={`font-bold ${isSelected ? 'text-luxury-green-dark' : 'text-luxury-green'} text-xl`}>
-                              ${discountedPrice.toFixed(2)}
+                              {discountedPriceKWD.toFixed(3)} د.ك
                             </span>
                           </div>
                         </Label>
@@ -344,7 +345,7 @@ export default function CheckoutPage() {
                       <div>
                         <span className="font-semibold text-green-800">{validCoupon.code}</span>
                         <p className="text-sm text-green-600">
-                          خصم {validCoupon.discountType === 'percentage' ? validCoupon.discountValue + '%' : '$' + validCoupon.discountValue}
+                          خصم {validCoupon.discountType === 'percentage' ? validCoupon.discountValue + '%' : validCoupon.discountValue + ' د.ك'}
                         </p>
                       </div>
                     </div>

@@ -867,6 +867,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update game package pricing to Kuwaiti Dinar
+  app.post("/api/admin/update-pricing", async (req, res) => {
+    if (!req.isAuthenticated() || !(req.user as any).isAdmin) {
+      return res.status(401).json({ message: "غير مصرح بالوصول" });
+    }
+
+    try {
+      const { updateGamePackagePricing } = await import("./update-pricing");
+      const result = await updateGamePackagePricing();
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: "خطأ في تحديث الأسعار", error: error.message });
+    }
+  });
+
   // Simple add games route for testing (bypasses payment)
   app.post("/api/add-games", async (req, res) => {
     if (!req.isAuthenticated()) {

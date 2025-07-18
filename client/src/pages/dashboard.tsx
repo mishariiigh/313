@@ -354,7 +354,7 @@ export default function Dashboard() {
                     <span className="font-semibold text-luxury-green-dark">لعبة واحدة</span>
                     <span className="text-sm text-muted-foreground block">36 سؤالاً</span>
                   </div>
-                  <span className="font-bold text-luxury-green text-xl">$1.99</span>
+                  <span className="font-bold text-luxury-green text-xl">1.900 د.ك</span>
                 </div>
               </div>
               <div className="luxury-card p-4 border-2 border-luxury-green bg-luxury-green-light">
@@ -363,7 +363,7 @@ export default function Dashboard() {
                     <span className="font-semibold text-luxury-green-dark">5 ألعاب</span>
                     <span className="text-sm text-luxury-green-dark font-medium block">وفر 10%</span>
                   </div>
-                  <span className="font-bold text-luxury-green-dark text-xl">$8.99</span>
+                  <span className="font-bold text-luxury-green-dark text-xl">7.900 د.ك</span>
                 </div>
               </div>
             </div>
