@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "@/lib/auth";
 import { useLocation } from "wouter";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -9,15 +9,23 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowRight, Play, Users, Edit2, Check, X, BookOpen } from "lucide-react";
+import { Category } from "@/../../shared/schema";
 
-const CATEGORIES = [
-  { id: "التاريخ", name: "التاريخ", icon: "📚" },
-  { id: "الجغرافيا", name: "الجغرافيا", icon: "🌍" },
-  { id: "الثقافة العامة", name: "الثقافة العامة", icon: "🧠" },
-  { id: "الرياضة", name: "الرياضة", icon: "🏅" },
-  { id: "الدين", name: "الدين", icon: "✨" },
-  { id: "العلوم", name: "العلوم", icon: "🔬" },
-];
+// Default category icons for common categories
+const CATEGORY_ICONS: { [key: string]: string } = {
+  "التاريخ": "📚",
+  "الجغرافيا": "🌍", 
+  "الثقافة العامة": "🧠",
+  "الرياضة": "🏅",
+  "الدين": "✨",
+  "العلوم": "🔬",
+  "الفنون": "🎨",
+  "الطبيعة": "🌿",
+  "التكنولوجيا": "💻",
+  "الطعام": "🍽️",
+  "الموسيقى": "🎵",
+  "الطب": "⚕️",
+};
 
 export default function GameSetupPage() {
   const { user } = useAuth();
@@ -27,6 +35,12 @@ export default function GameSetupPage() {
   const [editingTeam, setEditingTeam] = useState<number | null>(null);
   const [tempTeamName, setTempTeamName] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+  // Fetch categories from admin management
+  const { data: categoriesData, isLoading: categoriesLoading } = useQuery({
+    queryKey: ["/api/categories"],
+    enabled: !!user,
+  });
 
   const startGameMutation = useMutation({
     mutationFn: async () => {
@@ -71,22 +85,25 @@ export default function GameSetupPage() {
     setTempTeamName("");
   };
 
-  const handleCategoryToggle = (categoryId: string) => {
+  const categories = categoriesData?.categories || [];
+  const requiredCategoriesCount = Math.min(6, categories.length);
+
+  const handleCategoryToggle = (categoryName: string) => {
     setSelectedCategories(prev => {
-      if (prev.includes(categoryId)) {
-        return prev.filter(id => id !== categoryId);
+      if (prev.includes(categoryName)) {
+        return prev.filter(name => name !== categoryName);
       } else {
-        return [...prev, categoryId];
+        return [...prev, categoryName];
       }
     });
   };
 
   const handleStartGame = () => {
-    // Validate that all 6 categories are selected
-    if (selectedCategories.length !== 6) {
+    // Validate that all available categories are selected (up to 6)
+    if (selectedCategories.length !== requiredCategoriesCount) {
       toast({
         title: "يجب اختيار جميع الفئات",
-        description: "يرجى اختيار الفئات الست المطلوبة لبدء اللعبة",
+        description: `يرجى اختيار الفئات الـ ${requiredCategoriesCount} المطلوبة لبدء اللعبة`,
         variant: "destructive",
       });
       return;
@@ -155,34 +172,54 @@ export default function GameSetupPage() {
             <div className="question-slide-in">
               <Label className="text-lg font-semibold text-luxury-green-dark mb-4 block flex items-center">
                 <BookOpen className="h-5 w-5 ml-2 text-luxury-green" />
-                اختيار الفئات (مطلوب اختيار الفئات الست)
+                اختيار الفئات (مطلوب اختيار الفئات الـ {requiredCategoriesCount})
               </Label>
               
-              <div className="grid grid-cols-2 gap-4">
-                {CATEGORIES.map((category, index) => (
-                  <div key={category.id} className="flex items-center space-x-reverse space-x-3 luxury-card p-4 hint-reveal" style={{ animationDelay: `${index * 0.1}s` }}>
-                    <Checkbox
-                      id={`category-${category.id}`}
-                      checked={selectedCategories.includes(category.id)}
-                      onCheckedChange={() => handleCategoryToggle(category.id)}
-                      className="data-[state=checked]:bg-luxury-green data-[state=checked]:border-luxury-green"
-                    />
-                    <label
-                      htmlFor={`category-${category.id}`}
-                      className="flex items-center space-x-reverse space-x-2 cursor-pointer flex-1"
-                    >
-                      <span className="text-2xl">{category.icon}</span>
-                      <span className="text-luxury-green-dark font-medium">{category.name}</span>
-                    </label>
+              {categoriesLoading ? (
+                <div className="flex items-center justify-center p-8">
+                  <div className="luxury-spinner" />
+                </div>
+              ) : categories.length === 0 ? (
+                <div className="text-center p-8 text-gray-500">
+                  لا توجد فئات متاحة حالياً
+                </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-2 gap-4">
+                    {categories.map((category, index) => {
+                      const icon = CATEGORY_ICONS[category.name] || "📝";
+                      return (
+                        <div key={category.id} className="flex items-center space-x-reverse space-x-3 luxury-card p-4 hint-reveal" style={{ animationDelay: `${index * 0.1}s` }}>
+                          <Checkbox
+                            id={`category-${category.id}`}
+                            checked={selectedCategories.includes(category.name)}
+                            onCheckedChange={() => handleCategoryToggle(category.name)}
+                            className="data-[state=checked]:bg-luxury-green data-[state=checked]:border-luxury-green"
+                          />
+                          <label
+                            htmlFor={`category-${category.id}`}
+                            className="flex items-center space-x-reverse space-x-2 cursor-pointer flex-1"
+                          >
+                            <span className="text-2xl">{icon}</span>
+                            <div>
+                              <span className="text-luxury-green-dark font-medium">{category.displayName}</span>
+                              {category.description && (
+                                <p className="text-sm text-gray-600">{category.description}</p>
+                              )}
+                            </div>
+                          </label>
+                        </div>
+                      );
+                    })}
                   </div>
-                ))}
-              </div>
-              
-              <div className="mt-3 text-sm text-center">
-                <span className={`font-medium ${selectedCategories.length === 6 ? 'text-luxury-green' : 'text-orange-600'}`}>
-                  تم اختيار {selectedCategories.length} من 6 فئات
-                </span>
-              </div>
+                  
+                  <div className="mt-3 text-sm text-center">
+                    <span className={`font-medium ${selectedCategories.length === requiredCategoriesCount ? 'text-luxury-green' : 'text-orange-600'}`}>
+                      تم اختيار {selectedCategories.length} من {requiredCategoriesCount} فئات
+                    </span>
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Teams Setup */}
@@ -250,9 +287,9 @@ export default function GameSetupPage() {
             <div className="luxury-card p-4 bg-orange-50 border-orange-200">
               <h4 className="font-semibold text-orange-800 mb-2">المتطلبات قبل بدء اللعبة:</h4>
               <ul className="text-sm text-orange-700 space-y-1">
-                <li className={`flex items-center ${selectedCategories.length === 6 ? 'text-green-700' : 'text-orange-700'}`}>
-                  <span className="ml-2">{selectedCategories.length === 6 ? '✓' : '○'}</span>
-                  اختيار جميع الفئات الست ({selectedCategories.length}/6)
+                <li className={`flex items-center ${selectedCategories.length === requiredCategoriesCount ? 'text-green-700' : 'text-orange-700'}`}>
+                  <span className="ml-2">{selectedCategories.length === requiredCategoriesCount ? '✓' : '○'}</span>
+                  اختيار جميع الفئات المطلوبة ({selectedCategories.length}/{requiredCategoriesCount})
                 </li>
                 <li className={`flex items-center ${teams.every(team => team.trim()) ? 'text-green-700' : 'text-orange-700'}`}>
                   <span className="ml-2">{teams.every(team => team.trim()) ? '✓' : '○'}</span>
@@ -267,11 +304,12 @@ export default function GameSetupPage() {
               disabled={
                 startGameMutation.isPending || 
                 editingTeam !== null || 
-                selectedCategories.length !== 6 || 
+                categoriesLoading ||
+                selectedCategories.length !== requiredCategoriesCount || 
                 teams.some(team => !team.trim())
               }
               className={`w-full py-4 text-lg question-card-flip transition-all duration-300 ${
-                selectedCategories.length === 6 && teams.every(team => team.trim()) && editingTeam === null
+                selectedCategories.length === requiredCategoriesCount && teams.every(team => team.trim()) && editingTeam === null && !categoriesLoading
                   ? 'luxury-button' 
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}

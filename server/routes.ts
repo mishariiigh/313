@@ -142,21 +142,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      // For team games, we need exactly 6 questions per category (6 categories × 6 questions = 36 total)
+      // For team games, we need exactly 6 questions per category
       if (gameType === "team") {
-        // Validate that all required categories are selected
-        const requiredCategories = ["التاريخ", "الجغرافيا", "الثقافة العامة", "الرياضة", "الدين", "العلوم"];
+        // Get all active categories from database
+        const allCategories = await storage.getAllCategories();
+        const activeCategories = allCategories.filter(cat => cat.isActive);
         
-        // If categories are provided, use them; otherwise use all default categories
-        const selectedCategories = categories.length === 6 ? categories : requiredCategories;
-        
-        // Validate that all 6 categories are selected
-        if (selectedCategories.length !== 6) {
-          return res.status(400).json({ message: "يجب اختيار جميع الفئات الست" });
+        // Validate that categories are provided
+        if (!categories || categories.length === 0) {
+          return res.status(400).json({ message: "يجب اختيار الفئات المطلوبة" });
         }
         
-        // Validate that provided categories are valid
-        const invalidCategories = selectedCategories.filter(cat => !requiredCategories.includes(cat));
+        // Use provided categories or default to all active categories
+        const selectedCategories = categories.length > 0 ? categories : activeCategories.map(cat => cat.name);
+        const requiredCategoriesCount = Math.min(6, activeCategories.length);
+        
+        // Validate that the required number of categories are selected
+        if (selectedCategories.length !== requiredCategoriesCount) {
+          return res.status(400).json({ message: `يجب اختيار ${requiredCategoriesCount} فئات` });
+        }
+        
+        // Validate that provided categories exist in the database
+        const validCategoryNames = activeCategories.map(cat => cat.name);
+        const invalidCategories = selectedCategories.filter(cat => !validCategoryNames.includes(cat));
         if (invalidCategories.length > 0) {
           return res.status(400).json({ message: `فئات غير صحيحة: ${invalidCategories.join(', ')}` });
         }
@@ -818,6 +826,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Categories routes
+  app.get("/api/categories", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    try {
+      const categories = await storage.getAllCategories();
+      // Filter only active categories for users
+      const activeCategories = categories.filter(category => category.isActive);
+      res.json({ categories: activeCategories });
+    } catch (error) {
+      res.status(500).json({ message: "خطأ في جلب الفئات" });
+    }
+  });
+
   app.get("/api/admin/categories", async (req, res) => {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "غير مسجل الدخول" });
