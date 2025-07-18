@@ -67,7 +67,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   const gameSession = gameData?.gameSession;
   const selectedCategoryNames = gameSession?.selectedCategories || [];
   const categories = categoriesData?.categories?.filter((cat: any) => 
-    cat.isActive && selectedCategoryNames.includes(cat.name)
+    cat.isActive && selectedCategoryNames.includes(cat.name) && cat.name && cat.displayName
   ).map((cat: any) => ({
     id: cat.name,
     name: cat.displayName,
