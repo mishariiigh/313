@@ -8,14 +8,27 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, RotateCcw, Users, Trophy, HelpCircle, Eye, Shuffle, Plus, Minus } from "lucide-react";
 import { Question } from "@/../../shared/schema";
 
-const CATEGORIES = [
-  { id: "التاريخ", name: "التاريخ", icon: "📚" },
-  { id: "الجغرافيا", name: "الجغرافيا", icon: "🌍" },
-  { id: "الثقافة العامة", name: "الثقافة العامة", icon: "🧠" },
-  { id: "الرياضة", name: "الرياضة", icon: "🏅" },
-  { id: "الدين", name: "الدين", icon: "✨" },
-  { id: "العلوم", name: "العلوم", icon: "🔬" },
-];
+// Default category icons for common categories
+const CATEGORY_ICONS: { [key: string]: string } = {
+  "التاريخ": "📚",
+  "الجغرافيا": "🌍", 
+  "الثقافة العامة": "🧠",
+  "الرياضة": "🏅",
+  "الدين": "✨",
+  "العلوم": "🔬",
+  "الفنون": "🎨",
+  "الطبيعة": "🌿",
+  "التكنولوجيا": "💻",
+  "الطعام": "🍽️",
+  "الموسيقى": "🎵",
+  "الطب": "⚕️",
+  "history": "📚",
+  "geography": "🌍",
+  "culture": "🧠",
+  "sports": "🏅",
+  "religion": "✨",
+  "science": "🔬",
+};
 
 interface TeamGamePageProps {
   params: {
@@ -42,7 +55,20 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     enabled: !!id,
   });
 
+  // Fetch categories
+  const { data: categoriesData } = useQuery({
+    queryKey: ['/api/categories'],
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
   // Questions are included in the game data for team games
+
+  // Create categories array from database data
+  const categories = categoriesData?.categories?.filter((cat: any) => cat.isActive).map((cat: any) => ({
+    id: cat.name,
+    name: cat.displayName,
+    icon: CATEGORY_ICONS[cat.name] || CATEGORY_ICONS[cat.displayName] || "📝"
+  })) || [];
 
   useEffect(() => {
     if (!user) {
@@ -50,9 +76,10 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       return;
     }
 
-    if (gameData) {
+    if (gameData && categories.length > 0) {
       // Check if game is completed and auto-complete if needed
-      if (gameData.gameSession?.usedQuestions?.length >= 36 && !gameData.gameSession?.isCompleted) {
+      const totalQuestions = categories.length * 6; // 6 questions per category
+      if (gameData.gameSession?.usedQuestions?.length >= totalQuestions && !gameData.gameSession?.isCompleted) {
         // Auto-complete the game
         apiRequest("POST", `/api/games/${id}/complete`).then(() => {
           queryClient.invalidateQueries({ queryKey: [`/api/games/${id}`] });
@@ -191,7 +218,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   const gameSession = gameData.gameSession;
 
   // Check if game is completed
-  const isGameCompleted = gameSession.usedQuestions?.length >= 36; // 6 categories * 6 questions each
+  const totalQuestions = categories.length * 6; // 6 questions per category
+  const isGameCompleted = gameSession.usedQuestions?.length >= totalQuestions;
   
   // Calculate winner
   const getWinner = () => {
@@ -213,7 +241,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     }
 
     // Find the question - questions are organized by category in groups of 6
-    const categoryIndex = CATEGORIES.findIndex(cat => cat.id === category);
+    const categoryIndex = categories.findIndex(cat => cat.id === category);
     const questionIndex = categoryIndex * 6 + index;
     const question = gameData?.questions?.[questionIndex];
     
@@ -243,7 +271,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     if (!selectedQuestion) return;
     
     // Find which category and position this question is in
-    const categoryIndex = CATEGORIES.findIndex(cat => cat.id === selectedQuestion.category);
+    const categoryIndex = categories.findIndex(cat => cat.id === selectedQuestion.category);
     const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
     
     if (categoryIndex !== -1 && questionIndex !== -1) {
@@ -257,7 +285,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     if (!selectedQuestion) return;
     
     // Find which category and position this question is in
-    const categoryIndex = CATEGORIES.findIndex(cat => cat.id === selectedQuestion.category);
+    const categoryIndex = categories.findIndex(cat => cat.id === selectedQuestion.category);
     const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
     
     if (categoryIndex !== -1 && questionIndex !== -1) {
@@ -271,7 +299,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     if (!selectedQuestion) return;
     
     // Find which category and position this question is in
-    const categoryIndex = CATEGORIES.findIndex(cat => cat.id === selectedQuestion.category);
+    const categoryIndex = categories.findIndex(cat => cat.id === selectedQuestion.category);
     const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
     
     if (categoryIndex !== -1 && questionIndex !== -1) {
@@ -287,7 +315,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   const getCurrentQuestionKey = () => {
     if (!selectedQuestion) return null;
     
-    const categoryIndex = CATEGORIES.findIndex(cat => cat.id === selectedQuestion.category);
+    const categoryIndex = categories.findIndex(cat => cat.id === selectedQuestion.category);
     const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
     
     if (categoryIndex !== -1 && questionIndex !== -1) {
@@ -607,8 +635,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       {/* Game Board - Jeopardy Grid */}
       <main className="flex-1 p-6">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-6 gap-3 h-full">
-            {CATEGORIES.map((category, categoryIndex) => (
+          <div className={`grid gap-3 h-full ${categories.length <= 6 ? 'grid-cols-' + categories.length : 'grid-cols-6'}`}>
+            {categories.map((category, categoryIndex) => (
               <div key={category.id} className="flex flex-col">
                 {/* Category Header with Icon */}
                 <div className="bg-gradient-to-r from-red-200 to-red-300 text-gray-800 p-4 rounded-t-lg text-center min-h-[120px] flex flex-col items-center justify-center shadow-lg">

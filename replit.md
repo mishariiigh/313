@@ -13,6 +13,12 @@
   - Added visual indicators for completed/incomplete requirements
   - Categories now pull from admin dashboard instead of hardcoded values
   - System adapts to any number of active categories (minimum 6 required for games)
+  - Updated team game board to use dynamic categories with proper Jeopardy-style scoring
+  - Implemented correct point values: 200, 400, 600 based on question difficulty
+  - Questions show checkmarks when completed and become unselectable
+  - Game automatically completes when all questions are answered
+  - Winner announcement screen shows final scores and congratulates winning team
+  - Flexible grid layout adapts to any number of active categories from admin dashboard
 - **January 17, 2025**: Major system updates and bug fixes
   - Fixed React hooks error that caused game crashes
   - Fixed questions not opening by removing incorrect points parameter
