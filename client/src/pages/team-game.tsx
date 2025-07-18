@@ -399,7 +399,14 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
               {selectedQuestion.category}
             </div>
             <div className="text-lg font-bold text-green-600 mb-4">
-              {getPointsForDifficulty(selectedQuestion.difficulty)} نقطة
+              {(() => {
+                const questionKey = (selectedQuestion as any).questionKey;
+                if (questionKey) {
+                  const index = parseInt(questionKey.split('-')[1]);
+                  return index < 2 ? 200 : index < 4 ? 400 : 600;
+                }
+                return getPointsForDifficulty(selectedQuestion.difficulty);
+              })()} نقطة
             </div>
             
             {/* Timer Display */}
@@ -512,7 +519,11 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             
             <div className="grid grid-cols-2 gap-4 mb-4">
               {gameSession.teams.map((team: string, index: number) => {
-                const points = getPointsForDifficulty(selectedQuestion.difficulty);
+                const questionKey = (selectedQuestion as any).questionKey;
+                const points = questionKey ? (() => {
+                  const idx = parseInt(questionKey.split('-')[1]);
+                  return idx < 2 ? 200 : idx < 4 ? 400 : 600;
+                })() : getPointsForDifficulty(selectedQuestion.difficulty);
                 
                 return (
                   <Button
