@@ -2,6 +2,14 @@
 
 ## Recent Changes: Latest modifications with dates
 
+- **January 18, 2025**: Fixed team scoring system and question state management for all categories
+  - Fixed question key generation to properly map Arabic category names to English IDs
+  - Resolved issue where teams were getting incorrect point values (600 instead of 200)
+  - Fixed question greying out and checkmark system to work consistently across all categories
+  - Eliminated malformed question keys with double dashes
+  - Questions now properly grey out with checkmarks after being answered and become unselectable
+  - Team scoring now correctly awards 200, 400, or 600 points based on question position
+  - Added debug logging to track question key generation and scoring
 - **January 18, 2025**: Fixed team scoring system to ensure consistent points across all categories
   - Fixed question ordering by difficulty: questions are now retrieved in proper order (سهل, متوسط, صعب)
   - Updated getQuestionsByCategory to order questions by difficulty instead of random
