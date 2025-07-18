@@ -2,14 +2,15 @@
 
 ## Recent Changes: Latest modifications with dates
 
-- **January 18, 2025**: Fixed team scoring system and question state management for all categories
-  - Fixed question key generation to properly map Arabic category names to English IDs
-  - Resolved issue where teams were getting incorrect point values (600 instead of 200)
-  - Fixed question greying out and checkmark system to work consistently across all categories
-  - Eliminated malformed question keys with double dashes
-  - Questions now properly grey out with checkmarks after being answered and become unselectable
-  - Team scoring now correctly awards 200, 400, or 600 points based on question position
-  - Added debug logging to track question key generation and scoring
+- **January 18, 2025**: FIXED - Complete resolution of team scoring and question state management issues
+  - ✅ Fixed question key generation: resolved category ID vs name mapping issue between UI and backend
+  - ✅ Eliminated malformed question keys with double dashes (e.g., "sports--6" → "sports-5")
+  - ✅ Corrected scoring calculation: teams now get exactly 200/400/600 points based on question position
+  - ✅ Fixed question greying out: questions display checkmarks and become unselectable after being answered
+  - ✅ Fixed UI display: categories now show Arabic names (التاريخ, الجغرافيا) instead of English IDs
+  - ✅ Verified scoring accuracy: Position 0-1 = 200pts, Position 2-3 = 400pts, Position 4-5 = 600pts
+  - ✅ All categories work consistently (history, geography, religion, sports, culture, science)
+  - Root cause: Category matching logic was comparing English vs Arabic names, now properly uses English IDs
 - **January 18, 2025**: Fixed team scoring system to ensure consistent points across all categories
   - Fixed question ordering by difficulty: questions are now retrieved in proper order (سهل, متوسط, صعب)
   - Updated getQuestionsByCategory to order questions by difficulty instead of random

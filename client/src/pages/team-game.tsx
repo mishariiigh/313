@@ -273,16 +273,19 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     if (!selectedQuestion) return;
     
     // Find which category and position this question is in
-    // selectedQuestion.category is the Arabic display name, so we need to find by display name
+    // selectedQuestion.category contains the English category name (e.g., "sports"), 
+    // so we need to find by the English name property
     const categoryIndex = categories.findIndex(cat => cat.name === selectedQuestion.category);
     const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
     
     if (categoryIndex !== -1 && questionIndex !== -1) {
       const positionInCategory = questionIndex - (categoryIndex * 6);
-      const categoryId = categories[categoryIndex].id; // Use the English category ID
-      const questionKey = `${categoryId}-${positionInCategory}`;
+      const categoryName = categories[categoryIndex].name; // Use the English category name as ID
+      const questionKey = `${categoryName}-${positionInCategory}`;
       console.log(`Team ${teamIndex} answered ${questionKey} correctly`);
       markTeamCorrectMutation.mutate({ teamIndex, questionKey });
+    } else {
+      console.error(`Failed to find category "${selectedQuestion.category}" or question ID ${selectedQuestion.id}`);
     }
   };
 
@@ -290,14 +293,14 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     if (!selectedQuestion) return;
     
     // Find which category and position this question is in
-    // selectedQuestion.category is the Arabic display name, so we need to find by display name
+    // selectedQuestion.category contains the English category name
     const categoryIndex = categories.findIndex(cat => cat.name === selectedQuestion.category);
     const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
     
     if (categoryIndex !== -1 && questionIndex !== -1) {
       const positionInCategory = questionIndex - (categoryIndex * 6);
-      const categoryId = categories[categoryIndex].id; // Use the English category ID
-      const questionKey = `${categoryId}-${positionInCategory}`;
+      const categoryName = categories[categoryIndex].name; // Use the English category name as ID
+      const questionKey = `${categoryName}-${positionInCategory}`;
       console.log(`Skipping question ${questionKey}`);
       skipQuestionMutation.mutate({ questionKey });
     }
@@ -307,14 +310,14 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     if (!selectedQuestion) return;
     
     // Find which category and position this question is in
-    // selectedQuestion.category is the Arabic display name, so we need to find by display name
+    // selectedQuestion.category contains the English category name
     const categoryIndex = categories.findIndex(cat => cat.name === selectedQuestion.category);
     const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
     
     if (categoryIndex !== -1 && questionIndex !== -1) {
       const positionInCategory = questionIndex - (categoryIndex * 6);
-      const categoryId = categories[categoryIndex].id; // Use the English category ID
-      const questionKey = `${categoryId}-${positionInCategory}`;
+      const categoryName = categories[categoryIndex].name; // Use the English category name as ID
+      const questionKey = `${categoryName}-${positionInCategory}`;
       console.log(`Using hint for question ${questionKey}`);
       useHintMutation.mutate({ 
         questionKey, 
@@ -326,14 +329,14 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   const getCurrentQuestionKey = () => {
     if (!selectedQuestion) return null;
     
-    // selectedQuestion.category is the Arabic display name, so we need to find by display name
+    // selectedQuestion.category contains the English category name
     const categoryIndex = categories.findIndex(cat => cat.name === selectedQuestion.category);
     const questionIndex = gameData?.questions?.findIndex(q => q.id === selectedQuestion.id);
     
     if (categoryIndex !== -1 && questionIndex !== -1) {
       const positionInCategory = questionIndex - (categoryIndex * 6);
-      const categoryId = categories[categoryIndex].id; // Use the English category ID
-      return `${categoryId}-${positionInCategory}`;
+      const categoryName = categories[categoryIndex].name; // Use the English category name as ID
+      return `${categoryName}-${positionInCategory}`;
     }
     return null;
   };
@@ -667,7 +670,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 {/* Category Header with Icon */}
                 <div className="bg-gradient-to-r from-red-200 to-red-300 text-gray-800 p-4 rounded-t-lg text-center min-h-[120px] flex flex-col items-center justify-center shadow-lg">
                   <div className="text-3xl mb-2">{category.icon}</div>
-                  <div className="text-sm font-bold">{category.name}</div>
+                  <div className="text-sm font-bold">{category.displayName}</div>
                 </div>
                 
                 {/* Question Buttons - Vertical Layout */}
@@ -675,12 +678,12 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   {/* 200 Points */}
                   <div className="grid grid-cols-2 gap-2">
                     {[0, 1].map((index) => {
-                      const questionKey = `${category.id}-${index}`;
+                      const questionKey = `${category.name}-${index}`;
                       const isUsed = gameSession.usedQuestions?.includes(questionKey);
                       return (
                         <button
                           key={index}
-                          onClick={() => handleQuestionClick(category.id, index)}
+                          onClick={() => handleQuestionClick(category.name, index)}
                           disabled={isUsed}
                           className={`h-16 text-center font-bold text-lg transition-all duration-300 rounded-lg border-2 ${
                             isUsed
@@ -701,12 +704,12 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   {/* 400 Points */}
                   <div className="grid grid-cols-2 gap-2">
                     {[2, 3].map((index) => {
-                      const questionKey = `${category.id}-${index}`;
+                      const questionKey = `${category.name}-${index}`;
                       const isUsed = gameSession.usedQuestions?.includes(questionKey);
                       return (
                         <button
                           key={index}
-                          onClick={() => handleQuestionClick(category.id, index)}
+                          onClick={() => handleQuestionClick(category.name, index)}
                           disabled={isUsed}
                           className={`h-16 text-center font-bold text-lg transition-all duration-300 rounded-lg border-2 ${
                             isUsed
@@ -727,12 +730,12 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   {/* 600 Points */}
                   <div className="grid grid-cols-2 gap-2">
                     {[4, 5].map((index) => {
-                      const questionKey = `${category.id}-${index}`;
+                      const questionKey = `${category.name}-${index}`;
                       const isUsed = gameSession.usedQuestions?.includes(questionKey);
                       return (
                         <button
                           key={index}
-                          onClick={() => handleQuestionClick(category.id, index)}
+                          onClick={() => handleQuestionClick(category.name, index)}
                           disabled={isUsed}
                           className={`h-16 text-center font-bold text-lg transition-all duration-300 rounded-lg border-2 ${
                             isUsed
