@@ -45,6 +45,9 @@ Preferred communication style: Simple, everyday language.
 - **Question System**: 6 categories with 3 difficulty levels (سهل/متوسط/صعب)
 - **Scoring**: Points awarded based on difficulty (200/400/600 points)
 - **Game Flow**: Turn-based gameplay with hint system and answer reveals
+- **Board Layout**: Individual category cards matching reference design
+- **Question Images**: Admin-uploaded images with automatic resizing (400×300px max)
+- **Category Images**: Admin-uploaded category pictures displayed in game board
 
 ### Payment System
 - **Payment Processor**: Stripe integration
@@ -53,11 +56,12 @@ Preferred communication style: Simple, everyday language.
 - **Coupon System**: Percentage and fixed-amount discount codes
 
 ### Admin Dashboard
-- **Question Management**: CRUD operations for trivia questions
-- **Category Management**: Custom categories with icons and descriptions
+- **Question Management**: CRUD operations for trivia questions with image upload
+- **Category Management**: Custom categories with image upload and descriptions
 - **User Management**: User accounts and game credit management
 - **Analytics**: Game statistics and usage tracking
 - **Content Control**: Question publishing and moderation
+- **Image Management**: Automatic image resizing and optimization for questions and categories
 
 ## Data Flow
 

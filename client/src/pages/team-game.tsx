@@ -682,167 +682,106 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       {/* Game Board - Jeopardy Grid */}
       <main className="flex-1 p-6">
         <div className="max-w-7xl mx-auto">
-          {/* Jeopardy-Style Game Board - Matching Provided Image */}
-          <div className="w-full max-w-7xl mx-auto" dir="rtl">
-            {/* Top Row - Point Values 200 */}
-            <div className="grid grid-cols-6 gap-2 mb-2">
-              {categories.slice(0, 6).map((category, categoryIndex) => {
-                const questionKey = `${category.name}-0`;
-                const isUsed = gameSession.usedQuestions?.includes(questionKey);
-                return (
-                  <button
-                    key={`${categoryIndex}-200-0`}
-                    onClick={() => handleQuestionClick(category.name, 0)}
-                    disabled={isUsed}
-                    className={`h-20 rounded-3xl font-bold text-2xl transition-all duration-300 border-4 ${
-                      isUsed
-                        ? "bg-gray-400 text-gray-600 cursor-not-allowed border-gray-500"
-                        : "bg-gray-200 text-red-600 hover:bg-gray-300 border-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-                    }`}
-                  >
-                    {isUsed ? "✓" : "200"}
-                  </button>
-                );
-              })}
-            </div>
+          {/* Category Cards Layout - Exactly Matching the Provided Image */}
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-8 max-w-7xl mx-auto" dir="rtl">
+            {categories.slice(0, 6).map((category, categoryIndex) => (
+              <div key={`category-card-${categoryIndex}`} className="relative">
+                {/* Individual Category Card */}
+                <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border-4 border-gray-200">
+                  
+                  {/* Top Row - 200 Points (2 buttons) */}
+                  <div className="grid grid-cols-2 gap-1 p-2">
+                    {[0, 1].map((questionIndex) => {
+                      const questionKey = `${category.name}-${questionIndex}`;
+                      const isUsed = gameSession.usedQuestions?.includes(questionKey);
+                      return (
+                        <button
+                          key={`${categoryIndex}-200-${questionIndex}`}
+                          onClick={() => handleQuestionClick(category.name, questionIndex)}
+                          disabled={isUsed}
+                          className={`h-16 rounded-full font-bold text-xl transition-all duration-300 ${
+                            isUsed
+                              ? "bg-gray-400 text-gray-600 cursor-not-allowed"
+                              : "bg-gray-200 text-red-600 hover:bg-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                          }`}
+                        >
+                          {isUsed ? "✓" : "200"}
+                        </button>
+                      );
+                    })}
+                  </div>
 
-            {/* Categories Row with Images */}
-            <div className="grid grid-cols-6 gap-2 mb-2">
-              {categories.slice(0, 6).map((category, categoryIndex) => (
-                <div key={`category-${categoryIndex}`} className="relative h-32 rounded-3xl overflow-hidden bg-gray-200 border-4 border-gray-300">
-                  {/* Category Image Background */}
-                  {category.logoUrl ? (
-                    <img 
-                      src={category.logoUrl} 
-                      alt={category.displayName}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-                      <div className="text-4xl text-white">
-                        {CATEGORY_ICONS[category.name] || CATEGORY_ICONS[category.displayName] || "📚"}
+                  {/* Middle Row - 400 Points (2 buttons) */}
+                  <div className="grid grid-cols-2 gap-1 px-2 pb-2">
+                    {[2, 3].map((questionIndex) => {
+                      const questionKey = `${category.name}-${questionIndex}`;
+                      const isUsed = gameSession.usedQuestions?.includes(questionKey);
+                      return (
+                        <button
+                          key={`${categoryIndex}-400-${questionIndex}`}
+                          onClick={() => handleQuestionClick(category.name, questionIndex)}
+                          disabled={isUsed}
+                          className={`h-16 rounded-full font-bold text-xl transition-all duration-300 ${
+                            isUsed
+                              ? "bg-gray-400 text-gray-600 cursor-not-allowed"
+                              : "bg-gray-200 text-red-600 hover:bg-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                          }`}
+                        >
+                          {isUsed ? "✓" : "400"}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Category Image Section */}
+                  <div className="relative h-48 mx-2 mb-2 rounded-3xl overflow-hidden bg-gradient-to-br from-blue-200 to-blue-400">
+                    {/* Category Image */}
+                    {category.logoUrl ? (
+                      <img 
+                        src={category.logoUrl} 
+                        alt={category.displayName}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-blue-300 to-blue-500 flex items-center justify-center">
+                        <div className="text-6xl text-white">
+                          {CATEGORY_ICONS[category.name] || CATEGORY_ICONS[category.displayName] || "📚"}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  {/* Category Name Overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-red-500 to-red-400 text-white p-3 text-center">
-                    <div className="font-bold text-sm leading-tight">
+                    )}
+                  </div>
+
+                  {/* Bottom Row - 600 Points (2 buttons) */}
+                  <div className="grid grid-cols-2 gap-1 px-2 pb-2">
+                    {[4, 5].map((questionIndex) => {
+                      const questionKey = `${category.name}-${questionIndex}`;
+                      const isUsed = gameSession.usedQuestions?.includes(questionKey);
+                      return (
+                        <button
+                          key={`${categoryIndex}-600-${questionIndex}`}
+                          onClick={() => handleQuestionClick(category.name, questionIndex)}
+                          disabled={isUsed}
+                          className={`h-16 rounded-full font-bold text-xl transition-all duration-300 ${
+                            isUsed
+                              ? "bg-gray-400 text-gray-600 cursor-not-allowed"
+                              : "bg-gray-200 text-red-600 hover:bg-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                          }`}
+                        >
+                          {isUsed ? "✓" : "600"}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Category Name Bar at Bottom */}
+                  <div className="bg-gradient-to-r from-red-500 to-red-600 text-white py-4 text-center">
+                    <div className="font-bold text-lg">
                       {category.displayName || category.name}
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-
-            {/* Second Row - Point Values 400 */}
-            <div className="grid grid-cols-6 gap-2 mb-2">
-              {categories.slice(0, 6).map((category, categoryIndex) => {
-                const questionKey = `${category.name}-2`;
-                const isUsed = gameSession.usedQuestions?.includes(questionKey);
-                return (
-                  <button
-                    key={`${categoryIndex}-400-0`}
-                    onClick={() => handleQuestionClick(category.name, 2)}
-                    disabled={isUsed}
-                    className={`h-20 rounded-3xl font-bold text-2xl transition-all duration-300 border-4 ${
-                      isUsed
-                        ? "bg-gray-400 text-gray-600 cursor-not-allowed border-gray-500"
-                        : "bg-gray-200 text-red-600 hover:bg-gray-300 border-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-                    }`}
-                  >
-                    {isUsed ? "✓" : "400"}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Third Row - Point Values 600 */}
-            <div className="grid grid-cols-6 gap-2 mb-2">
-              {categories.slice(0, 6).map((category, categoryIndex) => {
-                const questionKey = `${category.name}-4`;
-                const isUsed = gameSession.usedQuestions?.includes(questionKey);
-                return (
-                  <button
-                    key={`${categoryIndex}-600-0`}
-                    onClick={() => handleQuestionClick(category.name, 4)}
-                    disabled={isUsed}
-                    className={`h-20 rounded-3xl font-bold text-2xl transition-all duration-300 border-4 ${
-                      isUsed
-                        ? "bg-gray-400 text-gray-600 cursor-not-allowed border-gray-500"
-                        : "bg-gray-200 text-red-600 hover:bg-gray-300 border-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-                    }`}
-                  >
-                    {isUsed ? "✓" : "600"}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Fourth Row - Point Values 200 (Second Set) */}
-            <div className="grid grid-cols-6 gap-2 mb-2">
-              {categories.slice(0, 6).map((category, categoryIndex) => {
-                const questionKey = `${category.name}-1`;
-                const isUsed = gameSession.usedQuestions?.includes(questionKey);
-                return (
-                  <button
-                    key={`${categoryIndex}-200-1`}
-                    onClick={() => handleQuestionClick(category.name, 1)}
-                    disabled={isUsed}
-                    className={`h-20 rounded-3xl font-bold text-2xl transition-all duration-300 border-4 ${
-                      isUsed
-                        ? "bg-gray-400 text-gray-600 cursor-not-allowed border-gray-500"
-                        : "bg-gray-200 text-red-600 hover:bg-gray-300 border-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-                    }`}
-                  >
-                    {isUsed ? "✓" : "200"}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Fifth Row - Point Values 400 (Second Set) */}
-            <div className="grid grid-cols-6 gap-2 mb-2">
-              {categories.slice(0, 6).map((category, categoryIndex) => {
-                const questionKey = `${category.name}-3`;
-                const isUsed = gameSession.usedQuestions?.includes(questionKey);
-                return (
-                  <button
-                    key={`${categoryIndex}-400-1`}
-                    onClick={() => handleQuestionClick(category.name, 3)}
-                    disabled={isUsed}
-                    className={`h-20 rounded-3xl font-bold text-2xl transition-all duration-300 border-4 ${
-                      isUsed
-                        ? "bg-gray-400 text-gray-600 cursor-not-allowed border-gray-500"
-                        : "bg-gray-200 text-red-600 hover:bg-gray-300 border-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-                    }`}
-                  >
-                    {isUsed ? "✓" : "400"}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Sixth Row - Point Values 600 (Second Set) */}
-            <div className="grid grid-cols-6 gap-2">
-              {categories.slice(0, 6).map((category, categoryIndex) => {
-                const questionKey = `${category.name}-5`;
-                const isUsed = gameSession.usedQuestions?.includes(questionKey);
-                return (
-                  <button
-                    key={`${categoryIndex}-600-1`}
-                    onClick={() => handleQuestionClick(category.name, 5)}
-                    disabled={isUsed}
-                    className={`h-20 rounded-3xl font-bold text-2xl transition-all duration-300 border-4 ${
-                      isUsed
-                        ? "bg-gray-400 text-gray-600 cursor-not-allowed border-gray-500"
-                        : "bg-gray-200 text-red-600 hover:bg-gray-300 border-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-                    }`}
-                  >
-                    {isUsed ? "✓" : "600"}
-                  </button>
-                );
-              })}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
       </main>
