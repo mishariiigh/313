@@ -62,6 +62,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   const [timeLeft, setTimeLeft] = useState(60);
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [isTimeOut, setIsTimeOut] = useState(false);
+  const [imagePopupOpen, setImagePopupOpen] = useState(false);
 
   // Get game session data
   const { data: gameData, isLoading } = useQuery({
@@ -539,16 +540,17 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   {/* Question Image - Below question text */}
                   {selectedQuestion.imageUrl && (
                     <div className="flex justify-center mb-8 flex-1">
-                      <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl p-4 shadow-xl border-2 border-gray-200 max-w-full">
+                      <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl p-4 shadow-xl border-2 border-gray-200 max-w-full cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
                         <img 
                           src={selectedQuestion.imageUrl} 
                           alt="صورة السؤال" 
                           className="w-full h-auto rounded-2xl shadow-lg"
                           style={{
                             maxWidth: '100%',
-                            maxHeight: '400px',
+                            maxHeight: '500px',
                             objectFit: 'contain'
                           }}
+                          onClick={() => setImagePopupOpen(true)}
                         />
                       </div>
                     </div>
@@ -567,11 +569,6 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     >
                       🔍 إظهار الإجابة
                     </Button>
-
-                    {/* Info Box - Category/Country at Bottom Right */}
-                    <div className="bg-gradient-to-r from-red-600 to-red-700 text-white px-8 py-4 rounded-3xl text-xl font-bold shadow-lg">
-                      🇰🇼 الكويت
-                    </div>
                   </div>
                 </div>
               </div>
@@ -673,6 +670,43 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 <p className="text-blue-800 text-lg font-medium leading-relaxed" style={{
                   fontFamily: 'Cairo, Arial, sans-serif'
                 }}>{selectedQuestion.hint}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Image Popup Modal */}
+        {imagePopupOpen && selectedQuestion?.imageUrl && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            {/* Background Blur Overlay */}
+            <div 
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+              onClick={() => setImagePopupOpen(false)}
+            />
+            
+            {/* Modal Content - Full Size Image */}
+            <div className="relative max-w-[90vw] max-h-[90vh] p-4">
+              <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden">
+                {/* Close Button */}
+                <button
+                  onClick={() => setImagePopupOpen(false)}
+                  className="absolute top-4 right-4 z-10 bg-white bg-opacity-90 hover:bg-opacity-100 text-gray-800 rounded-full p-2 shadow-lg transition-all duration-200"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+                
+                {/* Full Size Image */}
+                <img 
+                  src={selectedQuestion.imageUrl} 
+                  alt="صورة السؤال - عرض كامل" 
+                  className="w-full h-auto"
+                  style={{
+                    maxHeight: '85vh',
+                    objectFit: 'contain'
+                  }}
+                />
               </div>
             </div>
           </div>
