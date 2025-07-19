@@ -86,6 +86,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     id: cat.name,
     name: cat.name,        // Use English name for backend API compatibility
     displayName: cat.displayName, // Use Arabic name for UI display
+    logoUrl: cat.logoUrl,  // Include the uploaded image URL
     icon: CATEGORY_ICONS[cat.name] || CATEGORY_ICONS[cat.displayName] || "📝"
   })) || [];
 
@@ -214,6 +215,16 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       queryClient.invalidateQueries({ queryKey: [`/api/games/${id}`] });
     },
   });
+
+  // Debug logging for categories
+  useEffect(() => {
+    if (categories && categories.length > 0) {
+      console.log("Categories with images:", categories);
+      categories.forEach(cat => {
+        console.log(`Category ${cat.name} (${cat.displayName}): logoUrl = "${cat.logoUrl}"`);
+      });
+    }
+  }, [categories]);
 
   if (isLoading) {
     return (
@@ -736,11 +747,18 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     <div className="flex flex-col justify-center items-center px-2 py-3">
                       {/* Category Image */}
                       <div className="relative w-28 h-32 rounded-2xl overflow-hidden bg-gradient-to-br from-blue-200 to-blue-400 mb-2">
-                        {category.logoUrl ? (
+                        {category.logoUrl && category.logoUrl.trim() !== "" ? (
                           <img 
                             src={category.logoUrl} 
                             alt={category.displayName}
                             className="w-full h-full object-cover"
+                            onError={(e) => {
+                              console.log(`Image failed to load for category ${category.name}: ${category.logoUrl}`);
+                              e.currentTarget.style.display = 'none';
+                            }}
+                            onLoad={() => {
+                              console.log(`Image loaded successfully for category ${category.name}: ${category.logoUrl}`);
+                            }}
                           />
                         ) : (
                           <div className="w-full h-full bg-gradient-to-br from-blue-300 to-blue-500 flex items-center justify-center">
