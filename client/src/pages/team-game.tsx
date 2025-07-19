@@ -721,8 +721,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
               onClick={() => setShowAnswer(false)}
             />
             
-            {/* Modal Content - Styled Like Website */}
-            <div className="relative bg-white rounded-3xl shadow-2xl p-8 mx-4 max-w-2xl w-full max-h-[80vh] overflow-y-auto" dir="rtl" style={{
+            {/* Modal Content - Compact Design */}
+            <div className="relative bg-white rounded-3xl shadow-2xl p-4 mx-4 max-w-xl w-full max-h-[85vh] overflow-y-auto" dir="rtl" style={{
               border: '3px solid #dc2626',
               boxShadow: '0 4px 20px rgba(220, 38, 38, 0.1)'
             }}>
@@ -757,23 +757,23 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
               }} />
 
               {/* Inner Content Container */}
-              <div className="relative bg-white rounded-2xl p-6 border-2 border-red-200">
+              <div className="relative bg-white rounded-2xl p-4 border-2 border-red-200">
                 {/* Answer Header */}
-                <div className="bg-gradient-to-r from-red-500 to-red-600 text-white rounded-2xl p-6 mb-6 text-center">
-                  <h2 className="text-2xl font-bold mb-2">✅ الإجابة الصحيحة</h2>
+                <div className="bg-gradient-to-r from-red-500 to-red-600 text-white rounded-2xl p-4 mb-4 text-center">
+                  <h2 className="text-xl font-bold mb-1">✅ الإجابة الصحيحة</h2>
                 </div>
 
                 {/* Answer Content */}
-                <div className="text-center mb-8">
-                  <p className="text-gray-800 text-3xl font-bold mb-4 leading-relaxed" style={{
+                <div className="text-center mb-5">
+                  <p className="text-gray-800 text-2xl font-bold mb-3 leading-relaxed" style={{
                     fontFamily: 'Cairo, Arial, sans-serif'
                   }}>
                     {selectedQuestion.answer}
                   </p>
                   
                   {selectedQuestion.explanation && (
-                    <div className="bg-gray-50 rounded-2xl p-6 border-2 border-gray-200">
-                      <p className="text-gray-700 text-lg leading-relaxed" style={{
+                    <div className="bg-gray-50 rounded-2xl p-4 border-2 border-gray-200">
+                      <p className="text-gray-700 text-md leading-relaxed" style={{
                         fontFamily: 'Cairo, Arial, sans-serif'
                       }}>
                         {selectedQuestion.explanation}
@@ -783,11 +783,11 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 </div>
 
                 {/* Team Selection Buttons */}
-                <div className="mb-6">
-                  <h3 className="text-xl font-bold text-gray-800 text-center mb-4">
+                <div className="mb-4">
+                  <h3 className="text-lg font-bold text-gray-800 text-center mb-3">
                     أي فريق أجاب بشكل صحيح؟
                   </h3>
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     {gameSession.teams.map((team: string, index: number) => {
                       const questionKey = (selectedQuestion as any).questionKey;
                       const points = questionKey ? (() => {
@@ -802,7 +802,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                             handleTeamCorrect(index);
                             setShowAnswer(false);
                           }}
-                          className="w-full bg-red-600 hover:bg-red-700 text-white py-4 text-lg font-bold rounded-2xl transition-all duration-300 shadow-lg"
+                          className="w-full bg-red-600 hover:bg-red-700 text-white py-3 text-md font-bold rounded-2xl transition-all duration-300 shadow-lg"
                           disabled={markTeamCorrectMutation.isPending}
                         >
                           <div className="text-center">
@@ -816,13 +816,13 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 </div>
 
                 {/* Control Buttons */}
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <Button
                     onClick={() => {
                       handleSkipQuestion();
                       setShowAnswer(false);
                     }}
-                    className="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-4 text-lg font-bold rounded-2xl transition-all duration-300 shadow-lg"
+                    className="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-3 text-md font-bold rounded-2xl transition-all duration-300 shadow-lg"
                     disabled={skipQuestionMutation.isPending}
                   >
                     لم يجب أي فريق بشكل صحيح
@@ -831,7 +831,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   <Button
                     onClick={() => setShowAnswer(false)}
                     variant="outline"
-                    className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 border-gray-300 py-4 text-lg font-bold rounded-2xl transition-all duration-300"
+                    className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 border-gray-300 py-2 text-md font-bold rounded-2xl transition-all duration-300"
                   >
                     العودة للسؤال
                   </Button>
