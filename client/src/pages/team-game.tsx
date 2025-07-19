@@ -693,21 +693,21 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       {/* Game Board - Jeopardy Grid */}
       <main className="flex-1 p-6">
         <div className="max-w-7xl mx-auto">
-          {/* Stacked Button Layout - Exactly Matching the Provided Image */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 max-w-7xl mx-auto" dir="rtl">
+          {/* Enhanced Category Layout - Matching Provided Image */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 max-w-7xl mx-auto" dir="rtl">
             {categories.slice(0, 6).map((category, categoryIndex) => (
-              <div key={`category-stacked-${categoryIndex}`} className="relative">
-                {/* Category Card with Stacked Buttons */}
-                <div className="bg-white rounded-3xl shadow-lg overflow-hidden border-2 border-gray-200">
+              <div key={`category-enhanced-${categoryIndex}`} className="relative">
+                {/* Category Card with Enhanced Layout */}
+                <div className="bg-white rounded-3xl shadow-xl overflow-hidden border-3 border-gray-300 p-2">
                   
-                  <div className="flex items-stretch">
-                    {/* Left Column - Stacked Buttons */}
-                    <div className="flex flex-col flex-1">
+                  <div className="flex items-center justify-center gap-2">
+                    {/* Left Column - Stacked Buttons with no gaps */}
+                    <div className="flex flex-col">
                       {/* Left 200 Button */}
                       <button
                         onClick={() => handleQuestionClick(category.name, 0)}
                         disabled={gameSession.usedQuestions?.includes(`${category.name}-0`)}
-                        className={`h-16 rounded-full font-bold text-xl transition-all duration-300 m-1 ${
+                        className={`w-24 h-12 rounded-full font-bold text-lg transition-all duration-300 mb-1 ${
                           gameSession.usedQuestions?.includes(`${category.name}-0`)
                             ? "bg-gray-400 text-gray-600 cursor-not-allowed"
                             : "bg-gray-200 text-red-600 hover:bg-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
@@ -720,7 +720,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       <button
                         onClick={() => handleQuestionClick(category.name, 2)}
                         disabled={gameSession.usedQuestions?.includes(`${category.name}-2`)}
-                        className={`h-16 rounded-full font-bold text-xl transition-all duration-300 m-1 ${
+                        className={`w-24 h-12 rounded-full font-bold text-lg transition-all duration-300 mb-1 ${
                           gameSession.usedQuestions?.includes(`${category.name}-2`)
                             ? "bg-gray-400 text-gray-600 cursor-not-allowed"
                             : "bg-gray-200 text-red-600 hover:bg-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
@@ -733,7 +733,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       <button
                         onClick={() => handleQuestionClick(category.name, 4)}
                         disabled={gameSession.usedQuestions?.includes(`${category.name}-4`)}
-                        className={`h-16 rounded-full font-bold text-xl transition-all duration-300 m-1 ${
+                        className={`w-24 h-12 rounded-full font-bold text-lg transition-all duration-300 ${
                           gameSession.usedQuestions?.includes(`${category.name}-4`)
                             ? "bg-gray-400 text-gray-600 cursor-not-allowed"
                             : "bg-gray-200 text-red-600 hover:bg-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
@@ -744,9 +744,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     </div>
 
                     {/* Center Column - Category Image and Title */}
-                    <div className="flex flex-col justify-center items-center px-2 py-3">
-                      {/* Category Image */}
-                      <div className="relative w-28 h-32 rounded-2xl overflow-hidden bg-gradient-to-br from-blue-200 to-blue-400 mb-2">
+                    <div className="flex flex-col relative w-40">
+                      {/* Category Image - Larger and more prominent */}
+                      <div className="relative w-40 h-48 rounded-t-3xl overflow-hidden bg-gradient-to-br from-blue-200 to-blue-400">
                         {category.logoUrl && category.logoUrl.trim() !== "" ? (
                           <img 
                             src={category.logoUrl} 
@@ -762,28 +762,28 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           />
                         ) : (
                           <div className="w-full h-full bg-gradient-to-br from-blue-300 to-blue-500 flex items-center justify-center">
-                            <div className="text-3xl text-white">
+                            <div className="text-4xl text-white">
                               {CATEGORY_ICONS[category.name] || CATEGORY_ICONS[category.displayName] || "📚"}
                             </div>
                           </div>
                         )}
                       </div>
                       
-                      {/* Category Name */}
-                      <div className="w-28 bg-gradient-to-r from-red-500 to-red-600 text-white py-2 px-2 rounded-lg text-center">
-                        <div className="font-bold text-xs leading-tight">
+                      {/* Category Name - Full width bottom bar */}
+                      <div className="w-40 bg-gradient-to-r from-red-500 to-red-600 text-white py-3 px-3 rounded-b-3xl text-center">
+                        <div className="font-bold text-sm leading-tight">
                           {category.displayName || category.name}
                         </div>
                       </div>
                     </div>
 
-                    {/* Right Column - Stacked Buttons */}
-                    <div className="flex flex-col flex-1">
+                    {/* Right Column - Stacked Buttons with no gaps */}
+                    <div className="flex flex-col">
                       {/* Right 200 Button */}
                       <button
                         onClick={() => handleQuestionClick(category.name, 1)}
                         disabled={gameSession.usedQuestions?.includes(`${category.name}-1`)}
-                        className={`h-16 rounded-full font-bold text-xl transition-all duration-300 m-1 ${
+                        className={`w-24 h-12 rounded-full font-bold text-lg transition-all duration-300 mb-1 ${
                           gameSession.usedQuestions?.includes(`${category.name}-1`)
                             ? "bg-gray-400 text-gray-600 cursor-not-allowed"
                             : "bg-gray-200 text-red-600 hover:bg-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
@@ -796,7 +796,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       <button
                         onClick={() => handleQuestionClick(category.name, 3)}
                         disabled={gameSession.usedQuestions?.includes(`${category.name}-3`)}
-                        className={`h-16 rounded-full font-bold text-xl transition-all duration-300 m-1 ${
+                        className={`w-24 h-12 rounded-full font-bold text-lg transition-all duration-300 mb-1 ${
                           gameSession.usedQuestions?.includes(`${category.name}-3`)
                             ? "bg-gray-400 text-gray-600 cursor-not-allowed"
                             : "bg-gray-200 text-red-600 hover:bg-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
@@ -809,7 +809,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       <button
                         onClick={() => handleQuestionClick(category.name, 5)}
                         disabled={gameSession.usedQuestions?.includes(`${category.name}-5`)}
-                        className={`h-16 rounded-full font-bold text-xl transition-all duration-300 m-1 ${
+                        className={`w-24 h-12 rounded-full font-bold text-lg transition-all duration-300 ${
                           gameSession.usedQuestions?.includes(`${category.name}-5`)
                             ? "bg-gray-400 text-gray-600 cursor-not-allowed"
                             : "bg-gray-200 text-red-600 hover:bg-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
