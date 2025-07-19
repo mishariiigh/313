@@ -93,6 +93,14 @@ Preferred communication style: Simple, everyday language.
 - **Real-time Updates**: Firebase Firestore provides real-time capabilities
 - **Fallback Storage**: Temporary storage layer as backup system
 
+### UI/UX Design System
+- **Color Scheme**: Cohesive light red and off-white theme across all pages
+- **Primary Colors**: HSL 355° (light red) gradients with off-white backgrounds
+- **Interactive Elements**: Light red gradient buttons with hover scale effects
+- **Typography**: Consistent dark red-brown text for optimal readability
+- **Shadows & Effects**: Light red-tinted shadows for depth and visual hierarchy
+- **Layout**: Viewport-perfect responsive design eliminating scrolling requirements
+
 ## External Dependencies
 
 ### Firebase Services
