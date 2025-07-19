@@ -395,9 +395,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   // Question view - New Layout Structure
   if (selectedQuestion) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 question-slide-in" dir="rtl">
+      <div className="h-screen bg-gradient-to-br from-red-50 to-orange-50 question-slide-in flex flex-col" dir="rtl">
         {/* Top Bar (Header) */}
-        <div className="bg-red-600 text-white p-4">
+        <div className="bg-red-600 text-white p-3 flex-shrink-0">
           <div className="flex items-center justify-between max-w-7xl mx-auto">
             {/* Left Side - Navigation Controls */}
             <div className="flex items-center gap-4">
@@ -439,7 +439,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
         </div>
 
         {/* Timer Section - Centrally Placed */}
-        <div className="bg-gray-800 py-4">
+        <div className="bg-gray-800 py-3 flex-shrink-0">
           <div className="flex justify-center items-center">
             {isTimerActive && !isTimeOut && (
               <div className="flex items-center gap-4">
@@ -474,13 +474,13 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 p-6 min-h-0">
-          <div className="max-w-7xl mx-auto flex gap-6 h-full">
+        <div className="flex-1 p-4 min-h-0 overflow-hidden">
+          <div className="max-w-7xl mx-auto flex gap-4 h-full">
 
             {/* Main Question Panel (Left Side - 80% width) */}
             <div className="flex-1" style={{ flex: '0 0 80%' }}>
               {/* Question with Triangle Border Design */}
-              <div className="relative bg-white rounded-3xl p-8 h-full shadow-2xl" style={{
+              <div className="relative bg-white rounded-3xl p-6 h-full shadow-2xl overflow-hidden" style={{
                 border: '3px solid #dc2626',
                 boxShadow: '0 8px 32px rgba(220, 38, 38, 0.15)'
               }}>
@@ -515,10 +515,10 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 }} />
                 
                 {/* Inner Content Container */}
-                <div className="relative bg-white rounded-2xl p-8 h-full flex flex-col justify-between border-2 border-red-100">
+                <div className="relative bg-white rounded-2xl p-4 h-full flex flex-col justify-between border-2 border-red-100 overflow-hidden">
                   {/* Category Header */}
-                  <div className="bg-gradient-to-r from-red-500 to-red-600 text-white rounded-2xl px-6 py-4 mb-8 text-center shadow-lg">
-                    <h2 className="text-2xl font-bold">
+                  <div className="bg-gradient-to-r from-red-500 to-red-600 text-white rounded-2xl px-4 py-2 mb-4 text-center shadow-lg">
+                    <h2 className="text-lg font-bold">
                       {(() => {
                         const categoryName = (selectedQuestion as any).questionKey?.split('-')[0];
                         const category = categories?.find(cat => cat.name === categoryName);
@@ -528,8 +528,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   </div>
 
                   {/* Question Title - Arabic, centered, bold */}
-                  <div className="text-center mb-8">
-                    <h1 className="text-4xl font-bold text-gray-800 leading-relaxed" style={{
+                  <div className="text-center mb-4">
+                    <h1 className="text-3xl font-bold text-gray-800 leading-relaxed" style={{
                       fontFamily: 'Cairo, Arial, sans-serif',
                       textShadow: '0 2px 4px rgba(0,0,0,0.1)'
                     }}>
@@ -539,15 +539,15 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   
                   {/* Question Image - Below question text */}
                   {selectedQuestion.imageUrl && (
-                    <div className="flex justify-center mb-8 flex-1">
-                      <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl p-4 shadow-xl border-2 border-gray-200 max-w-full cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+                    <div className="flex justify-center mb-4 flex-1 min-h-0">
+                      <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl p-3 shadow-xl border-2 border-gray-200 max-w-full cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:scale-105 overflow-hidden">
                         <img 
                           src={selectedQuestion.imageUrl} 
                           alt="صورة السؤال" 
                           className="w-full h-auto rounded-2xl shadow-lg"
                           style={{
                             maxWidth: '100%',
-                            maxHeight: '500px',
+                            maxHeight: '350px',
                             objectFit: 'contain'
                           }}
                           onClick={() => setImagePopupOpen(true)}
@@ -561,11 +561,11 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     <div className="flex-1"></div>
                   )}
 
-                  {/* Answer Button at Bottom-Left */}
-                  <div className="flex justify-between items-end pt-6">
+                  {/* Answer Button at Bottom */}
+                  <div className="flex justify-center pt-4">
                     <Button
                       onClick={() => setShowAnswer(true)}
-                      className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-12 py-6 text-2xl font-bold rounded-3xl transition-all duration-300 shadow-xl transform hover:scale-105"
+                      className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-4 text-xl font-bold rounded-3xl transition-all duration-300 shadow-xl transform hover:scale-105"
                     >
                       🔍 إظهار الإجابة
                     </Button>
@@ -576,28 +576,28 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
             {/* Side Panel (Right Side) - Red Buttons */}
             <div className="w-64">
-              <div className="bg-gradient-to-br from-red-600 to-red-700 text-white rounded-3xl shadow-2xl p-6 h-full border-2 border-red-500">
+              <div className="bg-gradient-to-br from-red-600 to-red-700 text-white rounded-3xl shadow-2xl p-4 h-full border-2 border-red-500">
                 {/* Current Team Display */}
-                <div className="text-center mb-6">
-                  <h3 className="text-xl font-bold mb-4">🎯 دور الفريق الحالي</h3>
-                  <div className="bg-white bg-opacity-20 rounded-2xl p-4 shadow-lg border border-white border-opacity-30">
-                    <div className="text-2xl font-bold">{gameSession.teams[gameSession.currentTurn]}</div>
+                <div className="text-center mb-4">
+                  <h3 className="text-lg font-bold mb-2">🎯 دور الفريق الحالي</h3>
+                  <div className="bg-white bg-opacity-20 rounded-2xl p-3 shadow-lg border border-white border-opacity-30">
+                    <div className="text-xl font-bold">{gameSession.teams[gameSession.currentTurn]}</div>
                   </div>
                 </div>
 
                 {/* Team Points Display */}
-                <div className="mb-6">
-                  <h4 className="text-lg font-bold mb-4 text-center">🏆 نقاط الفرق</h4>
-                  <div className="space-y-3">
+                <div className="mb-4">
+                  <h4 className="text-md font-bold mb-2 text-center">🏆 نقاط الفرق</h4>
+                  <div className="space-y-2">
                     {gameSession.teams.map((team: string, index: number) => (
                       <div 
                         key={index} 
-                        className={`bg-white bg-opacity-20 rounded-2xl p-3 flex justify-between items-center shadow-lg border border-white border-opacity-30 ${
+                        className={`bg-white bg-opacity-20 rounded-2xl p-2 flex justify-between items-center shadow-lg border border-white border-opacity-30 ${
                           index === gameSession.currentTurn ? 'ring-2 ring-white bg-opacity-30' : ''
                         }`}
                       >
-                        <span className="font-bold">{team}</span>
-                        <span className="text-lg font-bold">{gameSession.teamScores[index] || 0}</span>
+                        <span className="font-bold text-sm">{team}</span>
+                        <span className="text-md font-bold">{gameSession.teamScores[index] || 0}</span>
                       </div>
                     ))}
                   </div>
@@ -606,7 +606,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
 
                 {/* Hint Option - Red Button */}
-                <div className="space-y-4 mb-6">
+                <div className="space-y-3 mb-4">
                   {(() => {
                     const currentQuestionKey = getCurrentQuestionKey();
                     const isHintUsed = currentQuestionKey && gameSession.usedHints?.includes(currentQuestionKey);
@@ -629,7 +629,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                             handleUseHint();
                           }
                         }}
-                        className={`w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-4 text-lg font-bold rounded-2xl transition-all duration-300 shadow-lg border border-white border-opacity-30 ${currentTeamHintUsed ? 'opacity-50 cursor-not-allowed' : isHintUsed ? 'opacity-75' : ''}`}
+                        className={`w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-3 text-md font-bold rounded-2xl transition-all duration-300 shadow-lg border border-white border-opacity-30 ${currentTeamHintUsed ? 'opacity-50 cursor-not-allowed' : isHintUsed ? 'opacity-75' : ''}`}
                         disabled={useHintMutation.isPending || currentTeamHintUsed}
                       >
                         <HelpCircle className="ml-2 h-5 w-5" />
@@ -643,10 +643,10 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 </div>
 
                 {/* Additional Control Buttons - Red */}
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <Button
                     onClick={() => handleSkipQuestion()}
-                    className="w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-4 text-lg font-bold rounded-2xl transition-all duration-300 shadow-lg border border-white border-opacity-30"
+                    className="w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-3 text-md font-bold rounded-2xl transition-all duration-300 shadow-lg border border-white border-opacity-30"
                     disabled={skipQuestionMutation.isPending}
                   >
                     تخطي السؤال
@@ -659,15 +659,15 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
         {/* Hint Section - Full Width Below Main Content */}
         {showHint && selectedQuestion.hint && (
-          <div className="p-6 bg-gray-100">
+          <div className="p-3 bg-gray-100 flex-shrink-0">
             <div className="max-w-7xl mx-auto">
-              <div className="bg-blue-50 border-3 border-blue-400 rounded-2xl p-6 mb-6 hint-reveal" style={{
+              <div className="bg-blue-50 border-3 border-blue-400 rounded-2xl p-4 hint-reveal" style={{
                 borderStyle: 'dashed'
               }}>
-                <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl px-6 py-3 inline-block mb-4 shadow-lg">
-                  <h3 className="font-bold text-lg">💡 تلميح</h3>
+                <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl px-4 py-2 inline-block mb-3 shadow-lg">
+                  <h3 className="font-bold text-md">💡 تلميح</h3>
                 </div>
-                <p className="text-blue-800 text-lg font-medium leading-relaxed" style={{
+                <p className="text-blue-800 text-md font-medium leading-relaxed" style={{
                   fontFamily: 'Cairo, Arial, sans-serif'
                 }}>{selectedQuestion.hint}</p>
               </div>
