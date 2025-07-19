@@ -682,21 +682,21 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       {/* Game Board - Jeopardy Grid */}
       <main className="flex-1 p-6">
         <div className="max-w-7xl mx-auto">
-          {/* Horizontal Category Layout - Exactly Matching the Provided Image */}
+          {/* Stacked Button Layout - Exactly Matching the Provided Image */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 max-w-7xl mx-auto" dir="rtl">
             {categories.slice(0, 6).map((category, categoryIndex) => (
-              <div key={`category-horizontal-${categoryIndex}`} className="relative">
-                {/* Horizontal Category Card */}
-                <div className="bg-white rounded-3xl shadow-lg overflow-hidden border-2 border-gray-200 min-h-[320px]">
+              <div key={`category-stacked-${categoryIndex}`} className="relative">
+                {/* Category Card with Stacked Buttons */}
+                <div className="bg-white rounded-3xl shadow-lg overflow-hidden border-2 border-gray-200">
                   
-                  {/* Top Row - 200 Points */}
-                  <div className="flex items-center justify-center py-2">
-                    <div className="flex items-center gap-4 w-full px-4">
+                  <div className="flex items-stretch">
+                    {/* Left Column - Stacked Buttons */}
+                    <div className="flex flex-col flex-1">
                       {/* Left 200 Button */}
                       <button
                         onClick={() => handleQuestionClick(category.name, 0)}
                         disabled={gameSession.usedQuestions?.includes(`${category.name}-0`)}
-                        className={`flex-1 h-14 rounded-full font-bold text-xl transition-all duration-300 ${
+                        className={`h-16 rounded-full font-bold text-xl transition-all duration-300 m-1 ${
                           gameSession.usedQuestions?.includes(`${category.name}-0`)
                             ? "bg-gray-400 text-gray-600 cursor-not-allowed"
                             : "bg-gray-200 text-red-600 hover:bg-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
@@ -705,32 +705,11 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                         {gameSession.usedQuestions?.includes(`${category.name}-0`) ? "✓" : "200"}
                       </button>
                       
-                      {/* Spacer */}
-                      <div className="w-32"></div>
-                      
-                      {/* Right 200 Button */}
-                      <button
-                        onClick={() => handleQuestionClick(category.name, 1)}
-                        disabled={gameSession.usedQuestions?.includes(`${category.name}-1`)}
-                        className={`flex-1 h-14 rounded-full font-bold text-xl transition-all duration-300 ${
-                          gameSession.usedQuestions?.includes(`${category.name}-1`)
-                            ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                            : "bg-gray-200 text-red-600 hover:bg-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-                        }`}
-                      >
-                        {gameSession.usedQuestions?.includes(`${category.name}-1`) ? "✓" : "200"}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Middle Row - 400 Points */}
-                  <div className="flex items-center justify-center py-2">
-                    <div className="flex items-center gap-4 w-full px-4">
                       {/* Left 400 Button */}
                       <button
                         onClick={() => handleQuestionClick(category.name, 2)}
                         disabled={gameSession.usedQuestions?.includes(`${category.name}-2`)}
-                        className={`flex-1 h-14 rounded-full font-bold text-xl transition-all duration-300 ${
+                        className={`h-16 rounded-full font-bold text-xl transition-all duration-300 m-1 ${
                           gameSession.usedQuestions?.includes(`${category.name}-2`)
                             ? "bg-gray-400 text-gray-600 cursor-not-allowed"
                             : "bg-gray-200 text-red-600 hover:bg-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
@@ -739,8 +718,24 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                         {gameSession.usedQuestions?.includes(`${category.name}-2`) ? "✓" : "400"}
                       </button>
                       
+                      {/* Left 600 Button */}
+                      <button
+                        onClick={() => handleQuestionClick(category.name, 4)}
+                        disabled={gameSession.usedQuestions?.includes(`${category.name}-4`)}
+                        className={`h-16 rounded-full font-bold text-xl transition-all duration-300 m-1 ${
+                          gameSession.usedQuestions?.includes(`${category.name}-4`)
+                            ? "bg-gray-400 text-gray-600 cursor-not-allowed"
+                            : "bg-gray-200 text-red-600 hover:bg-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                        }`}
+                      >
+                        {gameSession.usedQuestions?.includes(`${category.name}-4`) ? "✓" : "600"}
+                      </button>
+                    </div>
+
+                    {/* Center Column - Category Image and Title */}
+                    <div className="flex flex-col justify-center items-center px-2 py-3">
                       {/* Category Image */}
-                      <div className="relative w-32 h-24 rounded-2xl overflow-hidden bg-gradient-to-br from-blue-200 to-blue-400 flex-shrink-0">
+                      <div className="relative w-28 h-32 rounded-2xl overflow-hidden bg-gradient-to-br from-blue-200 to-blue-400 mb-2">
                         {category.logoUrl ? (
                           <img 
                             src={category.logoUrl} 
@@ -756,11 +751,34 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                         )}
                       </div>
                       
+                      {/* Category Name */}
+                      <div className="w-28 bg-gradient-to-r from-red-500 to-red-600 text-white py-2 px-2 rounded-lg text-center">
+                        <div className="font-bold text-xs leading-tight">
+                          {category.displayName || category.name}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right Column - Stacked Buttons */}
+                    <div className="flex flex-col flex-1">
+                      {/* Right 200 Button */}
+                      <button
+                        onClick={() => handleQuestionClick(category.name, 1)}
+                        disabled={gameSession.usedQuestions?.includes(`${category.name}-1`)}
+                        className={`h-16 rounded-full font-bold text-xl transition-all duration-300 m-1 ${
+                          gameSession.usedQuestions?.includes(`${category.name}-1`)
+                            ? "bg-gray-400 text-gray-600 cursor-not-allowed"
+                            : "bg-gray-200 text-red-600 hover:bg-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                        }`}
+                      >
+                        {gameSession.usedQuestions?.includes(`${category.name}-1`) ? "✓" : "200"}
+                      </button>
+                      
                       {/* Right 400 Button */}
                       <button
                         onClick={() => handleQuestionClick(category.name, 3)}
                         disabled={gameSession.usedQuestions?.includes(`${category.name}-3`)}
-                        className={`flex-1 h-14 rounded-full font-bold text-xl transition-all duration-300 ${
+                        className={`h-16 rounded-full font-bold text-xl transition-all duration-300 m-1 ${
                           gameSession.usedQuestions?.includes(`${category.name}-3`)
                             ? "bg-gray-400 text-gray-600 cursor-not-allowed"
                             : "bg-gray-200 text-red-600 hover:bg-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
@@ -768,37 +786,12 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-3`) ? "✓" : "400"}
                       </button>
-                    </div>
-                  </div>
-
-                  {/* Bottom Row - 600 Points with Category Title */}
-                  <div className="flex items-center justify-center py-2">
-                    <div className="flex items-center gap-4 w-full px-4">
-                      {/* Left 600 Button */}
-                      <button
-                        onClick={() => handleQuestionClick(category.name, 4)}
-                        disabled={gameSession.usedQuestions?.includes(`${category.name}-4`)}
-                        className={`flex-1 h-14 rounded-full font-bold text-xl transition-all duration-300 ${
-                          gameSession.usedQuestions?.includes(`${category.name}-4`)
-                            ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                            : "bg-gray-200 text-red-600 hover:bg-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-                        }`}
-                      >
-                        {gameSession.usedQuestions?.includes(`${category.name}-4`) ? "✓" : "600"}
-                      </button>
-                      
-                      {/* Category Name */}
-                      <div className="w-32 bg-gradient-to-r from-red-500 to-red-600 text-white py-2 px-3 rounded-lg text-center flex-shrink-0">
-                        <div className="font-bold text-sm leading-tight">
-                          {category.displayName || category.name}
-                        </div>
-                      </div>
                       
                       {/* Right 600 Button */}
                       <button
                         onClick={() => handleQuestionClick(category.name, 5)}
                         disabled={gameSession.usedQuestions?.includes(`${category.name}-5`)}
-                        className={`flex-1 h-14 rounded-full font-bold text-xl transition-all duration-300 ${
+                        className={`h-16 rounded-full font-bold text-xl transition-all duration-300 m-1 ${
                           gameSession.usedQuestions?.includes(`${category.name}-5`)
                             ? "bg-gray-400 text-gray-600 cursor-not-allowed"
                             : "bg-gray-200 text-red-600 hover:bg-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
