@@ -546,7 +546,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   {/* Answer Button at Bottom-Left */}
                   <div className="flex justify-between items-end">
                     <Button
-                      onClick={() => setShowAnswer(!showAnswer)}
+                      onClick={() => setShowAnswer(true)}
                       className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-xl font-bold rounded-2xl transition-all duration-300 shadow-lg"
                     >
                       الإجابة
@@ -656,10 +656,10 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
           </div>
         </div>
 
-        {/* Hint and Answer Sections - Full Width Below Main Content */}
-        <div className="p-6 bg-gray-100">
-          <div className="max-w-7xl mx-auto">
-            {showHint && selectedQuestion.hint && (
+        {/* Hint Section - Full Width Below Main Content */}
+        {showHint && selectedQuestion.hint && (
+          <div className="p-6 bg-gray-100">
+            <div className="max-w-7xl mx-auto">
               <div className="bg-blue-50 border-3 border-blue-400 rounded-2xl p-6 mb-6 hint-reveal" style={{
                 borderStyle: 'dashed'
               }}>
@@ -670,29 +670,102 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   fontFamily: 'Cairo, Arial, sans-serif'
                 }}>{selectedQuestion.hint}</p>
               </div>
-            )}
+            </div>
+          </div>
+        )}
 
-            {showAnswer && (
-              <div className="bg-green-50 border-3 border-green-400 rounded-2xl p-6 mb-6 answer-reveal" style={{
-                borderStyle: 'dashed'
-              }}>
-                <div className="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl px-6 py-3 inline-block mb-4 shadow-lg">
-                  <h3 className="font-bold text-lg">✅ الإجابة الصحيحة</h3>
-                </div>
-                <p className="text-green-800 text-2xl font-bold mb-3 leading-relaxed" style={{
+        {/* Answer Modal - Popup with Background Blur */}
+        {showAnswer && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            {/* Background Blur Overlay */}
+            <div 
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+              onClick={() => setShowAnswer(false)}
+            />
+            
+            {/* Modal Content - Half Page Size */}
+            <div className="relative bg-white rounded-3xl shadow-2xl p-8 mx-4 max-w-2xl w-full max-h-[80vh] overflow-y-auto" dir="rtl">
+              {/* Answer Header */}
+              <div className="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-2xl p-6 mb-6 text-center">
+                <h2 className="text-2xl font-bold mb-2">✅ الإجابة الصحيحة</h2>
+              </div>
+
+              {/* Answer Content */}
+              <div className="text-center mb-8">
+                <p className="text-green-800 text-3xl font-bold mb-4 leading-relaxed" style={{
                   fontFamily: 'Cairo, Arial, sans-serif'
-                }}>{selectedQuestion.answer}</p>
+                }}>
+                  {selectedQuestion.answer}
+                </p>
+                
                 {selectedQuestion.explanation && (
-                  <div className="bg-white rounded-xl p-4 border-2 border-green-200 shadow-sm">
+                  <div className="bg-green-50 rounded-2xl p-6 border-2 border-green-200">
                     <p className="text-green-700 text-lg leading-relaxed" style={{
                       fontFamily: 'Cairo, Arial, sans-serif'
-                    }}>{selectedQuestion.explanation}</p>
+                    }}>
+                      {selectedQuestion.explanation}
+                    </p>
                   </div>
                 )}
               </div>
-            )}
+
+              {/* Team Selection Buttons */}
+              <div className="mb-6">
+                <h3 className="text-xl font-bold text-gray-800 text-center mb-4">
+                  أي فريق أجاب بشكل صحيح؟
+                </h3>
+                <div className="space-y-3">
+                  {gameSession.teams.map((team: string, index: number) => {
+                    const questionKey = (selectedQuestion as any).questionKey;
+                    const points = questionKey ? (() => {
+                      const idx = parseInt(questionKey.split('-')[1]);
+                      return idx < 2 ? 200 : idx < 4 ? 400 : 600;
+                    })() : getPointsForDifficulty(selectedQuestion.difficulty);
+                    
+                    return (
+                      <Button
+                        key={index}
+                        onClick={() => {
+                          handleTeamCorrect(index);
+                          setShowAnswer(false);
+                        }}
+                        className="w-full bg-green-600 hover:bg-green-700 text-white py-4 text-lg font-bold rounded-2xl transition-all duration-300 shadow-lg"
+                        disabled={markTeamCorrectMutation.isPending}
+                      >
+                        <div className="text-center">
+                          <div>{team}</div>
+                          <div className="text-sm opacity-90">✅ (+{points} نقطة)</div>
+                        </div>
+                      </Button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Control Buttons */}
+              <div className="space-y-3">
+                <Button
+                  onClick={() => {
+                    handleSkipQuestion();
+                    setShowAnswer(false);
+                  }}
+                  className="w-full bg-yellow-600 hover:bg-yellow-700 text-white py-4 text-lg font-bold rounded-2xl transition-all duration-300 shadow-lg"
+                  disabled={skipQuestionMutation.isPending}
+                >
+                  لم يجب أي فريق بشكل صحيح
+                </Button>
+                
+                <Button
+                  onClick={() => setShowAnswer(false)}
+                  variant="outline"
+                  className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 border-gray-300 py-4 text-lg font-bold rounded-2xl transition-all duration-300"
+                >
+                  العودة للسؤال
+                </Button>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     );
   }
