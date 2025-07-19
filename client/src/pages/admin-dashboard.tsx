@@ -348,6 +348,71 @@ export default function AdminDashboard() {
       const matchesDifficulty = !difficulty || q.difficulty === difficulty;
       return matchesCategory && matchesDifficulty;
     }).length;
+  }
+
+  // Image upload handler with automatic resizing
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "خطأ في نوع الملف",
+        description: "يجب أن يكون الملف صورة (JPG، PNG، GIF، إلخ)",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      // Create a canvas to resize the image
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+
+      img.onload = () => {
+        const MAX_WIDTH = 400;
+        const MAX_HEIGHT = 300;
+        
+        let { width, height } = img;
+        
+        // Calculate new dimensions while maintaining aspect ratio
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height = (height * MAX_WIDTH) / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width = (width * MAX_HEIGHT) / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        // Draw and resize the image
+        ctx?.drawImage(img, 0, 0, width, height);
+
+        // Convert to base64
+        const resizedImageUrl = canvas.toDataURL('image/jpeg', 0.8);
+        setQuestionForm({ ...questionForm, imageUrl: resizedImageUrl });
+        
+        toast({
+          title: "تم رفع الصورة بنجاح",
+          description: `تم تغيير الحجم إلى ${Math.round(width)}×${Math.round(height)} بكسل`
+        });
+      };
+
+      img.src = URL.createObjectURL(file);
+    } catch (error) {
+      toast({
+        title: "خطأ في رفع الصورة",
+        description: "حدث خطأ أثناء معالجة الصورة",
+        variant: "destructive"
+      });
+    }
   };
 
   // Helper function to check if we can add more questions to a category/difficulty
@@ -967,6 +1032,45 @@ export default function AdminDashboard() {
                       placeholder="تلميح مساعد للسؤال"
                       className="mt-1"
                     />
+                  </div>
+                  {/* Image Upload Field */}
+                  <div>
+                    <Label htmlFor="image">صورة السؤال (اختياري)</Label>
+                    <div className="mt-1">
+                      <input
+                        type="file"
+                        id="image"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="block w-full text-sm text-gray-500
+                          file:mr-4 file:py-2 file:px-4
+                          file:rounded-full file:border-0
+                          file:text-sm file:font-semibold
+                          file:bg-blue-50 file:text-blue-700
+                          hover:file:bg-blue-100"
+                      />
+                      {questionForm.imageUrl && (
+                        <div className="mt-2">
+                          <img 
+                            src={questionForm.imageUrl} 
+                            alt="صورة السؤال" 
+                            className="max-w-full h-40 object-contain rounded border"
+                          />
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="mt-2"
+                            onClick={() => setQuestionForm({ ...questionForm, imageUrl: "" })}
+                          >
+                            إزالة الصورة
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      سيتم تغيير حجم الصورة تلقائياً لتناسب عرض السؤال (أقصى عرض: 400px، أقصى ارتفاع: 300px)
+                    </p>
                   </div>
                   <div>
                     <Label htmlFor="explanation">الوصف/الشرح (اختياري)</Label>

@@ -393,59 +393,83 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     return (
       <div className="min-h-screen p-4 page-transition">
         <div className="max-w-4xl mx-auto">
-          {/* Question Card */}
-          <div className="luxury-card p-8 mb-6 text-center question-slide-in">
-            <div className="text-sm text-luxury-green mb-4">
-              {selectedQuestion.category}
-            </div>
-            <div className="text-lg font-bold text-green-600 mb-4">
-              {(() => {
-                const questionKey = (selectedQuestion as any).questionKey;
-                if (questionKey) {
-                  const index = parseInt(questionKey.split('-')[1]);
-                  return index < 2 ? 200 : index < 4 ? 400 : 600;
-                }
-                return getPointsForDifficulty(selectedQuestion.difficulty);
-              })()} نقطة
-            </div>
-            
-            {/* Timer Display */}
-            {isTimerActive && !isTimeOut && (
-              <div className="mb-6">
-                <div className={`inline-flex items-center justify-center w-20 h-20 rounded-full text-3xl font-bold transition-all duration-300 ${
-                  timeLeft <= 10 
-                    ? 'bg-red-500 text-white timer-urgent border-4 border-red-600' 
-                    : timeLeft <= 0 
-                    ? 'bg-red-600 text-white timer-danger' 
-                    : 'bg-blue-500 text-white timer-beat'
-                }`}>
-                  {timeLeft}
+          {/* Question Card - New Layout Matching Provided Image */}
+          <div className="bg-white rounded-3xl shadow-2xl p-6 mb-6 question-slide-in max-w-5xl mx-auto" dir="rtl">
+            {/* Header Section */}
+            <div className="bg-gradient-to-r from-red-500 to-red-600 text-white rounded-2xl p-4 mb-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="text-sm opacity-90">
+                    {selectedQuestion.category}
+                  </div>
+                  <div className="bg-white/20 px-3 py-1 rounded-full text-sm font-bold">
+                    {(() => {
+                      const questionKey = (selectedQuestion as any).questionKey;
+                      if (questionKey) {
+                        const index = parseInt(questionKey.split('-')[1]);
+                        return index < 2 ? 200 : index < 4 ? 400 : 600;
+                      }
+                      return getPointsForDifficulty(selectedQuestion.difficulty);
+                    })()} نقطة
+                  </div>
                 </div>
-                <p className={`text-sm mt-2 font-medium ${
-                  timeLeft <= 10 ? 'text-red-600 animate-pulse' : 'text-blue-600'
-                }`}>
-                  {timeLeft <= 10 ? 'الوقت ينفد!' : 'الوقت المتبقي'}
-                </p>
+                
+                {/* Timer Display - Moved to header */}
+                {isTimerActive && !isTimeOut && (
+                  <div className="flex items-center gap-2">
+                    <div className={`flex items-center justify-center w-12 h-12 rounded-full text-lg font-bold transition-all duration-300 ${
+                      timeLeft <= 10 
+                        ? 'bg-red-300 text-red-800 timer-urgent border-2 border-red-400' 
+                        : 'bg-white/20 text-white'
+                    }`}>
+                      {timeLeft}
+                    </div>
+                    <span className="text-sm opacity-90">
+                      {timeLeft <= 10 ? 'الوقت ينفد!' : 'ثانية'}
+                    </span>
+                  </div>
+                )}
+                
+                {/* Time Out Message */}
+                {isTimeOut && (
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-center w-12 h-12 rounded-full text-lg font-bold bg-red-800 text-white border-2 border-red-900">
+                      0
+                    </div>
+                    <span className="text-sm font-bold animate-pulse">انتهى الوقت!</span>
+                  </div>
+                )}
               </div>
-            )}
-            
-            {/* Time Out Message */}
-            {isTimeOut && (
-              <div className="mb-6">
-                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full text-3xl font-bold bg-red-600 text-white border-4 border-red-700">
-                  0
+            </div>
+
+            {/* Main Content Area - Question and Image */}
+            <div className="bg-gray-50 rounded-2xl border-4 border-red-200 p-6">
+              {/* Question Title */}
+              <h1 className="text-2xl font-bold text-gray-800 text-center mb-6 question-card-flip">
+                {selectedQuestion.question}
+              </h1>
+              
+              {/* Question Image - Centered and Properly Sized */}
+              {selectedQuestion.imageUrl && (
+                <div className="flex justify-center mb-6">
+                  <div className="bg-white rounded-lg p-4 shadow-lg border-2 border-gray-200">
+                    <img 
+                      src={selectedQuestion.imageUrl} 
+                      alt="صورة السؤال" 
+                      className="max-w-full h-auto rounded-lg"
+                      style={{
+                        maxWidth: '400px',
+                        maxHeight: '300px',
+                        objectFit: 'contain'
+                      }}
+                    />
+                  </div>
                 </div>
-                <p className="text-red-600 text-lg font-bold mt-2 animate-pulse">
-                  انتهى الوقت!
-                </p>
-              </div>
-            )}
+              )}
+            </div>
             
-            <h1 className="text-3xl font-bold text-luxury-green-dark mb-8 question-card-flip">
-              {selectedQuestion.question}
-            </h1>
-            
-            <div className="flex justify-center gap-4 mb-8">
+            {/* Control Buttons with New Styling */}
+            <div className="flex justify-center gap-4 mb-6 mt-6">
               {(() => {
                 const currentQuestionKey = getCurrentQuestionKey();
                 const isHintUsed = currentQuestionKey && gameSession.usedHints?.includes(currentQuestionKey);
@@ -457,25 +481,22 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       if (showHint) {
                         setShowHint(false);
                       } else if (isHintUsed) {
-                        // If hint is already used for this question, just show it
                         setShowHint(true);
                       } else if (currentTeamHintUsed) {
-                        // Team has already used their hint for the game - show red message
                         toast({
                           title: "تم استخدام التلميح",
                           description: "هذا الفريق استخدم التلميح بالفعل في اللعبة",
                           variant: "destructive",
                         });
                       } else {
-                        // Team hasn't used their hint yet, use it now
                         handleUseHint();
                       }
                     }}
                     variant="outline"
-                    className={`luxury-button-secondary ${currentTeamHintUsed ? 'opacity-50 cursor-not-allowed' : isHintUsed ? 'opacity-75' : ''}`}
+                    className={`bg-blue-500 hover:bg-blue-600 text-white border-blue-400 px-6 py-3 rounded-full transition-all duration-300 ${currentTeamHintUsed ? 'opacity-50 cursor-not-allowed' : isHintUsed ? 'opacity-75' : ''}`}
                     disabled={useHintMutation.isPending || currentTeamHintUsed}
                   >
-                    <HelpCircle className="ml-2 h-4 w-4 text-luxury-green-dark" />
+                    <HelpCircle className="ml-2 h-4 w-4" />
                     {showHint ? "إخفاء التلميح" : 
                      isHintUsed ? "إظهار التلميح (مُستخدم)" : 
                      currentTeamHintUsed ? "تم استخدام التلميح" : 
@@ -486,36 +507,45 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
               
               <Button
                 onClick={() => setShowAnswer(!showAnswer)}
-                className="luxury-button"
+                className="bg-green-500 hover:bg-green-600 text-white border-green-400 px-6 py-3 rounded-full transition-all duration-300"
               >
-                <Eye className="ml-2 h-4 w-4 text-luxury-cream" />
+                <Eye className="ml-2 h-4 w-4" />
                 {showAnswer ? "إخفاء الإجابة" : "إظهار الإجابة"}
               </Button>
             </div>
 
+            {/* Hint and Answer Sections with New Styling */}
             {showHint && selectedQuestion.hint && (
-              <div className="luxury-card p-4 mb-6 bg-blue-50 border-blue-200 hint-reveal">
-                <h3 className="font-semibold text-blue-800 mb-2">تلميح:</h3>
-                <p className="text-blue-700">{selectedQuestion.hint}</p>
+              <div className="bg-blue-100 border-4 border-blue-300 rounded-2xl p-6 mb-6 hint-reveal">
+                <div className="bg-blue-500 text-white rounded-lg px-4 py-2 inline-block mb-4">
+                  <h3 className="font-bold text-lg">💡 تلميح</h3>
+                </div>
+                <p className="text-blue-800 text-lg font-medium">{selectedQuestion.hint}</p>
               </div>
             )}
 
             {showAnswer && (
-              <div className="luxury-card p-4 mb-6 bg-green-50 border-green-200 answer-reveal">
-                <h3 className="font-semibold text-green-800 mb-2">الإجابة:</h3>
-                <p className="text-green-700 text-xl font-bold">{selectedQuestion.answer}</p>
+              <div className="bg-green-100 border-4 border-green-300 rounded-2xl p-6 mb-6 answer-reveal">
+                <div className="bg-green-500 text-white rounded-lg px-4 py-2 inline-block mb-4">
+                  <h3 className="font-bold text-lg">✅ الإجابة الصحيحة</h3>
+                </div>
+                <p className="text-green-800 text-2xl font-bold mb-3">{selectedQuestion.answer}</p>
                 {selectedQuestion.explanation && (
-                  <p className="text-green-600 mt-2">{selectedQuestion.explanation}</p>
+                  <div className="bg-white rounded-lg p-4 border-2 border-green-200">
+                    <p className="text-green-700 text-lg">{selectedQuestion.explanation}</p>
+                  </div>
                 )}
               </div>
             )}
           </div>
 
-          {/* Team Selection */}
-          <div className="luxury-card p-6 mb-6">
-            <h3 className="text-xl font-bold text-luxury-green-dark mb-4 text-center">
-              أي فريق أجاب بشكل صحيح؟
-            </h3>
+          {/* Team Selection with Enhanced Styling */}
+          <div className="bg-white rounded-3xl shadow-xl p-6 mb-6 border-4 border-gray-200">
+            <div className="bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-2xl p-4 mb-6 text-center">
+              <h3 className="text-xl font-bold">
+                أي فريق أجاب بشكل صحيح؟
+              </h3>
+            </div>
             
             <div className="grid grid-cols-2 gap-4 mb-4">
               {gameSession.teams.map((team: string, index: number) => {
@@ -529,10 +559,13 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   <Button
                     key={index}
                     onClick={() => handleTeamCorrect(index)}
-                    className="luxury-button py-4 text-lg"
+                    className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-6 text-lg font-bold rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg"
                     disabled={markTeamCorrectMutation.isPending}
                   >
-                    {team} ✅ (+{points})
+                    <div className="text-center">
+                      <div>{team}</div>
+                      <div className="text-sm opacity-90">✅ (+{points} نقطة)</div>
+                    </div>
                   </Button>
                 );
               })}
@@ -541,22 +574,21 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             <Button
               onClick={handleSkipQuestion}
               variant="outline"
-              className="w-full luxury-button-secondary"
+              className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-4 text-lg font-medium rounded-2xl border-2 border-gray-300 transition-all duration-300"
               disabled={skipQuestionMutation.isPending}
             >
               تخطي - لم يجب أي فريق بشكل صحيح
             </Button>
           </div>
 
-          {/* Back to Board */}
+          {/* Back to Board with Enhanced Styling */}
           <div className="text-center">
             <div className="flex gap-4 justify-center">
               <Button
                 onClick={handleBackToBoard}
-                variant="outline"
-                className="luxury-button-secondary"
+                className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-full font-medium transition-all duration-300 shadow-lg"
               >
-                <ArrowLeft className="ml-2 h-4 w-4 text-luxury-green-dark" />
+                <ArrowLeft className="ml-2 h-4 w-4" />
                 العودة للوحة
               </Button>
               
@@ -567,8 +599,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     setLocation("/dashboard");
                   }
                 }}
-                variant="destructive"
-                className="bg-red-600 hover:bg-red-700 text-white"
+                className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-full font-medium transition-all duration-300 shadow-lg"
               >
                 إنهاء اللعبة
               </Button>
