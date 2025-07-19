@@ -61,6 +61,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   const [showAnswer, setShowAnswer] = useState(false);
   const [timeLeft, setTimeLeft] = useState(60);
   const [isTimerActive, setIsTimerActive] = useState(false);
+  const [isTimerPaused, setIsTimerPaused] = useState(false);
   const [isTimeOut, setIsTimeOut] = useState(false);
   const [imagePopupOpen, setImagePopupOpen] = useState(false);
 
@@ -113,7 +114,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   useEffect(() => {
     let interval: NodeJS.Timeout;
     
-    if (isTimerActive && timeLeft > 0 && !isTimeOut) {
+    if (isTimerActive && !isTimerPaused && timeLeft > 0 && !isTimeOut) {
       interval = setInterval(() => {
         setTimeLeft((prevTime) => {
           if (prevTime <= 1) {
@@ -129,7 +130,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isTimerActive, timeLeft, isTimeOut]);
+  }, [isTimerActive, isTimerPaused, timeLeft, isTimeOut]);
 
   // Toast effect for time out
   useEffect(() => {
@@ -154,6 +155,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       setShowHint(false);
       setShowAnswer(false);
       setIsTimerActive(false);
+      setIsTimerPaused(false);
       setIsTimeOut(false);
       setTimeLeft(60);
     },
@@ -171,6 +173,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       setShowHint(false);
       setShowAnswer(false);
       setIsTimerActive(false);
+      setIsTimerPaused(false);
       setIsTimeOut(false);
       setTimeLeft(60);
     },
@@ -287,6 +290,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     setShowHint(false);
     setShowAnswer(false);
     setIsTimerActive(false);
+    setIsTimerPaused(false);
     setIsTimeOut(false);
     setTimeLeft(60);
   };
@@ -459,27 +463,29 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
           borderTop: '2px solid hsl(355, 30%, 30%)'
         }}>
           <div className="flex justify-center items-center">
-            {isTimerActive && !isTimeOut && (
+            {(isTimerActive || isTimerPaused) && !isTimeOut && (
               <div className="flex items-center gap-4">
                 <Button
-                  onClick={() => setIsTimerActive(!isTimerActive)}
+                  onClick={() => setIsTimerPaused(!isTimerPaused)}
                   className="text-white rounded-full p-2 hover:scale-110 transition-transform duration-200"
                   style={{
                     background: 'hsl(355, 40%, 35%)',
                     border: '2px solid hsl(355, 50%, 45%)'
                   }}
                 >
-                  {isTimerActive ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+                  {isTimerPaused ? <Play className="h-5 w-5" /> : <Pause className="h-5 w-5" />}
                 </Button>
                 <div className={`flex items-center justify-center w-16 h-16 rounded-full text-2xl font-bold border-4 transition-all duration-300 ${
-                  timeLeft <= 10 
+                  isTimerPaused
+                    ? 'bg-yellow-500 text-white border-yellow-600'
+                    : timeLeft <= 10 
                     ? 'bg-red-600 text-white border-red-700 animate-pulse' 
                     : 'bg-white text-gray-800 border-gray-300'
                 }`}>
                   {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
                 </div>
                 <span className="text-white text-sm">
-                  {timeLeft <= 10 ? 'الوقت ينفد!' : 'الوقت المتبقي'}
+                  {isTimerPaused ? 'متوقف مؤقتاً' : timeLeft <= 10 ? 'الوقت ينفد!' : 'الوقت المتبقي'}
                 </span>
               </div>
             )}
