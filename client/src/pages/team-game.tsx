@@ -216,15 +216,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     },
   });
 
-  // Debug logging for categories
-  useEffect(() => {
-    if (categories && categories.length > 0) {
-      console.log("Categories with images:", categories);
-      categories.forEach(cat => {
-        console.log(`Category ${cat.name} (${cat.displayName}): logoUrl = "${cat.logoUrl}"`);
-      });
-    }
-  }, [categories]);
+
 
   if (isLoading) {
     return (
@@ -453,34 +445,73 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
               </div>
             </div>
 
-            {/* Main Content Area - Question and Image */}
-            <div className="bg-gray-50 rounded-2xl border-4 border-red-200 p-6">
-              {/* Question Title */}
-              <h1 className="text-2xl font-bold text-gray-800 text-center mb-6 question-card-flip">
-                {selectedQuestion.question}
-              </h1>
+            {/* Main Content Area - Question with Triangle Border Design */}
+            <div className="relative bg-white rounded-3xl p-8 mx-4" style={{
+              border: '3px solid #dc2626',
+              borderImage: 'repeating-linear-gradient(45deg, #dc2626 0, #dc2626 10px, transparent 10px, transparent 20px) 1',
+              boxShadow: '0 4px 20px rgba(220, 38, 38, 0.1)'
+            }}>
+              {/* Decorative Triangle Border Effect */}
+              <div className="absolute inset-0 rounded-3xl" style={{
+                background: `
+                  repeating-linear-gradient(
+                    0deg,
+                    transparent 0px,
+                    transparent 8px,
+                    #dc2626 8px,
+                    #dc2626 10px,
+                    transparent 10px,
+                    transparent 18px
+                  ),
+                  repeating-linear-gradient(
+                    90deg,
+                    transparent 0px,
+                    transparent 8px,
+                    #dc2626 8px,
+                    #dc2626 10px,
+                    transparent 10px,
+                    transparent 18px
+                  )
+                `,
+                mask: 'linear-gradient(white 0 0) content-box, linear-gradient(white 0 0)',
+                maskComposite: 'xor',
+                WebkitMask: 'linear-gradient(white 0 0) content-box, linear-gradient(white 0 0)',
+                WebkitMaskComposite: 'xor',
+                padding: '3px',
+                borderRadius: '24px'
+              }} />
               
-              {/* Question Image - Centered and Properly Sized */}
-              {selectedQuestion.imageUrl && (
-                <div className="flex justify-center mb-6">
-                  <div className="bg-white rounded-lg p-4 shadow-lg border-2 border-gray-200">
-                    <img 
-                      src={selectedQuestion.imageUrl} 
-                      alt="صورة السؤال" 
-                      className="max-w-full h-auto rounded-lg"
-                      style={{
-                        maxWidth: '400px',
-                        maxHeight: '300px',
-                        objectFit: 'contain'
-                      }}
-                    />
+              {/* Inner Content Container */}
+              <div className="relative bg-white rounded-2xl p-6 border-2 border-red-200">
+                {/* Question Title - Matching the reference design */}
+                <h1 className="text-2xl font-bold text-gray-800 text-center mb-8 leading-relaxed" style={{
+                  fontFamily: 'Cairo, Arial, sans-serif'
+                }}>
+                  {selectedQuestion.question}
+                </h1>
+                
+                {/* Question Image - Centered and Styled like reference */}
+                {selectedQuestion.imageUrl && (
+                  <div className="flex justify-center mb-6">
+                    <div className="bg-gray-100 rounded-2xl p-4 shadow-lg border-2 border-gray-200 max-w-md">
+                      <img 
+                        src={selectedQuestion.imageUrl} 
+                        alt="صورة السؤال" 
+                        className="w-full h-auto rounded-xl shadow-md"
+                        style={{
+                          maxWidth: '400px',
+                          maxHeight: '300px',
+                          objectFit: 'contain'
+                        }}
+                      />
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
             
-            {/* Control Buttons with New Styling */}
-            <div className="flex justify-center gap-4 mb-6 mt-6">
+            {/* Control Buttons with Enhanced Styling */}
+            <div className="flex justify-center gap-4 mb-6 mt-8">
               {(() => {
                 const currentQuestionKey = getCurrentQuestionKey();
                 const isHintUsed = currentQuestionKey && gameSession.usedHints?.includes(currentQuestionKey);
@@ -525,25 +556,35 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
               </Button>
             </div>
 
-            {/* Hint and Answer Sections with New Styling */}
+            {/* Hint and Answer Sections with Enhanced Styling */}
             {showHint && selectedQuestion.hint && (
-              <div className="bg-blue-100 border-4 border-blue-300 rounded-2xl p-6 mb-6 hint-reveal">
-                <div className="bg-blue-500 text-white rounded-lg px-4 py-2 inline-block mb-4">
+              <div className="bg-blue-50 border-3 border-blue-400 rounded-2xl p-6 mb-6 hint-reveal mx-4" style={{
+                borderStyle: 'dashed'
+              }}>
+                <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl px-6 py-3 inline-block mb-4 shadow-lg">
                   <h3 className="font-bold text-lg">💡 تلميح</h3>
                 </div>
-                <p className="text-blue-800 text-lg font-medium">{selectedQuestion.hint}</p>
+                <p className="text-blue-800 text-lg font-medium leading-relaxed" style={{
+                  fontFamily: 'Cairo, Arial, sans-serif'
+                }}>{selectedQuestion.hint}</p>
               </div>
             )}
 
             {showAnswer && (
-              <div className="bg-green-100 border-4 border-green-300 rounded-2xl p-6 mb-6 answer-reveal">
-                <div className="bg-green-500 text-white rounded-lg px-4 py-2 inline-block mb-4">
+              <div className="bg-green-50 border-3 border-green-400 rounded-2xl p-6 mb-6 answer-reveal mx-4" style={{
+                borderStyle: 'dashed'
+              }}>
+                <div className="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl px-6 py-3 inline-block mb-4 shadow-lg">
                   <h3 className="font-bold text-lg">✅ الإجابة الصحيحة</h3>
                 </div>
-                <p className="text-green-800 text-2xl font-bold mb-3">{selectedQuestion.answer}</p>
+                <p className="text-green-800 text-2xl font-bold mb-3 leading-relaxed" style={{
+                  fontFamily: 'Cairo, Arial, sans-serif'
+                }}>{selectedQuestion.answer}</p>
                 {selectedQuestion.explanation && (
-                  <div className="bg-white rounded-lg p-4 border-2 border-green-200">
-                    <p className="text-green-700 text-lg">{selectedQuestion.explanation}</p>
+                  <div className="bg-white rounded-xl p-4 border-2 border-green-200 shadow-sm">
+                    <p className="text-green-700 text-lg leading-relaxed" style={{
+                      fontFamily: 'Cairo, Arial, sans-serif'
+                    }}>{selectedQuestion.explanation}</p>
                   </div>
                 )}
               </div>
