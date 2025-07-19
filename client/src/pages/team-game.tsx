@@ -476,8 +476,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
         <div className="flex-1 p-6 min-h-0">
           <div className="max-w-7xl mx-auto flex gap-6 h-full">
 
-            {/* Main Question Panel (Left Side - 75% width) */}
-            <div className="flex-1" style={{ flex: '0 0 75%' }}>
+            {/* Main Question Panel (Left Side - 80% width) */}
+            <div className="flex-1" style={{ flex: '0 0 80%' }}>
               {/* Question with Triangle Border Design */}
               <div className="relative bg-white rounded-3xl p-8 h-full shadow-2xl" style={{
                 border: '3px solid #dc2626',
@@ -527,8 +527,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   </div>
 
                   {/* Question Title - Arabic, centered, bold */}
-                  <div className="flex-1 flex items-center justify-center">
-                    <h1 className="text-5xl font-bold text-gray-800 text-center leading-relaxed" style={{
+                  <div className="text-center mb-8">
+                    <h1 className="text-4xl font-bold text-gray-800 leading-relaxed" style={{
                       fontFamily: 'Cairo, Arial, sans-serif',
                       textShadow: '0 2px 4px rgba(0,0,0,0.1)'
                     }}>
@@ -536,22 +536,27 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     </h1>
                   </div>
                   
-                  {/* Question Image - Centered */}
+                  {/* Question Image - Below question text */}
                   {selectedQuestion.imageUrl && (
-                    <div className="flex justify-center my-8">
-                      <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl p-6 shadow-xl border-2 border-gray-200">
+                    <div className="flex justify-center mb-8 flex-1">
+                      <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl p-4 shadow-xl border-2 border-gray-200 max-w-full">
                         <img 
                           src={selectedQuestion.imageUrl} 
                           alt="صورة السؤال" 
-                          className="max-w-full h-auto rounded-2xl shadow-lg"
+                          className="w-full h-auto rounded-2xl shadow-lg"
                           style={{
-                            maxWidth: '600px',
-                            maxHeight: '450px',
+                            maxWidth: '100%',
+                            maxHeight: '400px',
                             objectFit: 'contain'
                           }}
                         />
                       </div>
                     </div>
+                  )}
+
+                  {/* Spacer if no image to center question */}
+                  {!selectedQuestion.imageUrl && (
+                    <div className="flex-1"></div>
                   )}
 
                   {/* Answer Button at Bottom-Left */}
@@ -573,7 +578,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             </div>
 
             {/* Side Panel (Right Side) - Red Buttons */}
-            <div className="w-80">
+            <div className="w-64">
               <div className="bg-gradient-to-br from-red-600 to-red-700 text-white rounded-3xl shadow-2xl p-6 h-full border-2 border-red-500">
                 {/* Current Team Display */}
                 <div className="text-center mb-6">
