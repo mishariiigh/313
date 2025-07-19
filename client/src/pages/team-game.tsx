@@ -846,21 +846,36 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
   // Game board view - Jeopardy style layout
   return (
-    <div className="min-h-screen flex flex-col page-transition bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen flex flex-col page-transition" style={{
+      background: 'linear-gradient(135deg, hsl(355, 30%, 97%) 0%, hsl(355, 25%, 94%) 100%)'
+    }}>
       {/* Header - Top navigation with scores */}
-      <header className="bg-gradient-to-r from-red-300 to-red-400 text-gray-800 p-4">
+      <header className="p-4" style={{
+        background: 'linear-gradient(135deg, hsl(355, 60%, 90%) 0%, hsl(355, 50%, 85%) 100%)',
+        borderBottom: '3px solid hsl(355, 40%, 80%)',
+        boxShadow: '0 4px 20px hsla(355, 50%, 70%, 0.2)'
+      }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button
               variant="outline"
               onClick={() => setLocation("/dashboard")}
-              className="bg-white/60 text-gray-800 border-gray-300 hover:bg-white/80 p-2"
+              className="border-2 hover:scale-105 transition-transform duration-200"
+              style={{
+                background: 'hsla(0, 0%, 100%, 0.9)',
+                color: 'hsl(345, 35%, 25%)',
+                borderColor: 'hsl(355, 75%, 65%)'
+              }}
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div className="flex items-center gap-3">
-              <p className="text-sm opacity-90">
-                دور: <span className="font-semibold bg-white/40 px-3 py-1 rounded-full">
+              <p className="text-sm font-medium" style={{ color: 'hsl(345, 35%, 25%)' }}>
+                دور: <span className="font-bold px-3 py-1 rounded-full" style={{
+                  background: 'hsla(0, 0%, 100%, 0.8)',
+                  color: 'hsl(355, 85%, 55%)',
+                  border: '2px solid hsl(355, 75%, 65%)'
+                }}>
                   {gameSession.teams[gameSession.currentTurn]}
                 </span>
               </p>
@@ -869,7 +884,12 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 size="sm"
                 onClick={() => switchTeamTurnMutation.mutate()}
                 disabled={switchTeamTurnMutation.isPending}
-                className="bg-white/60 text-gray-800 border-gray-300 hover:bg-white/80 p-2"
+                className="border-2 hover:scale-105 transition-transform duration-200"
+                style={{
+                  background: 'hsla(0, 0%, 100%, 0.9)',
+                  color: 'hsl(345, 35%, 25%)',
+                  borderColor: 'hsl(355, 75%, 65%)'
+                }}
                 title="تبديل الدور"
               >
                 <Shuffle className="h-4 w-4" />
@@ -880,7 +900,12 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
           {/* Team Scores */}
           <div className="flex gap-4">
             {gameSession.teams.map((team: string, index: number) => (
-              <div key={index} className="bg-white/60 rounded-lg p-3 text-center min-w-[140px] text-gray-800">
+              <div key={index} className="rounded-lg p-3 text-center min-w-[140px] border-2" style={{
+                background: 'hsla(0, 0%, 100%, 0.85)',
+                borderColor: 'hsl(355, 75%, 65%)',
+                color: 'hsl(345, 35%, 25%)',
+                boxShadow: '0 4px 12px hsla(355, 50%, 70%, 0.2)'
+              }}>
                 <div className="text-sm font-semibold">{team}</div>
                 <div className="flex items-center justify-center gap-2 mt-1">
                   <Button
@@ -888,12 +913,17 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     size="sm"
                     onClick={() => adjustScoreMutation.mutate({ teamIndex: index, scoreChange: -50 })}
                     disabled={adjustScoreMutation.isPending}
-                    className="bg-white/80 text-gray-800 border-gray-300 hover:bg-white p-1 h-6 w-6"
+                    className="border hover:scale-110 transition-transform duration-200 p-1 h-6 w-6"
+                    style={{
+                      background: 'hsla(0, 0%, 100%, 0.9)',
+                      color: 'hsl(355, 85%, 55%)',
+                      borderColor: 'hsl(355, 65%, 75%)'
+                    }}
                     title="تقليل النقاط"
                   >
                     <Minus className="h-3 w-3" />
                   </Button>
-                  <div className="text-xl font-bold min-w-[40px]">
+                  <div className="text-xl font-bold min-w-[40px]" style={{ color: 'hsl(355, 85%, 55%)' }}>
                     {gameSession.teamScores[index] || 0}
                   </div>
                   <Button
@@ -901,7 +931,12 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     size="sm"
                     onClick={() => adjustScoreMutation.mutate({ teamIndex: index, scoreChange: 50 })}
                     disabled={adjustScoreMutation.isPending}
-                    className="bg-white/80 text-gray-800 border-gray-300 hover:bg-white p-1 h-6 w-6"
+                    className="border hover:scale-110 transition-transform duration-200 p-1 h-6 w-6"
+                    style={{
+                      background: 'hsla(0, 0%, 100%, 0.9)',
+                      color: 'hsl(355, 85%, 55%)',
+                      borderColor: 'hsl(355, 65%, 75%)'
+                    }}
                     title="زيادة النقاط"
                   >
                     <Plus className="h-3 w-3" />
@@ -921,7 +956,11 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             {categories.slice(0, 6).map((category, categoryIndex) => (
               <div key={`category-enhanced-${categoryIndex}`} className="relative">
                 {/* Category Card with Enhanced Layout */}
-                <div className="bg-white rounded-3xl shadow-xl overflow-hidden border-3 border-gray-300 p-2">
+                <div className="rounded-3xl shadow-xl overflow-hidden border-3 p-2" style={{
+                  background: 'hsla(0, 0%, 100%, 0.95)',
+                  borderColor: 'hsl(355, 40%, 85%)',
+                  boxShadow: '0 8px 32px hsla(355, 50%, 70%, 0.2)'
+                }}>
                   
                   <div className="flex items-center justify-center gap-2">
                     {/* Left Column - Stacked Buttons with no gaps */}
@@ -932,9 +971,17 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                         disabled={gameSession.usedQuestions?.includes(`${category.name}-0`)}
                         className={`w-24 h-12 rounded-full font-bold text-lg transition-all duration-300 mb-1 ${
                           gameSession.usedQuestions?.includes(`${category.name}-0`)
-                            ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                            : "bg-gray-200 text-red-600 hover:bg-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                            ? "cursor-not-allowed"
+                            : "shadow-lg hover:shadow-xl transform hover:scale-105"
                         }`}
+                        style={gameSession.usedQuestions?.includes(`${category.name}-0`) ? {
+                          background: 'hsl(0, 0%, 70%)',
+                          color: 'hsl(0, 0%, 50%)'
+                        } : {
+                          background: 'linear-gradient(135deg, hsl(355, 50%, 88%) 0%, hsl(355, 40%, 85%) 100%)',
+                          color: 'hsl(355, 85%, 55%)',
+                          border: '2px solid hsl(355, 60%, 80%)'
+                        }}
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-0`) ? "✓" : "200"}
                       </button>
@@ -945,9 +992,17 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                         disabled={gameSession.usedQuestions?.includes(`${category.name}-2`)}
                         className={`w-24 h-12 rounded-full font-bold text-lg transition-all duration-300 mb-1 ${
                           gameSession.usedQuestions?.includes(`${category.name}-2`)
-                            ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                            : "bg-gray-200 text-red-600 hover:bg-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                            ? "cursor-not-allowed"
+                            : "shadow-lg hover:shadow-xl transform hover:scale-105"
                         }`}
+                        style={gameSession.usedQuestions?.includes(`${category.name}-2`) ? {
+                          background: 'hsl(0, 0%, 70%)',
+                          color: 'hsl(0, 0%, 50%)'
+                        } : {
+                          background: 'linear-gradient(135deg, hsl(355, 50%, 88%) 0%, hsl(355, 40%, 85%) 100%)',
+                          color: 'hsl(355, 85%, 55%)',
+                          border: '2px solid hsl(355, 60%, 80%)'
+                        }}
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-2`) ? "✓" : "400"}
                       </button>
@@ -958,9 +1013,17 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                         disabled={gameSession.usedQuestions?.includes(`${category.name}-4`)}
                         className={`w-24 h-12 rounded-full font-bold text-lg transition-all duration-300 ${
                           gameSession.usedQuestions?.includes(`${category.name}-4`)
-                            ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                            : "bg-gray-200 text-red-600 hover:bg-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                            ? "cursor-not-allowed"
+                            : "shadow-lg hover:shadow-xl transform hover:scale-105"
                         }`}
+                        style={gameSession.usedQuestions?.includes(`${category.name}-4`) ? {
+                          background: 'hsl(0, 0%, 70%)',
+                          color: 'hsl(0, 0%, 50%)'
+                        } : {
+                          background: 'linear-gradient(135deg, hsl(355, 50%, 88%) 0%, hsl(355, 40%, 85%) 100%)',
+                          color: 'hsl(355, 85%, 55%)',
+                          border: '2px solid hsl(355, 60%, 80%)'
+                        }}
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-4`) ? "✓" : "600"}
                       </button>
@@ -993,7 +1056,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       </div>
                       
                       {/* Category Name - Full width bottom bar */}
-                      <div className="w-40 bg-gradient-to-r from-red-500 to-red-600 text-white py-3 px-3 rounded-b-3xl text-center">
+                      <div className="w-40 text-white py-3 px-3 rounded-b-3xl text-center" style={{
+                        background: 'linear-gradient(135deg, hsl(355, 75%, 60%) 0%, hsl(355, 85%, 50%) 100%)'
+                      }}>
                         <div className="font-bold text-sm leading-tight">
                           {category.displayName || category.name}
                         </div>
@@ -1008,9 +1073,17 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                         disabled={gameSession.usedQuestions?.includes(`${category.name}-1`)}
                         className={`w-24 h-12 rounded-full font-bold text-lg transition-all duration-300 mb-1 ${
                           gameSession.usedQuestions?.includes(`${category.name}-1`)
-                            ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                            : "bg-gray-200 text-red-600 hover:bg-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                            ? "cursor-not-allowed"
+                            : "shadow-lg hover:shadow-xl transform hover:scale-105"
                         }`}
+                        style={gameSession.usedQuestions?.includes(`${category.name}-1`) ? {
+                          background: 'hsl(0, 0%, 70%)',
+                          color: 'hsl(0, 0%, 50%)'
+                        } : {
+                          background: 'linear-gradient(135deg, hsl(355, 50%, 88%) 0%, hsl(355, 40%, 85%) 100%)',
+                          color: 'hsl(355, 85%, 55%)',
+                          border: '2px solid hsl(355, 60%, 80%)'
+                        }}
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-1`) ? "✓" : "200"}
                       </button>
@@ -1021,9 +1094,17 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                         disabled={gameSession.usedQuestions?.includes(`${category.name}-3`)}
                         className={`w-24 h-12 rounded-full font-bold text-lg transition-all duration-300 mb-1 ${
                           gameSession.usedQuestions?.includes(`${category.name}-3`)
-                            ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                            : "bg-gray-200 text-red-600 hover:bg-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                            ? "cursor-not-allowed"
+                            : "shadow-lg hover:shadow-xl transform hover:scale-105"
                         }`}
+                        style={gameSession.usedQuestions?.includes(`${category.name}-3`) ? {
+                          background: 'hsl(0, 0%, 70%)',
+                          color: 'hsl(0, 0%, 50%)'
+                        } : {
+                          background: 'linear-gradient(135deg, hsl(355, 50%, 88%) 0%, hsl(355, 40%, 85%) 100%)',
+                          color: 'hsl(355, 85%, 55%)',
+                          border: '2px solid hsl(355, 60%, 80%)'
+                        }}
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-3`) ? "✓" : "400"}
                       </button>
@@ -1034,9 +1115,17 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                         disabled={gameSession.usedQuestions?.includes(`${category.name}-5`)}
                         className={`w-24 h-12 rounded-full font-bold text-lg transition-all duration-300 ${
                           gameSession.usedQuestions?.includes(`${category.name}-5`)
-                            ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                            : "bg-gray-200 text-red-600 hover:bg-gray-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                            ? "cursor-not-allowed"
+                            : "shadow-lg hover:shadow-xl transform hover:scale-105"
                         }`}
+                        style={gameSession.usedQuestions?.includes(`${category.name}-5`) ? {
+                          background: 'hsl(0, 0%, 70%)',
+                          color: 'hsl(0, 0%, 50%)'
+                        } : {
+                          background: 'linear-gradient(135deg, hsl(355, 50%, 88%) 0%, hsl(355, 40%, 85%) 100%)',
+                          color: 'hsl(355, 85%, 55%)',
+                          border: '2px solid hsl(355, 60%, 80%)'
+                        }}
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-5`) ? "✓" : "600"}
                       </button>

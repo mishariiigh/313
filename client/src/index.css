@@ -85,7 +85,7 @@
   
   body {
     @apply bg-background text-foreground font-arabic antialiased;
-    background: linear-gradient(135deg, hsl(0, 0%, 98%) 0%, hsl(0, 25%, 96%) 100%);
+    background: linear-gradient(135deg, hsl(355, 30%, 97%) 0%, hsl(355, 25%, 94%) 100%);
     min-height: 100vh;
     direction: rtl;
   }
@@ -145,8 +145,8 @@
   /* Luxury buttons */
   .luxury-button {
     @apply text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg cursor-pointer;
-    background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
-    box-shadow: 0 4px 16px rgba(248, 113, 113, 0.3), 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, hsl(355, 75%, 65%) 0%, hsl(355, 85%, 55%) 100%);
+    box-shadow: 0 4px 16px hsla(355, 75%, 65%, 0.3), 0 2px 8px rgba(0, 0, 0, 0.1);
     position: relative;
     overflow: hidden;
     border: none;
@@ -169,8 +169,8 @@
   
   .luxury-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(248, 113, 113, 0.4), 0 4px 16px rgba(0, 0, 0, 0.15);
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    box-shadow: 0 8px 24px hsla(355, 75%, 65%, 0.4), 0 4px 16px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(135deg, hsl(355, 85%, 55%) 0%, hsl(355, 90%, 45%) 100%);
   }
   
   .luxury-button:active {
@@ -180,15 +180,15 @@
   /* Secondary luxury button */
   .luxury-button-secondary {
     @apply px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-md cursor-pointer;
-    background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
-    color: #ef4444;
-    border: 2px solid #f87171;
+    background: linear-gradient(135deg, hsl(355, 60%, 95%) 0%, hsl(355, 50%, 88%) 100%);
+    color: hsl(355, 85%, 55%);
+    border: 2px solid hsl(355, 75%, 65%);
   }
   
   .luxury-button-secondary:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(248, 113, 113, 0.3);
-    background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+    box-shadow: 0 6px 20px hsla(355, 75%, 65%, 0.3);
+    background: linear-gradient(135deg, hsl(355, 75%, 65%) 0%, hsl(355, 85%, 55%) 100%);
     color: white;
   }
   
