@@ -394,7 +394,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   // Question view - New Layout Structure
   if (selectedQuestion) {
     return (
-      <div className="min-h-screen bg-red-600 question-slide-in" dir="rtl">
+      <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 question-slide-in" dir="rtl">
         {/* Top Bar (Header) */}
         <div className="bg-red-600 text-white p-4">
           <div className="flex items-center justify-between max-w-7xl mx-auto">
@@ -473,19 +473,18 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 p-6 bg-gray-100">
+        <div className="flex-1 p-6 min-h-0">
           <div className="max-w-7xl mx-auto flex gap-6 h-full">
 
-            {/* Main Question Panel (Left Side) */}
-            <div className="flex-1">
+            {/* Main Question Panel (Left Side - 75% width) */}
+            <div className="flex-1" style={{ flex: '0 0 75%' }}>
               {/* Question with Triangle Border Design */}
-              <div className="relative bg-white rounded-3xl p-8 h-full" style={{
+              <div className="relative bg-white rounded-3xl p-8 h-full shadow-2xl" style={{
                 border: '3px solid #dc2626',
-                borderImage: 'repeating-linear-gradient(45deg, #dc2626 0, #dc2626 10px, transparent 10px, transparent 20px) 1',
-                boxShadow: '0 4px 20px rgba(220, 38, 38, 0.1)'
+                boxShadow: '0 8px 32px rgba(220, 38, 38, 0.15)'
               }}>
                 {/* Decorative Triangle Border Effect */}
-                <div className="absolute inset-0 rounded-3xl" style={{
+                <div className="absolute inset-0 rounded-3xl pointer-events-none" style={{
                   background: `
                     repeating-linear-gradient(
                       0deg,
@@ -515,11 +514,23 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 }} />
                 
                 {/* Inner Content Container */}
-                <div className="relative bg-white rounded-2xl p-8 h-full flex flex-col justify-between">
+                <div className="relative bg-white rounded-2xl p-8 h-full flex flex-col justify-between border-2 border-red-100">
+                  {/* Category Header */}
+                  <div className="bg-gradient-to-r from-red-500 to-red-600 text-white rounded-2xl px-6 py-4 mb-8 text-center shadow-lg">
+                    <h2 className="text-2xl font-bold">
+                      {(() => {
+                        const categoryName = (selectedQuestion as any).questionKey?.split('-')[0];
+                        const category = categories?.find(cat => cat.name === categoryName);
+                        return category?.displayName || categoryName || 'فئة غير معروفة';
+                      })()}
+                    </h2>
+                  </div>
+
                   {/* Question Title - Arabic, centered, bold */}
                   <div className="flex-1 flex items-center justify-center">
-                    <h1 className="text-3xl font-bold text-gray-800 text-center leading-relaxed" style={{
-                      fontFamily: 'Cairo, Arial, sans-serif'
+                    <h1 className="text-5xl font-bold text-gray-800 text-center leading-relaxed" style={{
+                      fontFamily: 'Cairo, Arial, sans-serif',
+                      textShadow: '0 2px 4px rgba(0,0,0,0.1)'
                     }}>
                       {selectedQuestion.question}
                     </h1>
@@ -528,14 +539,14 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   {/* Question Image - Centered */}
                   {selectedQuestion.imageUrl && (
                     <div className="flex justify-center my-8">
-                      <div className="bg-gray-100 rounded-2xl p-4 shadow-lg border-2 border-gray-200">
+                      <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl p-6 shadow-xl border-2 border-gray-200">
                         <img 
                           src={selectedQuestion.imageUrl} 
                           alt="صورة السؤال" 
-                          className="max-w-full h-auto rounded-xl shadow-md"
+                          className="max-w-full h-auto rounded-2xl shadow-lg"
                           style={{
-                            maxWidth: '500px',
-                            maxHeight: '400px',
+                            maxWidth: '600px',
+                            maxHeight: '450px',
                             objectFit: 'contain'
                           }}
                         />
@@ -544,17 +555,17 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   )}
 
                   {/* Answer Button at Bottom-Left */}
-                  <div className="flex justify-between items-end">
+                  <div className="flex justify-between items-end pt-6">
                     <Button
                       onClick={() => setShowAnswer(true)}
-                      className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-xl font-bold rounded-2xl transition-all duration-300 shadow-lg"
+                      className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-12 py-6 text-2xl font-bold rounded-3xl transition-all duration-300 shadow-xl transform hover:scale-105"
                     >
-                      الإجابة
+                      🔍 إظهار الإجابة
                     </Button>
 
                     {/* Info Box - Category/Country at Bottom Right */}
-                    <div className="bg-red-600 text-white px-6 py-3 rounded-2xl text-lg font-bold">
-                      الكويت
+                    <div className="bg-gradient-to-r from-red-600 to-red-700 text-white px-8 py-4 rounded-3xl text-xl font-bold shadow-lg">
+                      🇰🇼 الكويت
                     </div>
                   </div>
                 </div>
@@ -563,16 +574,30 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
             {/* Side Panel (Right Side) - Red Buttons */}
             <div className="w-80">
-              <div className="bg-white rounded-3xl shadow-xl p-6 h-full">
-                {/* Team Name and Points Display */}
+              <div className="bg-gradient-to-br from-red-600 to-red-700 text-white rounded-3xl shadow-2xl p-6 h-full border-2 border-red-500">
+                {/* Current Team Display */}
+                <div className="text-center mb-6">
+                  <h3 className="text-xl font-bold mb-4">🎯 دور الفريق الحالي</h3>
+                  <div className="bg-white bg-opacity-20 rounded-2xl p-4 shadow-lg border border-white border-opacity-30">
+                    <div className="text-2xl font-bold">{gameSession.teams[gameSession.currentTurn]}</div>
+                  </div>
+                </div>
+
+                {/* Team Points Display */}
                 <div className="mb-6">
-                  <div className="bg-red-600 text-white rounded-2xl p-4 text-center mb-4">
-                    <h3 className="text-xl font-bold">
-                      {gameSession.teams[gameSession.currentTurn]}
-                    </h3>
-                    <div className="text-lg">
-                      {gameSession.teamScores[gameSession.currentTurn] || 0} نقطة
-                    </div>
+                  <h4 className="text-lg font-bold mb-4 text-center">🏆 نقاط الفرق</h4>
+                  <div className="space-y-3">
+                    {gameSession.teams.map((team: string, index: number) => (
+                      <div 
+                        key={index} 
+                        className={`bg-white bg-opacity-20 rounded-2xl p-3 flex justify-between items-center shadow-lg border border-white border-opacity-30 ${
+                          index === gameSession.currentTurn ? 'ring-2 ring-white bg-opacity-30' : ''
+                        }`}
+                      >
+                        <span className="font-bold">{team}</span>
+                        <span className="text-lg font-bold">{gameSession.teamScores[index] || 0}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
                 
@@ -602,7 +627,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                             handleUseHint();
                           }
                         }}
-                        className={`w-full bg-red-600 hover:bg-red-700 text-white py-4 text-lg font-bold rounded-2xl transition-all duration-300 shadow-lg ${currentTeamHintUsed ? 'opacity-50 cursor-not-allowed' : isHintUsed ? 'opacity-75' : ''}`}
+                        className={`w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-4 text-lg font-bold rounded-2xl transition-all duration-300 shadow-lg border border-white border-opacity-30 ${currentTeamHintUsed ? 'opacity-50 cursor-not-allowed' : isHintUsed ? 'opacity-75' : ''}`}
                         disabled={useHintMutation.isPending || currentTeamHintUsed}
                       >
                         <HelpCircle className="ml-2 h-5 w-5" />
@@ -619,7 +644,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 <div className="space-y-4">
                   <Button
                     onClick={() => handleSkipQuestion()}
-                    className="w-full bg-red-600 hover:bg-red-700 text-white py-4 text-lg font-bold rounded-2xl transition-all duration-300 shadow-lg"
+                    className="w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-4 text-lg font-bold rounded-2xl transition-all duration-300 shadow-lg border border-white border-opacity-30"
                     disabled={skipQuestionMutation.isPending}
                   >
                     تخطي السؤال
