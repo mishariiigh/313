@@ -528,8 +528,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   </div>
 
                   {/* Question Title - Arabic, centered, bold */}
-                  <div className="text-center mb-4">
-                    <h1 className="text-3xl font-bold text-gray-800 leading-relaxed" style={{
+                  <div className="text-center mb-3">
+                    <h1 className="text-2xl font-bold text-gray-800 leading-relaxed" style={{
                       fontFamily: 'Cairo, Arial, sans-serif',
                       textShadow: '0 2px 4px rgba(0,0,0,0.1)'
                     }}>
@@ -539,15 +539,15 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   
                   {/* Question Image - Below question text */}
                   {selectedQuestion.imageUrl && (
-                    <div className="flex justify-center mb-4 flex-1 min-h-0">
-                      <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl p-3 shadow-xl border-2 border-gray-200 max-w-full cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:scale-105 overflow-hidden">
+                    <div className="flex justify-center mb-3 flex-1 min-h-0">
+                      <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl p-2 shadow-xl border-2 border-gray-200 max-w-full cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:scale-105 overflow-hidden">
                         <img 
                           src={selectedQuestion.imageUrl} 
                           alt="صورة السؤال" 
                           className="w-full h-auto rounded-2xl shadow-lg"
                           style={{
                             maxWidth: '100%',
-                            maxHeight: '350px',
+                            maxHeight: '450px',
                             objectFit: 'contain'
                           }}
                           onClick={() => setImagePopupOpen(true)}
@@ -561,11 +561,11 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     <div className="flex-1"></div>
                   )}
 
-                  {/* Answer Button at Bottom */}
-                  <div className="flex justify-center pt-4">
+                  {/* Answer Button at Bottom - moved down */}
+                  <div className="flex justify-center pt-2">
                     <Button
                       onClick={() => setShowAnswer(true)}
-                      className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-4 text-xl font-bold rounded-3xl transition-all duration-300 shadow-xl transform hover:scale-105"
+                      className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-6 py-3 text-lg font-bold rounded-3xl transition-all duration-300 shadow-xl transform hover:scale-105"
                     >
                       🔍 إظهار الإجابة
                     </Button>
