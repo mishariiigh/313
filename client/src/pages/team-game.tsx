@@ -395,9 +395,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   if (selectedQuestion) {
     return (
       <div className="min-h-screen p-4 page-transition">
-        <div className="max-w-4xl mx-auto">
-          {/* Question Card - New Layout Matching Provided Image */}
-          <div className="bg-white rounded-3xl shadow-2xl p-6 mb-6 question-slide-in max-w-5xl mx-auto" dir="rtl">
+        <div className="max-w-7xl mx-auto">
+          {/* Question Card - Two Column Layout */}
+          <div className="bg-white rounded-3xl shadow-2xl p-6 mb-6 question-slide-in" dir="rtl">
             {/* Header Section */}
             <div className="bg-gradient-to-r from-red-500 to-red-600 text-white rounded-2xl p-4 mb-6">
               <div className="flex items-center justify-between">
@@ -445,120 +445,199 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
               </div>
             </div>
 
-            {/* Main Content Area - Question with Triangle Border Design */}
-            <div className="relative bg-white rounded-3xl p-8 mx-4" style={{
-              border: '3px solid #dc2626',
-              borderImage: 'repeating-linear-gradient(45deg, #dc2626 0, #dc2626 10px, transparent 10px, transparent 20px) 1',
-              boxShadow: '0 4px 20px rgba(220, 38, 38, 0.1)'
-            }}>
-              {/* Decorative Triangle Border Effect */}
-              <div className="absolute inset-0 rounded-3xl" style={{
-                background: `
-                  repeating-linear-gradient(
-                    0deg,
-                    transparent 0px,
-                    transparent 8px,
-                    #dc2626 8px,
-                    #dc2626 10px,
-                    transparent 10px,
-                    transparent 18px
-                  ),
-                  repeating-linear-gradient(
-                    90deg,
-                    transparent 0px,
-                    transparent 8px,
-                    #dc2626 8px,
-                    #dc2626 10px,
-                    transparent 10px,
-                    transparent 18px
-                  )
-                `,
-                mask: 'linear-gradient(white 0 0) content-box, linear-gradient(white 0 0)',
-                maskComposite: 'xor',
-                WebkitMask: 'linear-gradient(white 0 0) content-box, linear-gradient(white 0 0)',
-                WebkitMaskComposite: 'xor',
-                padding: '3px',
-                borderRadius: '24px'
-              }} />
+            {/* Two Column Layout - Question Left, Controls Right */}
+            <div className="flex gap-6">
               
-              {/* Inner Content Container */}
-              <div className="relative bg-white rounded-2xl p-6 border-2 border-red-200">
-                {/* Question Title - Matching the reference design */}
-                <h1 className="text-2xl font-bold text-gray-800 text-center mb-8 leading-relaxed" style={{
-                  fontFamily: 'Cairo, Arial, sans-serif'
+              {/* Left Side - Question Content (65% width) */}
+              <div className="flex-1 w-3/5">
+                {/* Question with Triangle Border Design */}
+                <div className="relative bg-white rounded-3xl p-8" style={{
+                  border: '3px solid #dc2626',
+                  borderImage: 'repeating-linear-gradient(45deg, #dc2626 0, #dc2626 10px, transparent 10px, transparent 20px) 1',
+                  boxShadow: '0 4px 20px rgba(220, 38, 38, 0.1)'
                 }}>
-                  {selectedQuestion.question}
-                </h1>
-                
-                {/* Question Image - Centered and Styled like reference */}
-                {selectedQuestion.imageUrl && (
-                  <div className="flex justify-center mb-6">
-                    <div className="bg-gray-100 rounded-2xl p-4 shadow-lg border-2 border-gray-200 max-w-md">
-                      <img 
-                        src={selectedQuestion.imageUrl} 
-                        alt="صورة السؤال" 
-                        className="w-full h-auto rounded-xl shadow-md"
-                        style={{
-                          maxWidth: '400px',
-                          maxHeight: '300px',
-                          objectFit: 'contain'
-                        }}
-                      />
-                    </div>
+                  {/* Decorative Triangle Border Effect */}
+                  <div className="absolute inset-0 rounded-3xl" style={{
+                    background: `
+                      repeating-linear-gradient(
+                        0deg,
+                        transparent 0px,
+                        transparent 8px,
+                        #dc2626 8px,
+                        #dc2626 10px,
+                        transparent 10px,
+                        transparent 18px
+                      ),
+                      repeating-linear-gradient(
+                        90deg,
+                        transparent 0px,
+                        transparent 8px,
+                        #dc2626 8px,
+                        #dc2626 10px,
+                        transparent 10px,
+                        transparent 18px
+                      )
+                    `,
+                    mask: 'linear-gradient(white 0 0) content-box, linear-gradient(white 0 0)',
+                    maskComposite: 'xor',
+                    WebkitMask: 'linear-gradient(white 0 0) content-box, linear-gradient(white 0 0)',
+                    WebkitMaskComposite: 'xor',
+                    padding: '3px',
+                    borderRadius: '24px'
+                  }} />
+                  
+                  {/* Inner Content Container */}
+                  <div className="relative bg-white rounded-2xl p-6 border-2 border-red-200">
+                    {/* Question Title - Matching the reference design */}
+                    <h1 className="text-2xl font-bold text-gray-800 text-center mb-8 leading-relaxed" style={{
+                      fontFamily: 'Cairo, Arial, sans-serif'
+                    }}>
+                      {selectedQuestion.question}
+                    </h1>
+                    
+                    {/* Question Image - Centered and Styled like reference */}
+                    {selectedQuestion.imageUrl && (
+                      <div className="flex justify-center mb-6">
+                        <div className="bg-gray-100 rounded-2xl p-4 shadow-lg border-2 border-gray-200 max-w-md">
+                          <img 
+                            src={selectedQuestion.imageUrl} 
+                            alt="صورة السؤال" 
+                            className="w-full h-auto rounded-xl shadow-md"
+                            style={{
+                              maxWidth: '400px',
+                              maxHeight: '300px',
+                              objectFit: 'contain'
+                            }}
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
+              </div>
+
+              {/* Right Side - Team Selection and Controls (35% width) */}
+              <div className="w-2/5">
+                <div className="bg-white rounded-3xl shadow-xl p-6 border-4 border-gray-200 h-full">
+                  {/* Title */}
+                  <div className="bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-2xl p-4 mb-6 text-center">
+                    <h3 className="text-lg font-bold">
+                      أي فريق أجاب بشكل صحيح؟
+                    </h3>
+                  </div>
+                  
+                  {/* Team Buttons - Vertical Layout */}
+                  <div className="space-y-3 mb-6">
+                    {gameSession.teams.map((team: string, index: number) => {
+                      const questionKey = (selectedQuestion as any).questionKey;
+                      const points = questionKey ? (() => {
+                        const idx = parseInt(questionKey.split('-')[1]);
+                        return idx < 2 ? 200 : idx < 4 ? 400 : 600;
+                      })() : getPointsForDifficulty(selectedQuestion.difficulty);
+                      
+                      return (
+                        <Button
+                          key={index}
+                          onClick={() => handleTeamCorrect(index)}
+                          className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-4 text-lg font-bold rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg"
+                          disabled={markTeamCorrectMutation.isPending}
+                        >
+                          <div className="text-center">
+                            <div>{team}</div>
+                            <div className="text-sm opacity-90">✅ (+{points} نقطة)</div>
+                          </div>
+                        </Button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Control Buttons - Vertical Layout */}
+                  <div className="space-y-3 mb-6">
+                    {(() => {
+                      const currentQuestionKey = getCurrentQuestionKey();
+                      const isHintUsed = currentQuestionKey && gameSession.usedHints?.includes(currentQuestionKey);
+                      const currentTeamHintUsed = gameSession.teamHintsUsed?.[gameSession.currentTurn];
+                      
+                      return (
+                        <Button
+                          onClick={() => {
+                            if (showHint) {
+                              setShowHint(false);
+                            } else if (isHintUsed) {
+                              setShowHint(true);
+                            } else if (currentTeamHintUsed) {
+                              toast({
+                                title: "تم استخدام التلميح",
+                                description: "هذا الفريق استخدم التلميح بالفعل في اللعبة",
+                                variant: "destructive",
+                              });
+                            } else {
+                              handleUseHint();
+                            }
+                          }}
+                          variant="outline"
+                          className={`w-full bg-blue-500 hover:bg-blue-600 text-white border-blue-400 py-3 rounded-2xl transition-all duration-300 ${currentTeamHintUsed ? 'opacity-50 cursor-not-allowed' : isHintUsed ? 'opacity-75' : ''}`}
+                          disabled={useHintMutation.isPending || currentTeamHintUsed}
+                        >
+                          <HelpCircle className="ml-2 h-4 w-4" />
+                          {showHint ? "إخفاء التلميح" : 
+                           isHintUsed ? "إظهار التلميح (مُستخدم)" : 
+                           currentTeamHintUsed ? "تم استخدام التلميح" : 
+                           "استخدام التلميح"}
+                        </Button>
+                      );
+                    })()}
+                    
+                    <Button
+                      onClick={() => setShowAnswer(!showAnswer)}
+                      className="w-full bg-green-500 hover:bg-green-600 text-white border-green-400 py-3 rounded-2xl transition-all duration-300"
+                    >
+                      <Eye className="ml-2 h-4 w-4" />
+                      {showAnswer ? "إخفاء الإجابة" : "إظهار الإجابة"}
+                    </Button>
+                  </div>
+
+                  {/* Skip, Back and End Game Buttons */}
+                  <div className="space-y-3">
+                    <Button
+                      onClick={() => handleSkipQuestion()}
+                      variant="outline"
+                      className="w-full bg-yellow-500 hover:bg-yellow-600 text-white border-yellow-400 py-3 rounded-2xl transition-all duration-300"
+                      disabled={skipQuestionMutation.isPending}
+                    >
+                      تخطي - لم يجب أي فريق بشكل صحيح
+                    </Button>
+                    
+                    <Button
+                      onClick={() => setSelectedQuestion(null)}
+                      variant="outline"
+                      className="w-full bg-gray-500 hover:bg-gray-600 text-white border-gray-400 py-3 rounded-2xl transition-all duration-300"
+                    >
+                      <ArrowLeft className="ml-2 h-4 w-4" />
+                      العودة للوحة
+                    </Button>
+                    
+                    <Button
+                      onClick={async () => {
+                        if (window.confirm("هل أنت متأكد من إنهاء اللعبة؟")) {
+                          await apiRequest("POST", `/api/games/${id}/complete`);
+                          setLocation("/dashboard");
+                        }
+                      }}
+                      variant="outline"
+                      className="w-full bg-red-500 hover:bg-red-600 text-white border-red-400 py-3 rounded-2xl transition-all duration-300"
+                    >
+                      إنهاء اللعبة
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
-            
-            {/* Control Buttons with Enhanced Styling */}
-            <div className="flex justify-center gap-4 mb-6 mt-8">
-              {(() => {
-                const currentQuestionKey = getCurrentQuestionKey();
-                const isHintUsed = currentQuestionKey && gameSession.usedHints?.includes(currentQuestionKey);
-                const currentTeamHintUsed = gameSession.teamHintsUsed?.[gameSession.currentTurn];
-                
-                return (
-                  <Button
-                    onClick={() => {
-                      if (showHint) {
-                        setShowHint(false);
-                      } else if (isHintUsed) {
-                        setShowHint(true);
-                      } else if (currentTeamHintUsed) {
-                        toast({
-                          title: "تم استخدام التلميح",
-                          description: "هذا الفريق استخدم التلميح بالفعل في اللعبة",
-                          variant: "destructive",
-                        });
-                      } else {
-                        handleUseHint();
-                      }
-                    }}
-                    variant="outline"
-                    className={`bg-blue-500 hover:bg-blue-600 text-white border-blue-400 px-6 py-3 rounded-full transition-all duration-300 ${currentTeamHintUsed ? 'opacity-50 cursor-not-allowed' : isHintUsed ? 'opacity-75' : ''}`}
-                    disabled={useHintMutation.isPending || currentTeamHintUsed}
-                  >
-                    <HelpCircle className="ml-2 h-4 w-4" />
-                    {showHint ? "إخفاء التلميح" : 
-                     isHintUsed ? "إظهار التلميح (مُستخدم)" : 
-                     currentTeamHintUsed ? "تم استخدام التلميح" : 
-                     "استخدام التلميح"}
-                  </Button>
-                );
-              })()}
-              
-              <Button
-                onClick={() => setShowAnswer(!showAnswer)}
-                className="bg-green-500 hover:bg-green-600 text-white border-green-400 px-6 py-3 rounded-full transition-all duration-300"
-              >
-                <Eye className="ml-2 h-4 w-4" />
-                {showAnswer ? "إخفاء الإجابة" : "إظهار الإجابة"}
-              </Button>
-            </div>
 
-            {/* Hint and Answer Sections with Enhanced Styling */}
+
+            {/* Hint and Answer Sections - Full Width Below Both Columns */}
             {showHint && selectedQuestion.hint && (
-              <div className="bg-blue-50 border-3 border-blue-400 rounded-2xl p-6 mb-6 hint-reveal mx-4" style={{
+              <div className="bg-blue-50 border-3 border-blue-400 rounded-2xl p-6 mb-6 hint-reveal" style={{
                 borderStyle: 'dashed'
               }}>
                 <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl px-6 py-3 inline-block mb-4 shadow-lg">
@@ -571,7 +650,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             )}
 
             {showAnswer && (
-              <div className="bg-green-50 border-3 border-green-400 rounded-2xl p-6 mb-6 answer-reveal mx-4" style={{
+              <div className="bg-green-50 border-3 border-green-400 rounded-2xl p-6 mb-6 answer-reveal" style={{
                 borderStyle: 'dashed'
               }}>
                 <div className="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl px-6 py-3 inline-block mb-4 shadow-lg">
@@ -589,73 +668,6 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 )}
               </div>
             )}
-          </div>
-
-          {/* Team Selection with Enhanced Styling */}
-          <div className="bg-white rounded-3xl shadow-xl p-6 mb-6 border-4 border-gray-200">
-            <div className="bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-2xl p-4 mb-6 text-center">
-              <h3 className="text-xl font-bold">
-                أي فريق أجاب بشكل صحيح؟
-              </h3>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              {gameSession.teams.map((team: string, index: number) => {
-                const questionKey = (selectedQuestion as any).questionKey;
-                const points = questionKey ? (() => {
-                  const idx = parseInt(questionKey.split('-')[1]);
-                  return idx < 2 ? 200 : idx < 4 ? 400 : 600;
-                })() : getPointsForDifficulty(selectedQuestion.difficulty);
-                
-                return (
-                  <Button
-                    key={index}
-                    onClick={() => handleTeamCorrect(index)}
-                    className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-6 text-lg font-bold rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg"
-                    disabled={markTeamCorrectMutation.isPending}
-                  >
-                    <div className="text-center">
-                      <div>{team}</div>
-                      <div className="text-sm opacity-90">✅ (+{points} نقطة)</div>
-                    </div>
-                  </Button>
-                );
-              })}
-            </div>
-            
-            <Button
-              onClick={handleSkipQuestion}
-              variant="outline"
-              className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-4 text-lg font-medium rounded-2xl border-2 border-gray-300 transition-all duration-300"
-              disabled={skipQuestionMutation.isPending}
-            >
-              تخطي - لم يجب أي فريق بشكل صحيح
-            </Button>
-          </div>
-
-          {/* Back to Board with Enhanced Styling */}
-          <div className="text-center">
-            <div className="flex gap-4 justify-center">
-              <Button
-                onClick={handleBackToBoard}
-                className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-full font-medium transition-all duration-300 shadow-lg"
-              >
-                <ArrowLeft className="ml-2 h-4 w-4" />
-                العودة للوحة
-              </Button>
-              
-              <Button
-                onClick={async () => {
-                  if (window.confirm("هل أنت متأكد من إنهاء اللعبة؟")) {
-                    await apiRequest("POST", `/api/games/${id}/complete`);
-                    setLocation("/dashboard");
-                  }
-                }}
-                className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-full font-medium transition-all duration-300 shadow-lg"
-              >
-                إنهاء اللعبة
-              </Button>
-            </div>
           </div>
         </div>
       </div>
