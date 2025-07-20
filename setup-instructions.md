@@ -1,4 +1,4 @@
-# Firebase Setup Instructions
+# 313 Arabic Trivia - Firebase Setup Instructions
 
 ## ✅ Firebase Configuration Complete - Now Update Security Rules
 

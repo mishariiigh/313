@@ -1,8 +1,8 @@
-# Arabic Trivia Game Platform
+# 313 - Arabic Trivia Platform
 
 ## Overview
 
-This is a web-based Arabic trivia game platform that provides an engaging multiplayer trivia experience for Arabic-speaking users. The platform is built as a full-stack application with a React frontend and Express.js backend, featuring real-time game sessions, user authentication, payment processing, and comprehensive admin management.
+313 is a comprehensive Arabic trivia platform featuring team-based Jeopardy-style gameplay, payment processing, and administrative management. The platform delivers an immersive quiz experience with Arabic RTL support, Firebase integration, and Stripe payment processing for Kuwaiti Dinar transactions.
 
 ## User Preferences
 
@@ -11,144 +11,111 @@ Preferred communication style: Simple, everyday language.
 ## System Architecture
 
 ### Frontend Architecture
-- **Framework**: React 18 with TypeScript
-- **Routing**: Wouter for client-side routing
-- **State Management**: TanStack Query (React Query) for server state management
-- **UI Framework**: Tailwind CSS with shadcn/ui components
-- **Build Tool**: Vite for development and production builds
-- **Authentication**: Custom auth context with Firebase integration
-- **Payment**: Stripe integration for payment processing
+- **Framework**: React 18 with TypeScript for type safety and modern development
+- **Styling**: Tailwind CSS with custom Arabic theme (light red and off-white color scheme)
+- **UI Components**: shadcn/ui component library with Radix UI primitives
+- **State Management**: React Query (TanStack Query) for server state and caching
+- **Routing**: Wouter for lightweight client-side routing
+- **Build Tool**: Vite for fast development and optimized builds
 
 ### Backend Architecture
 - **Runtime**: Node.js with Express.js framework
-- **Language**: TypeScript with ES modules
-- **Authentication**: Passport.js with local and Firebase strategies
-- **Session Management**: Express sessions with secure cookies
-- **API Design**: RESTful API with structured error handling
+- **Language**: TypeScript for type safety across the stack
+- **Authentication**: Passport.js with local strategy and Firebase Auth integration
+- **Session Management**: Express-session with secure cookie configuration
+- **API Design**: RESTful endpoints with consistent error handling
 
-### Database Architecture
-- **Primary Database**: Firebase Firestore (NoSQL cloud database)
-- **Schema**: Document-based collections for users, questions, game sessions, purchases, categories, coupons, and game packages
-- **Migration Status**: Recently migrated from PostgreSQL to Firebase Firestore
-- **Data Types**: String-based document IDs replacing integer primary keys
+### Data Storage Architecture
+- **Primary Database**: Firebase Firestore (NoSQL document database)
+- **Fallback Database**: PostgreSQL with Drizzle ORM (configured but optional)
+- **Data Synchronization**: Automatic Firebase sync system that populates Firestore with initial data
+- **Schema**: Separate TypeScript schemas for Firebase and PostgreSQL compatibility
 
 ## Key Components
 
 ### Authentication System
 - **Local Authentication**: Email/password with bcrypt hashing
-- **Google OAuth**: Firebase Auth integration for Google sign-in
-- **Session Management**: Server-side sessions with HTTP-only cookies
-- **Authorization**: Role-based access control (admin/user roles)
+- **OAuth Integration**: Google Sign-In with Firebase Auth
+- **Session Management**: Secure HTTP-only cookies with 24-hour expiration
+- **Authorization**: Role-based access control (admin vs regular users)
 
 ### Game Engine
-- **Game Types**: Team-based trivia games with multiple participants
-- **Question System**: 6 categories with 3 difficulty levels (سهل/متوسط/صعب)
-- **Scoring**: Points awarded based on difficulty (200/400/600 points)
-- **Game Flow**: Turn-based gameplay with hint system and answer reveals
-- **Board Layout**: Individual category cards matching reference design
-- **Question Images**: Admin-uploaded images with automatic resizing (400×300px max)
-- **Category Images**: Admin-uploaded category pictures displayed in game board
+- **Game Types**: Team-based trivia with turn management
+- **Question System**: 6 categories with Arabic names, 3 difficulty levels (Easy: 200pts, Medium: 400pts, Hard: 600pts)
+- **Hint System**: Optional hints with usage tracking per team
+- **Scoring**: Automatic point calculation based on difficulty level
+- **Session Management**: Persistent game state with Firebase storage
 
-### Payment System
-- **Payment Processor**: Stripe integration
-- **Currency**: Kuwaiti Dinar (KWD) pricing
+### Payment Processing
+- **Provider**: Stripe integration with KWD currency support
 - **Packages**: 1 game (1.900 KWD), 5 games (7.900 KWD)
-- **Coupon System**: Percentage and fixed-amount discount codes
+- **Coupons**: Percentage and fixed discount system
+- **Game Management**: Automatic credit/debit system for purchases and game usage
 
 ### Admin Dashboard
-- **Question Management**: CRUD operations for trivia questions with image upload
-- **Category Management**: Custom categories with image upload and descriptions
-- **User Management**: User accounts and game credit management
-- **Analytics**: Game statistics and usage tracking
-- **Content Control**: Question publishing and moderation
-- **Image Management**: Automatic image resizing and optimization for questions and categories
+- **User Management**: CRUD operations for user accounts and game credits
+- **Content Management**: Question and category administration
+- **Analytics**: Game statistics and user engagement metrics
+- **System Management**: Coupon creation and game package configuration
 
 ## Data Flow
 
-### User Registration/Login Flow
+### User Registration/Login
 1. User submits credentials via React form
-2. Frontend validates input using Zod schemas
-3. Backend authenticates via Passport.js strategies
-4. Session created and stored server-side
-5. User data cached in React Query state
+2. Express server validates and processes authentication
+3. Password hashed with bcrypt, user stored in Firebase
+4. Session created and secure cookie set
+5. User redirected to dashboard with updated auth state
 
 ### Game Session Flow
-1. User selects game type and categories
-2. Backend generates questions from Firebase collections
-3. Game session created with unique string ID
-4. **AUTOMATIC DECREASE**: User's available games reduced by 1 when game starts
-5. Real-time question display and scoring
-6. Team scores updated in Firebase documents
+1. User selects game package and teams on setup page
+2. Categories selected and game session created in Firebase
+3. Questions fetched based on selected categories and difficulty
+4. Game state managed in real-time with Firebase updates
+5. Scoring calculated and stored per team action
+6. Game completion triggers credit deduction and history update
 
-### Payment Flow
-1. User selects game package on frontend
-2. Stripe payment intent created on backend (with coupon support)
-3. Payment processed via Stripe Elements or mock for testing
-4. **AUTOMATIC INCREASE**: User's available games increased by purchased amount
-5. Purchase record stored in Firebase with coupon tracking
-6. Coupon usage incremented if discount applied
-
-### Data Synchronization
-- **Auto-sync**: Automatic Firebase synchronization on server startup
-- **Real-time Updates**: Firebase Firestore provides real-time capabilities
-- **Fallback Storage**: Temporary storage layer as backup system
-
-### UI/UX Design System
-- **Color Scheme**: Cohesive light red and off-white theme across all pages
-- **Primary Colors**: HSL 355° (light red) gradients with off-white backgrounds
-- **Interactive Elements**: Light red gradient buttons with hover scale effects
-- **Typography**: Consistent dark red-brown text for optimal readability
-- **Shadows & Effects**: Light red-tinted shadows for depth and visual hierarchy
-- **Layout**: Viewport-perfect responsive design eliminating scrolling requirements
+### Payment Processing
+1. User selects game package on checkout page
+2. Coupon validation (if applicable) and discount calculation
+3. Stripe payment intent created with KWD pricing
+4. Payment confirmation triggers game credit addition
+5. Purchase record stored in Firebase with transaction details
 
 ## External Dependencies
 
-### Firebase Services
-- **Firestore**: Primary database for all application data
-- **Authentication**: Google OAuth and user management
-- **Configuration**: Environment-based project configuration
-
-### Stripe Payment Processing
-- **API Integration**: Server-side payment intent creation
-- **Frontend Elements**: Secure payment form components
-- **Webhook Support**: Payment confirmation handling
-
-### UI/UX Libraries
-- **Radix UI**: Accessible component primitives
-- **Lucide Icons**: Comprehensive icon library
-- **React Hook Form**: Form validation and handling
-- **Tailwind CSS**: Utility-first styling framework
+### Core Technologies
+- **Firebase**: Authentication, Firestore database, real-time updates
+- **Stripe**: Payment processing with KWD currency support
+- **Google APIs**: OAuth authentication and user profile data
 
 ### Development Tools
-- **Vite**: Fast development server and build tool
-- **TypeScript**: Type safety across frontend and backend
-- **Drizzle**: Originally used for PostgreSQL (now deprecated)
-- **ESBuild**: Production build optimization
+- **Vite**: Development server and build optimization
+- **TypeScript**: Type checking and development experience
+- **ESBuild**: Fast JavaScript bundling for production
+
+### UI Libraries
+- **Radix UI**: Accessible component primitives
+- **Tailwind CSS**: Utility-first styling framework
+- **Lucide React**: Icon library for consistent visual elements
 
 ## Deployment Strategy
 
-### Build Process
-- **Frontend**: Vite builds React app to static assets
-- **Backend**: ESBuild bundles Express server for production
-- **Assets**: Static files served from dist/public directory
-
 ### Environment Configuration
-- **Development**: Local development with hot reload
-- **Production**: Optimized builds with environment variables
-- **Database**: Firebase project configuration via environment variables
-- **Secrets**: Secure handling of API keys and session secrets
+- **Development**: Local development with hot reload via Vite
+- **Production**: Node.js server with pre-built static assets
+- **Environment Variables**: Firebase credentials, Stripe keys, session secrets
 
-### Scalability Considerations
-- **Firebase Firestore**: Auto-scaling NoSQL database
-- **Stateless Backend**: Session-based but horizontally scalable
-- **CDN Ready**: Static assets can be served from CDN
-- **Real-time Capable**: Firebase provides real-time updates
+### Build Process
+1. **Frontend Build**: Vite compiles React/TypeScript to optimized static files
+2. **Backend Build**: ESBuild bundles Node.js server with external dependencies
+3. **Asset Optimization**: CSS/JS minification and code splitting
+4. **Type Checking**: TypeScript compilation verification
 
-### Security Measures
-- **HTTPS**: Secure communication in production
-- **CORS**: Configured for frontend-backend communication
-- **Session Security**: HTTP-only cookies with secure flags
-- **Input Validation**: Zod schemas for request validation
-- **Firebase Rules**: Database security rules (needs configuration)
+### Database Strategy
+- **Primary**: Firebase Firestore with automatic initialization
+- **Fallback**: PostgreSQL with Drizzle migrations (optional)
+- **Data Seeding**: Automatic population of initial categories, questions, and admin user
+- **Backup**: Firebase's built-in replication and backup systems
 
-The platform is designed for deployment on cloud platforms with support for Node.js applications and can easily scale to handle multiple concurrent game sessions.
+The platform is designed to be deployment-agnostic, supporting various Node.js hosting environments with minimal configuration requirements.
