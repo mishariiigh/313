@@ -823,9 +823,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       }}>
                         ✓
                       </div>
-                      <span className="text-xs font-bold" style={{ color: 'hsl(200, 70%, 35%)' }}>الجواب</span>
+                      <span className="text-sm font-bold" style={{ color: 'hsl(200, 70%, 35%)' }}>الجواب</span>
                     </div>
-                    <p className="text-lg font-bold leading-relaxed" style={{
+                    <p className="text-xl font-bold leading-relaxed" style={{
                       fontFamily: 'Cairo, Arial, sans-serif',
                       color: 'hsl(200, 80%, 25%)'
                     }}>
@@ -840,9 +840,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     }}>
                       <div className="flex items-center mb-1">
                         <div className="text-sm mr-1">💡</div>
-                        <span className="text-xs font-bold" style={{ color: 'hsl(45, 80%, 35%)' }}>توضيح</span>
+                        <span className="text-sm font-bold" style={{ color: 'hsl(45, 80%, 35%)' }}>توضيح</span>
                       </div>
-                      <p className="text-xs leading-relaxed" style={{
+                      <p className="text-sm leading-relaxed" style={{
                         fontFamily: 'Cairo, Arial, sans-serif',
                         color: 'hsl(45, 70%, 30%)'
                       }}>
