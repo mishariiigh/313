@@ -764,75 +764,88 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
           </div>
         )}
 
-        {/* Answer Modal - Popup with Background Blur */}
+        {/* Answer Modal - Creative Card Design */}
         {showAnswer && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             {/* Background Blur Overlay */}
             <div 
-              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+              className="absolute inset-0 backdrop-blur-md"
               onClick={() => setShowAnswer(false)}
+              style={{
+                background: 'linear-gradient(135deg, hsla(355, 25%, 15%, 0.8) 0%, hsla(355, 30%, 20%, 0.9) 100%)'
+              }}
             />
             
-            {/* Modal Content - Compact Design */}
-            <div className="relative rounded-3xl shadow-2xl p-4 mx-4 max-w-xl w-full max-h-[85vh] overflow-y-auto" dir="rtl" style={{
-              background: 'hsla(0, 0%, 100%, 0.98)',
-              border: '3px solid hsl(355, 75%, 55%)',
-              boxShadow: '0 8px 32px hsla(355, 50%, 70%, 0.25)'
-            }}>
-              {/* Decorative Triangle Border Effect */}
-              <div className="absolute inset-0 rounded-3xl" style={{
-                background: `
-                  repeating-linear-gradient(
-                    0deg,
-                    transparent 0px,
-                    transparent 8px,
-                    hsl(355, 75%, 55%) 8px,
-                    hsl(355, 75%, 55%) 10px,
-                    transparent 10px,
-                    transparent 18px
-                  ),
-                  repeating-linear-gradient(
-                    90deg,
-                    transparent 0px,
-                    transparent 8px,
-                    hsl(355, 75%, 55%) 8px,
-                    hsl(355, 75%, 55%) 10px,
-                    transparent 10px,
-                    transparent 18px
-                  )
-                `,
-                mask: 'linear-gradient(white 0 0) content-box, linear-gradient(white 0 0)',
-                maskComposite: 'xor',
-                WebkitMask: 'linear-gradient(white 0 0) content-box, linear-gradient(white 0 0)',
-                WebkitMaskComposite: 'xor',
-                padding: '3px',
-                borderRadius: '24px'
-              }} />
-
-              {/* Inner Content Container */}
-              <div className="relative rounded-2xl p-4 border-2" style={{
-                background: 'hsla(0, 0%, 100%, 1)',
-                borderColor: 'hsl(355, 50%, 85%)'
+            {/* Modal Content - Creative Card Design */}
+            <div className="relative max-w-2xl w-full max-h-[90vh] overflow-y-auto" dir="rtl">
+              {/* Main Card Container */}
+              <div className="relative rounded-3xl shadow-2xl overflow-hidden transform scale-100 animate-in duration-300" style={{
+                background: 'linear-gradient(135deg, hsl(355, 15%, 98%) 0%, hsl(355, 20%, 95%) 100%)',
+                border: '4px solid hsl(355, 60%, 55%)',
+                boxShadow: '0 25px 50px hsla(355, 50%, 30%, 0.4), 0 0 0 1px hsla(355, 70%, 60%, 0.2)'
               }}>
-                {/* Answer Header */}
-                <div className="text-white rounded-2xl p-4 mb-4 text-center" style={{
-                  background: 'linear-gradient(135deg, hsl(355, 75%, 60%) 0%, hsl(355, 85%, 50%) 100%)'
+                
+                {/* Top Header with Close Button */}
+                <div className="relative p-6 text-center" style={{
+                  background: 'linear-gradient(135deg, hsl(355, 75%, 55%) 0%, hsl(355, 80%, 45%) 50%, hsl(355, 75%, 55%) 100%)'
                 }}>
-                  <h2 className="text-xl font-bold mb-1">✅ الإجابة الصحيحة</h2>
+                  {/* Close Button */}
+                  <button
+                    onClick={() => setShowAnswer(false)}
+                    className="absolute top-4 left-4 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
+                    style={{
+                      background: 'hsla(0, 0%, 100%, 0.2)',
+                      border: '2px solid hsla(0, 0%, 100%, 0.3)'
+                    }}
+                  >
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                  
+                  {/* Header Content */}
+                  <div className="text-white">
+                    <div className="text-4xl mb-2">🎯</div>
+                    <h2 className="text-2xl font-bold">الإجابة الصحيحة</h2>
+                    <div className="text-sm opacity-90 mt-1">انقر على الفريق الذي أجاب بشكل صحيح</div>
+                  </div>
                 </div>
 
-                {/* Answer Content */}
-                <div className="text-center mb-5">
-                  <p className="text-gray-800 text-2xl font-bold mb-3 leading-relaxed" style={{
-                    fontFamily: 'Cairo, Arial, sans-serif'
+                {/* Answer Display Section */}
+                <div className="p-6 text-center">
+                  <div className="mb-6 p-6 rounded-2xl" style={{
+                    background: 'linear-gradient(135deg, hsl(200, 90%, 97%) 0%, hsl(200, 85%, 94%) 100%)',
+                    border: '3px solid hsl(200, 70%, 80%)',
+                    boxShadow: 'inset 0 2px 8px hsla(200, 50%, 70%, 0.2)'
                   }}>
-                    {selectedQuestion.answer}
-                  </p>
+                    <div className="flex items-center justify-center mb-3">
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-lg font-bold mr-3" style={{
+                        background: 'linear-gradient(135deg, hsl(200, 75%, 55%) 0%, hsl(200, 80%, 45%) 100%)'
+                      }}>
+                        ✓
+                      </div>
+                      <span className="text-sm font-bold" style={{ color: 'hsl(200, 70%, 35%)' }}>الجواب</span>
+                    </div>
+                    <p className="text-2xl font-bold leading-relaxed" style={{
+                      fontFamily: 'Cairo, Arial, sans-serif',
+                      color: 'hsl(200, 80%, 25%)'
+                    }}>
+                      {selectedQuestion.answer}
+                    </p>
+                  </div>
                   
                   {selectedQuestion.explanation && (
-                    <div className="bg-gray-50 rounded-2xl p-4 border-2 border-gray-200">
-                      <p className="text-gray-700 text-md leading-relaxed" style={{
-                        fontFamily: 'Cairo, Arial, sans-serif'
+                    <div className="mb-6 p-4 rounded-2xl" style={{
+                      background: 'linear-gradient(135deg, hsl(45, 90%, 97%) 0%, hsl(45, 85%, 94%) 100%)',
+                      border: '2px solid hsl(45, 70%, 80%)'
+                    }}>
+                      <div className="flex items-center mb-2">
+                        <div className="text-lg mr-2">💡</div>
+                        <span className="text-sm font-bold" style={{ color: 'hsl(45, 80%, 35%)' }}>توضيح</span>
+                      </div>
+                      <p className="text-md leading-relaxed" style={{
+                        fontFamily: 'Cairo, Arial, sans-serif',
+                        color: 'hsl(45, 70%, 30%)'
                       }}>
                         {selectedQuestion.explanation}
                       </p>
@@ -840,12 +853,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   )}
                 </div>
 
-                {/* Team Selection Buttons */}
-                <div className="mb-4">
-                  <h3 className="text-lg font-bold text-gray-800 text-center mb-3">
-                    أي فريق أجاب بشكل صحيح؟
-                  </h3>
-                  <div className="space-y-2">
+                {/* Team Selection Section */}
+                <div className="px-6 pb-4">
+                  <div className="grid gap-3">
                     {gameSession.teams.map((team: string, index: number) => {
                       const questionKey = (selectedQuestion as any).questionKey;
                       const points = questionKey ? (() => {
@@ -854,58 +864,77 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       })() : getPointsForDifficulty(selectedQuestion.difficulty);
                       
                       return (
-                        <Button
+                        <button
                           key={index}
                           onClick={() => {
                             handleTeamCorrect(index);
                             setShowAnswer(false);
                           }}
-                          className="w-full text-white py-3 text-md font-bold rounded-2xl transition-all duration-300 shadow-lg hover:scale-105 transform"
+                          className="p-4 rounded-2xl transition-all duration-300 hover:scale-105 transform shadow-lg group"
                           style={{
-                            background: 'linear-gradient(135deg, hsl(355, 75%, 60%) 0%, hsl(355, 85%, 50%) 100%)',
-                            boxShadow: '0 4px 16px hsla(355, 50%, 70%, 0.3)'
+                            background: 'linear-gradient(135deg, hsl(140, 75%, 55%) 0%, hsl(140, 80%, 45%) 100%)',
+                            border: '2px solid hsl(140, 70%, 40%)',
+                            boxShadow: '0 4px 16px hsla(140, 60%, 40%, 0.3)'
                           }}
                           disabled={markTeamCorrectMutation.isPending}
                         >
-                          <div className="text-center">
-                            <div>{team}</div>
-                            <div className="text-sm opacity-90">✅ (+{points} نقطة)</div>
+                          <div className="flex items-center justify-between text-white">
+                            <div className="flex items-center">
+                              <div className="w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold mr-3 group-hover:scale-110 transition-transform" style={{
+                                background: 'hsla(0, 0%, 100%, 0.2)'
+                              }}>
+                                🏆
+                              </div>
+                              <div className="text-right">
+                                <div className="text-lg font-bold">{team}</div>
+                                <div className="text-sm opacity-90">يحصل على {points} نقطة</div>
+                              </div>
+                            </div>
+                            <div className="text-2xl opacity-70">→</div>
                           </div>
-                        </Button>
+                        </button>
                       );
                     })}
                   </div>
                 </div>
 
                 {/* Control Buttons */}
-                <div className="space-y-2">
-                  <Button
+                <div className="p-6 space-y-3" style={{
+                  background: 'linear-gradient(135deg, hsl(355, 10%, 96%) 0%, hsl(355, 15%, 93%) 100%)',
+                  borderTop: '2px solid hsl(355, 30%, 85%)'
+                }}>
+                  <button
                     onClick={() => {
                       handleSkipQuestion();
                       setShowAnswer(false);
                     }}
-                    className="w-full text-white py-3 text-md font-bold rounded-2xl transition-all duration-300 shadow-lg hover:scale-105 transform"
+                    className="w-full p-4 rounded-2xl transition-all duration-300 hover:scale-105 transform font-bold text-white shadow-lg"
                     style={{
-                      background: 'linear-gradient(135deg, hsl(45, 85%, 60%) 0%, hsl(45, 90%, 50%) 100%)',
-                      boxShadow: '0 4px 16px hsla(45, 85%, 60%, 0.3)'
+                      background: 'linear-gradient(135deg, hsl(25, 85%, 60%) 0%, hsl(25, 90%, 50%) 100%)',
+                      border: '2px solid hsl(25, 80%, 45%)'
                     }}
                     disabled={skipQuestionMutation.isPending}
                   >
-                    لم يجب أي فريق بشكل صحيح
-                  </Button>
+                    <div className="flex items-center justify-center">
+                      <span className="text-lg mr-2">⏭️</span>
+                      لم يجب أي فريق بشكل صحيح
+                    </div>
+                  </button>
                   
-                  <Button
+                  <button
                     onClick={() => setShowAnswer(false)}
-                    variant="outline"
-                    className="w-full py-2 text-md font-bold rounded-2xl transition-all duration-300 border-2 hover:scale-105 transform"
+                    className="w-full p-3 rounded-2xl transition-all duration-300 hover:scale-105 transform font-bold border-2"
                     style={{
                       background: 'hsl(355, 25%, 95%)',
-                      color: 'hsl(355, 25%, 25%)',
-                      borderColor: 'hsl(355, 50%, 80%)'
+                      color: 'hsl(355, 40%, 30%)',
+                      borderColor: 'hsl(355, 50%, 75%)'
                     }}
                   >
-                    العودة للسؤال
-                  </Button>
+                    <div className="flex items-center justify-center">
+                      <span className="text-lg mr-2">↩️</span>
+                      العودة للسؤال
+                    </div>
+                  </button>
                 </div>
               </div>
             </div>
