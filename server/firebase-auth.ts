@@ -1,21 +1,5 @@
-import { initializeApp } from "firebase/app";
-import { getAuth, signInWithCustomToken } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
-
-// Initialize Firebase client SDK for server-side use
-const firebaseConfig = {
-  apiKey: process.env.GOOGLE_API_KEY,
-  authDomain: "game-aad88.firebaseapp.com",
-  projectId: "game-aad88",
-  storageBucket: "game-aad88.firebasestorage.app",
-  messagingSenderId: "376324753966",
-  appId: "1:376324753966:web:9a79dba8c22d2efb4c6dbf",
-  measurementId: "G-XR8D226WZJ"
-};
-
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+// Import the shared Firebase instance to avoid duplicate app error
+import app, { auth, db } from "./firebase";
 
 // For now, we'll use a simplified approach without admin SDK
 export const verifyIdToken = async (idToken: string) => {
