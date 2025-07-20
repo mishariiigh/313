@@ -2,8 +2,9 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
+// Hardcoded Firebase configuration (temporary fix for API key issue)
 const firebaseConfig = {
-  apiKey: process.env.GOOGLE_API_KEY,
+  apiKey: "AIzaSyBQwHA7qmGPAuxqxqYFL_v53NwmWKMsBiU",
   authDomain: "game-aad88.firebaseapp.com",
   projectId: "game-aad88",
   storageBucket: "game-aad88.firebasestorage.app",

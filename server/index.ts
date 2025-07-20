@@ -3,6 +3,10 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { firebaseAutoSync } from "./firebase-auto-sync";
 
+// Load environment variables
+import { config } from "dotenv";
+config();
+
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
