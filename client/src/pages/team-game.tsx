@@ -777,16 +777,16 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             />
             
             {/* Modal Content - Creative Card Design */}
-            <div className="relative max-w-2xl w-full max-h-[90vh] overflow-y-auto" dir="rtl">
+<div className="relative max-w-2xl w-full h-[85vh] flex flex-col" dir="rtl">
               {/* Main Card Container */}
-              <div className="relative rounded-3xl shadow-2xl overflow-hidden transform scale-100 animate-in duration-300" style={{
+              <div className="relative rounded-3xl shadow-2xl overflow-hidden transform scale-100 animate-in duration-300 h-full flex flex-col" style={{
                 background: 'linear-gradient(135deg, hsl(355, 15%, 98%) 0%, hsl(355, 20%, 95%) 100%)',
                 border: '4px solid hsl(355, 60%, 55%)',
                 boxShadow: '0 25px 50px hsla(355, 50%, 30%, 0.4), 0 0 0 1px hsla(355, 70%, 60%, 0.2)'
               }}>
                 
                 {/* Top Header with Close Button */}
-                <div className="relative p-6 text-center" style={{
+                <div className="relative p-4 text-center flex-shrink-0" style={{
                   background: 'linear-gradient(135deg, hsl(355, 75%, 55%) 0%, hsl(355, 80%, 45%) 50%, hsl(355, 75%, 55%) 100%)'
                 }}>
                   {/* Close Button */}
@@ -805,15 +805,15 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   
                   {/* Header Content */}
                   <div className="text-white">
-                    <div className="text-4xl mb-2">🎯</div>
-                    <h2 className="text-2xl font-bold">الإجابة الصحيحة</h2>
-                    <div className="text-sm opacity-90 mt-1">انقر على الفريق الذي أجاب بشكل صحيح</div>
+                    <div className="text-3xl mb-1">🎯</div>
+                    <h2 className="text-xl font-bold">الإجابة الصحيحة</h2>
+                    <div className="text-xs opacity-90">انقر على الفريق الذي أجاب بشكل صحيح</div>
                   </div>
                 </div>
 
                 {/* Answer Display Section */}
-                <div className="p-6 text-center">
-                  <div className="mb-6 p-6 rounded-2xl" style={{
+                <div className="p-4 text-center flex-shrink-0">
+                  <div className="mb-4 p-4 rounded-2xl" style={{
                     background: 'linear-gradient(135deg, hsl(200, 90%, 97%) 0%, hsl(200, 85%, 94%) 100%)',
                     border: '3px solid hsl(200, 70%, 80%)',
                     boxShadow: 'inset 0 2px 8px hsla(200, 50%, 70%, 0.2)'
@@ -826,7 +826,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       </div>
                       <span className="text-sm font-bold" style={{ color: 'hsl(200, 70%, 35%)' }}>الجواب</span>
                     </div>
-                    <p className="text-2xl font-bold leading-relaxed" style={{
+                    <p className="text-xl font-bold leading-relaxed" style={{
                       fontFamily: 'Cairo, Arial, sans-serif',
                       color: 'hsl(200, 80%, 25%)'
                     }}>
@@ -835,7 +835,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   </div>
                   
                   {selectedQuestion.explanation && (
-                    <div className="mb-6 p-4 rounded-2xl" style={{
+                    <div className="mb-3 p-3 rounded-2xl" style={{
                       background: 'linear-gradient(135deg, hsl(45, 90%, 97%) 0%, hsl(45, 85%, 94%) 100%)',
                       border: '2px solid hsl(45, 70%, 80%)'
                     }}>
@@ -843,7 +843,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                         <div className="text-lg mr-2">💡</div>
                         <span className="text-sm font-bold" style={{ color: 'hsl(45, 80%, 35%)' }}>توضيح</span>
                       </div>
-                      <p className="text-md leading-relaxed" style={{
+                      <p className="text-sm leading-relaxed" style={{
                         fontFamily: 'Cairo, Arial, sans-serif',
                         color: 'hsl(45, 70%, 30%)'
                       }}>
@@ -854,7 +854,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 </div>
 
                 {/* Team Selection Section */}
-                <div className="px-6 pb-4">
+                <div className="px-4 pb-2 flex-1 min-h-0 overflow-y-auto">
                   <div className="grid gap-3">
                     {gameSession.teams.map((team: string, index: number) => {
                       const questionKey = (selectedQuestion as any).questionKey;
@@ -870,7 +870,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                             handleTeamCorrect(index);
                             setShowAnswer(false);
                           }}
-                          className="p-4 rounded-2xl transition-all duration-300 hover:scale-105 transform shadow-lg group"
+                          className="p-3 rounded-2xl transition-all duration-300 hover:scale-105 transform shadow-lg group"
                           style={{
                             background: 'linear-gradient(135deg, hsl(140, 75%, 55%) 0%, hsl(140, 80%, 45%) 100%)',
                             border: '2px solid hsl(140, 70%, 40%)',
@@ -880,14 +880,14 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                         >
                           <div className="flex items-center justify-between text-white">
                             <div className="flex items-center">
-                              <div className="w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold mr-3 group-hover:scale-110 transition-transform" style={{
+                              <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold mr-2 group-hover:scale-110 transition-transform" style={{
                                 background: 'hsla(0, 0%, 100%, 0.2)'
                               }}>
                                 🏆
                               </div>
                               <div className="text-right">
-                                <div className="text-lg font-bold">{team}</div>
-                                <div className="text-sm opacity-90">يحصل على {points} نقطة</div>
+                                <div className="text-md font-bold">{team}</div>
+                                <div className="text-xs opacity-90">يحصل على {points} نقطة</div>
                               </div>
                             </div>
                             <div className="text-2xl opacity-70">→</div>
@@ -899,7 +899,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 </div>
 
                 {/* Control Buttons */}
-                <div className="p-6 space-y-3" style={{
+                <div className="p-4 space-y-2 flex-shrink-0" style={{
                   background: 'linear-gradient(135deg, hsl(355, 10%, 96%) 0%, hsl(355, 15%, 93%) 100%)',
                   borderTop: '2px solid hsl(355, 30%, 85%)'
                 }}>
@@ -908,7 +908,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       handleSkipQuestion();
                       setShowAnswer(false);
                     }}
-                    className="w-full p-4 rounded-2xl transition-all duration-300 hover:scale-105 transform font-bold text-white shadow-lg"
+                    className="w-full p-3 rounded-2xl transition-all duration-300 hover:scale-105 transform font-bold text-white shadow-lg"
                     style={{
                       background: 'linear-gradient(135deg, hsl(25, 85%, 60%) 0%, hsl(25, 90%, 50%) 100%)',
                       border: '2px solid hsl(25, 80%, 45%)'
@@ -916,14 +916,14 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     disabled={skipQuestionMutation.isPending}
                   >
                     <div className="flex items-center justify-center">
-                      <span className="text-lg mr-2">⏭️</span>
-                      لم يجب أي فريق بشكل صحيح
+                      <span className="text-md mr-2">⏭️</span>
+                      <span className="text-sm">لم يجب أي فريق بشكل صحيح</span>
                     </div>
                   </button>
                   
                   <button
                     onClick={() => setShowAnswer(false)}
-                    className="w-full p-3 rounded-2xl transition-all duration-300 hover:scale-105 transform font-bold border-2"
+                    className="w-full p-2 rounded-2xl transition-all duration-300 hover:scale-105 transform font-bold border-2"
                     style={{
                       background: 'hsl(355, 25%, 95%)',
                       color: 'hsl(355, 40%, 30%)',
@@ -931,8 +931,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     }}
                   >
                     <div className="flex items-center justify-center">
-                      <span className="text-lg mr-2">↩️</span>
-                      العودة للسؤال
+                      <span className="text-md mr-2">↩️</span>
+                      <span className="text-sm">العودة للسؤال</span>
                     </div>
                   </button>
                 </div>
