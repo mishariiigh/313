@@ -17,6 +17,7 @@ Preferred communication style: Simple, everyday language.
 - **State Management**: React Query (TanStack Query) for server state and caching
 - **Routing**: Wouter for lightweight client-side routing
 - **Build Tool**: Vite for fast development and optimized builds
+- **Configuration**: Environment variable management with client-side config validation
 
 ### Backend Architecture
 - **Runtime**: Node.js with Express.js framework
@@ -24,12 +25,21 @@ Preferred communication style: Simple, everyday language.
 - **Authentication**: Passport.js with local strategy and Firebase Auth integration
 - **Session Management**: Express-session with secure cookie configuration
 - **API Design**: RESTful endpoints with consistent error handling
+- **Configuration**: Modular configuration system with environment variables and JSON data files
 
 ### Data Storage Architecture
 - **Primary Database**: Firebase Firestore (NoSQL document database)
 - **Fallback Database**: PostgreSQL with Drizzle ORM (configured but optional)
-- **Data Synchronization**: Automatic Firebase sync system that populates Firestore with initial data
+- **Data Synchronization**: Configuration-based data seeding from JSON files
 - **Schema**: Separate TypeScript schemas for Firebase and PostgreSQL compatibility
+- **Content Management**: JSON configuration files for categories, questions, pricing, and app settings
+
+### Configuration Management (New)
+- **Environment Variables**: All sensitive data (API keys, secrets) stored in .env files
+- **Static Data**: Categories, questions, game packages, and coupons in separate JSON files
+- **Type Safety**: Typed configuration loaders with validation
+- **Team Collaboration**: Easy content updates without code changes
+- **Multi-Environment**: Development, staging, and production configuration support
 
 ## Key Components
 
@@ -99,6 +109,11 @@ Preferred communication style: Simple, everyday language.
 - **Tailwind CSS**: Utility-first styling framework
 - **Lucide React**: Icon library for consistent visual elements
 
+### Configuration Dependencies (New)
+- **dotenv**: Environment variable loading for development
+- **fs/path**: File system operations for configuration loading
+- **JSON Schema**: Configuration validation and type safety
+
 ## Deployment Strategy
 
 ### Environment Configuration
@@ -119,3 +134,28 @@ Preferred communication style: Simple, everyday language.
 - **Backup**: Firebase's built-in replication and backup systems
 
 The platform is designed to be deployment-agnostic, supporting various Node.js hosting environments with minimal configuration requirements.
+
+## Recent Refactoring (January 2025)
+
+### Configuration System Overhaul
+- **Environment Variables**: All hardcoded API keys and sensitive data moved to .env files
+- **JSON Configuration**: Static data (categories, questions, pricing) separated into config/ directory
+- **Modular Architecture**: Clean separation with config/, shared/, server/config/, and server/services/ directories
+- **Type Safety**: Comprehensive TypeScript configuration management with validation
+- **Team Collaboration**: Content can be updated by editing JSON files without code changes
+
+### New Directory Structure
+```
+config/           # Static configuration files (categories, questions, pricing)
+shared/config.ts  # Configuration management utilities
+server/config/    # Server configuration modules (Firebase, database)
+server/services/  # Business logic services (data loading)
+client/src/lib/config.ts  # Client-side configuration management
+```
+
+### Benefits Achieved
+- **Scalability**: Environment-based configuration for multiple deployments
+- **Maintainability**: Content updates without touching application logic
+- **Security**: No sensitive data in version control
+- **Team-Friendly**: Easy onboarding with proper .env.example file
+- **GitHub Ready**: Professional project structure for collaborative development

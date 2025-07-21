@@ -1,0 +1,36 @@
+{
+  "app": {
+    "name": "313",
+    "version": "1.0.0",
+    "description": "منصة الألعاب الثقافية العربية",
+    "tagline": "اختبر معلوماتك مع الأصدقاء والعائلة"
+  },
+  "game": {
+    "defaultFreeGames": 2,
+    "maxTeams": 6,
+    "maxQuestionsPerCategory": 6,
+    "difficulties": ["سهل", "متوسط", "صعب"],
+    "difficultyPoints": {
+      "سهل": 200,
+      "متوسط": 400,
+      "صعب": 600
+    }
+  },
+  "ui": {
+    "theme": {
+      "primary": "hsl(0, 84%, 60%)",
+      "secondary": "hsl(25, 95%, 95%)",
+      "background": "hsl(0, 0%, 100%)",
+      "foreground": "hsl(0, 0%, 3.9%)"
+    },
+    "rtl": true,
+    "defaultLanguage": "ar"
+  },
+  "features": {
+    "googleAuth": true,
+    "phoneVerification": true,
+    "stripePayments": true,
+    "adminDashboard": true,
+    "analytics": true
+  }
+}

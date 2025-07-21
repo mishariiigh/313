@@ -1,0 +1,8 @@
+{
+  "email": "admin@313game.com",
+  "name": "مدير النظام",
+  "password": "Admin123!",
+  "phoneNumber": "+965 50000000",
+  "availableGames": 100,
+  "isAdmin": true
+}
