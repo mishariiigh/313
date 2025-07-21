@@ -1,5 +1,5 @@
 import { users, questions, gameSessions, purchases, categories, coupons, gamePackages, type User, type InsertUser, type Question, type InsertQuestion, type GameSession, type InsertGameSession, type Purchase, type InsertPurchase, type Category, type InsertCategory, type Coupon, type InsertCoupon, type GamePackage, type InsertGamePackage } from "@shared/schema";
-import { db } from "./db";
+import { db } from "./config/database";
 import { eq, sql, desc, inArray, and, not } from "drizzle-orm";
 
 export interface IStorage {

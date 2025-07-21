@@ -1,3 +1,10 @@
+/**
+ * API Routes Configuration
+ * 
+ * Configures all Express routes including authentication, game management,
+ * admin operations, and payment processing.
+ */
+
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import session from "express-session";
@@ -8,24 +15,31 @@ import { storage } from "./firebase-storage";
 import { insertUserSchema, insertQuestionSchema, insertGameSessionSchema, insertCategorySchema, insertCouponSchema, insertGamePackageSchema } from "@shared/firebase-schema";
 import { z } from "zod";
 import Stripe from "stripe";
-import { verifyIdToken, createOrUpdateFirebaseUser } from "./firebase-auth";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_...", {
+// Initialize Stripe with environment configuration
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_fallback", {
   apiVersion: "2024-06-20" as any,
 });
 
+
+
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Health check endpoint
+  // Health check endpoint for monitoring
   app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+    res.status(200).json({ 
+      status: 'ok', 
+      timestamp: new Date().toISOString(),
+      version: '1.0.0'
+    });
   });
 
+  // Session configuration with secure defaults
   app.use(session({
     secret: process.env.SESSION_SECRET || "default-secret-key-for-development",
     resave: false,
     saveUninitialized: false,
     cookie: { 
-      secure: false, 
+      secure: process.env.NODE_ENV === 'production',
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
       httpOnly: true,
       sameSite: 'lax'
@@ -33,10 +47,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     name: 'trivia.session'
   }));
 
+  // Initialize Passport middleware
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // Passport configuration
+  // Local authentication strategy configuration
   passport.use(new LocalStrategy(
     { usernameField: 'email' },
     async (email, password, done) => {
@@ -174,8 +189,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Debug Firebase data
-  app.get("/api/admin/debug-firebase", async (req, res) => {
+  // Reseed Firebase data from configuration files
+  app.post("/api/admin/reseed-firebase", async (req, res) => {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "غير مسجل الدخول" });
     }
@@ -186,158 +201,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      const { debugFirebaseData } = await import("./firebase-debug");
-      await debugFirebaseData();
-      res.json({ message: "تم فحص البيانات، تحقق من سجل الخادم" });
+      const { dataLoader } = await import("./services/data-loader");
+      await dataLoader.seedFirebaseData();
+      res.json({ message: "تم إعادة تحميل البيانات من ملفات التكوين" });
     } catch (error: any) {
-      console.error("Debug error:", error);
-      res.status(500).json({ message: "خطأ في فحص البيانات: " + error.message });
+      console.error("Reseed error:", error);
+      res.status(500).json({ message: "خطأ في إعادة تحميل البيانات: " + error.message });
     }
   });
 
-  // Cleanup Firebase duplicates
-  app.post("/api/admin/cleanup-firebase", async (req, res) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "غير مسجل الدخول" });
-    }
 
-    const user = req.user as any;
-    if (!user.isAdmin) {
-      return res.status(403).json({ message: "غير مصرح بالوصول" });
-    }
-
-    try {
-      const { cleanupFirebaseData } = await import("./firebase-cleanup");
-      const result = await cleanupFirebaseData();
-      res.json({ 
-        message: "تم تنظيف Firebase بنجاح", 
-        ...result 
-      });
-    } catch (error: any) {
-      console.error("Cleanup error:", error);
-      res.status(500).json({ message: "خطأ في تنظيف Firebase: " + error.message });
-    }
-  });
-
-  // Seed data endpoint for admin - Push to Firebase
-  app.post("/api/admin/seed-firebase", async (req, res) => {
-    if (!req.isAuthenticated() || !(req.user as any)?.isAdmin) {
-      return res.status(403).json({ message: "غير مصرح لك بالوصول" });
-    }
-
-    try {
-      // Switch to Firebase storage temporarily
-      const { storage: firebaseStorage } = await import('./firebase-storage');
-      const tempStorage = storage;
-      
-      // Get all data from temp storage
-      const users = await tempStorage.getAllUsers();
-      const categories = await tempStorage.getAllCategories();
-      const questions = await tempStorage.getAllQuestions();
-      const gamePackages = await tempStorage.getAllGamePackages();
-      const coupons = await tempStorage.getAllCoupons();
-      
-      // Push to Firebase
-      let results = {
-        users: 0,
-        categories: 0,
-        questions: 0,
-        gamePackages: 0,
-        coupons: 0
-      };
-      
-      // Create users in Firebase
-      for (const user of users) {
-        try {
-          await firebaseStorage.createUser({
-            email: user.email,
-            name: user.name,
-            password: user.password,
-            availableGames: user.availableGames,
-            isAdmin: user.isAdmin
-          });
-          results.users++;
-        } catch (error) {
-          console.log('User already exists:', user.email);
-        }
-      }
-      
-      // Create categories in Firebase
-      for (const category of categories) {
-        try {
-          await firebaseStorage.createCategory({
-            name: category.name,
-            displayName: category.displayName,
-            description: category.description,
-            isActive: category.isActive
-          });
-          results.categories++;
-        } catch (error) {
-          console.log('Category already exists:', category.name);
-        }
-      }
-      
-      // Create questions in Firebase
-      for (const question of questions) {
-        try {
-          await firebaseStorage.createQuestion({
-            question: question.question,
-            answer: question.answer,
-            category: question.category,
-            difficulty: question.difficulty,
-            hint: question.hint,
-            explanation: question.explanation
-          });
-          results.questions++;
-        } catch (error) {
-          console.log('Question creation failed:', error.message);
-        }
-      }
-      
-      // Create game packages in Firebase
-      for (const pkg of gamePackages) {
-        try {
-          await firebaseStorage.createGamePackage({
-            name: pkg.name,
-            description: pkg.description,
-            gameCount: pkg.gameCount,
-            priceInCents: pkg.priceInCents,
-            sortOrder: pkg.sortOrder,
-            isActive: pkg.isActive
-          });
-          results.gamePackages++;
-        } catch (error) {
-          console.log('Package already exists:', pkg.name);
-        }
-      }
-      
-      // Create coupons in Firebase
-      for (const coupon of coupons) {
-        try {
-          await firebaseStorage.createCoupon({
-            code: coupon.code,
-            discountType: coupon.discountType,
-            discountValue: coupon.discountValue,
-            maxUsage: coupon.maxUsage,
-            expiresAt: coupon.expiresAt,
-            isActive: coupon.isActive
-          });
-          results.coupons++;
-        } catch (error) {
-          console.log('Coupon already exists:', coupon.code);
-        }
-      }
-      
-      res.json({ 
-        message: "تم رفع البيانات إلى Firebase بنجاح", 
-        results,
-        total: results.users + results.categories + results.questions + results.gamePackages + results.coupons
-      });
-    } catch (error) {
-      console.error('Error seeding Firebase:', error);
-      res.status(500).json({ message: "خطأ في رفع البيانات إلى Firebase: " + error.message });
-    }
-  });
 
   // Game routes
   app.post("/api/games/start", async (req, res) => {

@@ -1,3 +1,10 @@
+/**
+ * Firebase Storage Service
+ * 
+ * Provides database operations for Firebase Firestore.
+ * All data operations are centralized here for consistent access patterns.
+ */
+
 import {
   collection,
   doc,
@@ -16,7 +23,7 @@ import {
   WriteBatch,
   writeBatch,
 } from "firebase/firestore";
-import { db } from "./firebase";
+import { db } from "./config/firebase";
 import type {
   User,
   InsertUser,
@@ -33,6 +40,11 @@ import type {
   GamePackage,
   InsertGamePackage,
 } from "@shared/firebase-schema";
+
+/**
+ * Firebase Storage Interface
+ * Defines all database operations for Firebase Firestore
+ */
 
 export interface IFirebaseStorage {
   // User operations
