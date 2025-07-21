@@ -22,6 +22,11 @@ export default function AdminDashboard() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("analytics");
   
+  // Helper function to format currency in KWD
+  const formatKWD = (amountInCents: number) => {
+    return `${(amountInCents / 1000).toFixed(3)} د.ك`;
+  };
+  
   // Search and filter states
   const [questionSearch, setQuestionSearch] = useState("");
   const [categorySearch, setCategorySearch] = useState("");
@@ -722,7 +727,7 @@ export default function AdminDashboard() {
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-sm text-blue-600">إجمالي الإيرادات</p>
-                          <p className="text-2xl font-bold text-blue-800">${analytics?.totalRevenue || 0}</p>
+                          <p className="text-2xl font-bold text-blue-800">{formatKWD(analytics?.totalRevenue || 0)}</p>
                         </div>
                         <BarChart className="h-8 w-8 text-blue-500" />
                       </div>
@@ -746,7 +751,7 @@ export default function AdminDashboard() {
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-sm text-purple-600">متوسط قيمة الطلب</p>
-                          <p className="text-2xl font-bold text-purple-800">${analytics?.averageOrderValue || 0}</p>
+                          <p className="text-2xl font-bold text-purple-800">{formatKWD(analytics?.averageOrderValue || 0)}</p>
                         </div>
                         <ArrowRight className="h-8 w-8 text-purple-500" />
                       </div>
@@ -781,7 +786,7 @@ export default function AdminDashboard() {
                             style={{ height: `${Math.max((month.revenue / Math.max(...analytics.monthlyRevenue.map(m => m.revenue))) * 240, 8)}px` }}
                           ></div>
                           <div className="text-xs text-gray-500 mt-2">{month.month}</div>
-                          <div className="text-sm font-semibold text-gray-700">${month.revenue}</div>
+                          <div className="text-sm font-semibold text-gray-700">{formatKWD(month.revenue)}</div>
                         </div>
                       ))}
                     </div>
@@ -809,7 +814,7 @@ export default function AdminDashboard() {
                               </div>
                             </div>
                             <div className="text-right">
-                              <p className="font-bold text-green-600">${pkg.revenue}</p>
+                              <p className="font-bold text-green-600">{formatKWD(pkg.revenue)}</p>
                             </div>
                           </div>
                         ))}
@@ -838,9 +843,9 @@ export default function AdminDashboard() {
                               )}
                             </div>
                             <div className="text-right">
-                              <p className="font-bold text-green-600">${sale.amount}</p>
+                              <p className="font-bold text-green-600">{formatKWD(sale.amount)}</p>
                               {sale.discountAmount && (
-                                <p className="text-xs text-red-500">-${sale.discountAmount}</p>
+                                <p className="text-xs text-red-500">-{formatKWD(sale.discountAmount)}</p>
                               )}
                             </div>
                           </div>
@@ -1822,7 +1827,7 @@ export default function AdminDashboard() {
                                 <h3 className="font-medium">{gamePackage.name}</h3>
                                 <p className="text-sm text-gray-600">{gamePackage.description}</p>
                                 <p className="text-sm text-gray-500">
-                                  {gamePackage.gameCount} ألعاب - {(gamePackage.priceInCents / 100).toFixed(3)} د.ك
+                                  {gamePackage.gameCount} ألعاب - {formatKWD(gamePackage.priceInCents)}
                                 </p>
                                 <p className="text-sm text-gray-400">
                                   الترتيب: {gamePackage.sortOrder}
