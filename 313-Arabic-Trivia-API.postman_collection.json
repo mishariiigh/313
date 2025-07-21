@@ -1,0 +1,953 @@
+{
+	"info": {
+		"_postman_id": "313-arabic-trivia-api",
+		"name": "313 Arabic Trivia Platform API",
+		"description": "Complete API collection for the 313 Arabic trivia platform with authentication, game management, payment processing, and admin features.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"securePassword123\",\n  \"name\": \"محمد أحمد\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Register a new user account with email, password, and name."
+					}
+				},
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Store session cookie automatically",
+									"if (pm.response.code === 200) {",
+									"    console.log('Login successful');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@313trivia.com\",\n  \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login with email and password. Session cookie will be stored automatically."
+					}
+				},
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"me"
+							]
+						},
+						"description": "Get information about the currently authenticated user."
+					}
+				},
+				{
+					"name": "Logout User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Logout the current user and clear session."
+					}
+				}
+			],
+			"description": "User authentication endpoints for registration, login, and session management."
+		},
+		{
+			"name": "Game Management",
+			"item": [
+				{
+					"name": "Get Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/categories",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"categories"
+							]
+						},
+						"description": "Get all available game categories."
+					}
+				},
+				{
+					"name": "Get Game Packages",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/game-packages",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"game-packages"
+							]
+						},
+						"description": "Get all available game packages with KWD pricing."
+					}
+				},
+				{
+					"name": "Start Single Player Game",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"categories\": [\"التاريخ\", \"الجغرافيا\", \"العلوم\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/games/start",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"games",
+								"start"
+							]
+						},
+						"description": "Start a new single-player game with selected categories."
+					}
+				},
+				{
+					"name": "Start Team Game",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"teamNames\": [\"الفريق الأحمر\", \"الفريق الأزرق\"],\n  \"categories\": [\"التاريخ\", \"الجغرافيا\", \"العلوم\", \"الرياضة\", \"الثقافة العامة\", \"الدين\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/games/team/start",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"games",
+								"team",
+								"start"
+							]
+						},
+						"description": "Start a new team-based Jeopardy-style game."
+					}
+				},
+				{
+					"name": "Submit Answer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"answer\": \"الكويت\",\n  \"teamIndex\": 0\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/games/{{sessionId}}/answer",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"games",
+								"{{sessionId}}",
+								"answer"
+							]
+						},
+						"description": "Submit an answer for the current question. Set sessionId variable from game start response."
+					}
+				},
+				{
+					"name": "Get Hint",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"teamIndex\": 0\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/games/{{sessionId}}/hint",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"games",
+								"{{sessionId}}",
+								"hint"
+							]
+						},
+						"description": "Get a hint for the current question. Uses one hint for the team."
+					}
+				},
+				{
+					"name": "Get Game History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/games/history",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"games",
+								"history"
+							]
+						},
+						"description": "Get the current user's game history."
+					}
+				},
+				{
+					"name": "Get Active Game",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/games/active",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"games",
+								"active"
+							]
+						},
+						"description": "Get the current user's active game session if any."
+					}
+				}
+			],
+			"description": "Game management endpoints for starting games, submitting answers, and tracking progress."
+		},
+		{
+			"name": "Payment System",
+			"item": [
+				{
+					"name": "Create Payment Intent",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"packageId\": \"{{packageId}}\",\n  \"couponCode\": \"SAVE20\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/payment/create-intent",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"payment",
+								"create-intent"
+							]
+						},
+						"description": "Create a Stripe payment intent for a game package with optional coupon."
+					}
+				},
+				{
+					"name": "Confirm Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"paymentIntentId\": \"pi_xxxxxxxxxxxx\",\n  \"packageId\": \"{{packageId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/payment/confirm",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"payment",
+								"confirm"
+							]
+						},
+						"description": "Confirm payment and add games to user account."
+					}
+				},
+				{
+					"name": "Validate Coupon",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"SAVE20\",\n  \"amount\": 1900\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/coupons/validate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"coupons",
+								"validate"
+							]
+						},
+						"description": "Validate a coupon code and calculate discount."
+					}
+				}
+			],
+			"description": "Payment processing endpoints for Stripe integration and coupon validation."
+		},
+		{
+			"name": "Admin - Questions",
+			"item": [
+				{
+					"name": "Get All Questions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/questions?category=التاريخ&difficulty=سهل",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"questions"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "التاريخ",
+									"description": "Filter by category (optional)"
+								},
+								{
+									"key": "difficulty",
+									"value": "سهل",
+									"description": "Filter by difficulty (optional)"
+								}
+							]
+						},
+						"description": "Get all questions with optional filtering by category and difficulty."
+					}
+				},
+				{
+					"name": "Create Question",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"question\": \"ما هي عاصمة الكويت؟\",\n  \"answer\": \"مدينة الكويت\",\n  \"category\": \"الجغرافيا\",\n  \"difficulty\": \"سهل\",\n  \"hint\": \"تحمل نفس اسم البلد\",\n  \"explanation\": \"مدينة الكويت هي العاصمة الرسمية لدولة الكويت\",\n  \"imageUrl\": \"https://example.com/kuwait-city.jpg\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/questions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"questions"
+							]
+						},
+						"description": "Create a new question. Requires admin authentication."
+					}
+				},
+				{
+					"name": "Bulk Create Questions",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"category\": \"التاريخ\",\n  \"questions\": [\n    {\n      \"question\": \"في أي عام تأسست دولة الكويت؟\",\n      \"answer\": \"1961\",\n      \"difficulty\": \"سهل\",\n      \"hint\": \"في الستينات من القرن العشرين\",\n      \"explanation\": \"حصلت الكويت على استقلالها عن بريطانيا في 19 يونيو 1961\"\n    },\n    {\n      \"question\": \"من هو أول أمير للكويت؟\",\n      \"answer\": \"الشيخ صباح الأول\",\n      \"difficulty\": \"سهل\",\n      \"hint\": \"من عائلة آل صباح\",\n      \"explanation\": \"الشيخ صباح بن جابر آل صباح (1752-1762)\"\n    },\n    {\n      \"question\": \"متى تم اكتشاف النفط في الكويت؟\",\n      \"answer\": \"1938\",\n      \"difficulty\": \"متوسط\",\n      \"hint\": \"في الثلاثينات من القرن العشرين\",\n      \"explanation\": \"تم اكتشاف النفط في بئر بحره عام 1938\"\n    },\n    {\n      \"question\": \"ما اسم أول سفينة كويتية عبرت المحيط الهندي؟\",\n      \"answer\": \"الصوري\",\n      \"difficulty\": \"متوسط\",\n      \"hint\": \"نوع من أنواع السفن التجارية\",\n      \"explanation\": \"كانت سفن الصوري تستخدم في التجارة البحرية\"\n    },\n    {\n      \"question\": \"من هو الشاعر الكويتي الملقب بشاعر الخليج؟\",\n      \"answer\": \"خالد الفرج\",\n      \"difficulty\": \"صعب\",\n      \"hint\": \"شاعر من القرن العشرين\",\n      \"explanation\": \"خالد الفرج (1898-1954) شاعر كويتي مشهور\"\n    },\n    {\n      \"question\": \"في أي عام تم افتتاح أول مدرسة نظامية في الكويت؟\",\n      \"answer\": \"1911\",\n      \"difficulty\": \"صعب\",\n      \"hint\": \"في بداية القرن العشرين\",\n      \"explanation\": \"المدرسة المباركية كانت أول مدرسة نظامية في الكويت\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/questions/bulk",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"questions",
+								"bulk"
+							]
+						},
+						"description": "Create 6 questions at once for a category (2 Easy, 2 Medium, 2 Hard)."
+					}
+				},
+				{
+					"name": "Update Question",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"question\": \"ما هي عاصمة دولة الكويت؟\",\n  \"answer\": \"مدينة الكويت\",\n  \"hint\": \"تحمل نفس اسم البلد\",\n  \"explanation\": \"مدينة الكويت هي العاصمة الرسمية والسياسية لدولة الكويت\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/questions/{{questionId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"questions",
+								"{{questionId}}"
+							]
+						},
+						"description": "Update an existing question. Set questionId variable."
+					}
+				},
+				{
+					"name": "Delete Question",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/questions/{{questionId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"questions",
+								"{{questionId}}"
+							]
+						},
+						"description": "Delete a question by ID."
+					}
+				},
+				{
+					"name": "Publish All Questions",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/questions/publish",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"questions",
+								"publish"
+							]
+						},
+						"description": "Publish all questions to make them available in games."
+					}
+				}
+			],
+			"description": "Admin endpoints for question management including bulk creation."
+		},
+		{
+			"name": "Admin - Categories",
+			"item": [
+				{
+					"name": "Get Admin Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/categories",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"categories"
+							]
+						},
+						"description": "Get all categories for admin management."
+					}
+				},
+				{
+					"name": "Create Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"الفن\",\n  \"displayName\": \"الفن والأدب\",\n  \"description\": \"أسئلة عن الفن والأدب والثقافة\",\n  \"logoUrl\": \"https://example.com/art-logo.png\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/categories",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"categories"
+							]
+						},
+						"description": "Create a new question category."
+					}
+				}
+			],
+			"description": "Admin endpoints for category management."
+		},
+		{
+			"name": "Admin - Coupons",
+			"item": [
+				{
+					"name": "Get All Coupons",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/coupons",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"coupons"
+							]
+						},
+						"description": "Get all discount coupons."
+					}
+				},
+				{
+					"name": "Create Coupon",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"WELCOME30\",\n  \"discountType\": \"percentage\",\n  \"discountValue\": 30,\n  \"maxUsage\": 50,\n  \"expiresAt\": \"2025-12-31T23:59:59Z\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/coupons",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"coupons"
+							]
+						},
+						"description": "Create a new discount coupon."
+					}
+				},
+				{
+					"name": "Update Coupon Status",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"isActive\": false\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/coupons/{{couponId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"coupons",
+								"{{couponId}}"
+							]
+						},
+						"description": "Activate or deactivate a coupon."
+					}
+				}
+			],
+			"description": "Admin endpoints for coupon management."
+		},
+		{
+			"name": "Admin - Users",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"users"
+							]
+						},
+						"description": "Get all users for admin management."
+					}
+				},
+				{
+					"name": "Update User Games",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"availableGames\": 10\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/users/{{userId}}/games",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"users",
+								"{{userId}}",
+								"games"
+							]
+						},
+						"description": "Update a user's available games count."
+					}
+				}
+			],
+			"description": "Admin endpoints for user management."
+		},
+		{
+			"name": "Admin - Game Packages",
+			"item": [
+				{
+					"name": "Get Admin Game Packages",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/game-packages",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"game-packages"
+							]
+						},
+						"description": "Get all game packages for admin management."
+					}
+				},
+				{
+					"name": "Create Game Package",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"باقة المحترفين\",\n  \"description\": \"10 ألعاب للمحترفين\",\n  \"gameCount\": 10,\n  \"priceInCents\": 15000,\n  \"sortOrder\": 3,\n  \"isActive\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/game-packages",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"game-packages"
+							]
+						},
+						"description": "Create a new game package with KWD pricing."
+					}
+				},
+				{
+					"name": "Update Game Package",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"باقة المحترفين المحدثة\",\n  \"priceInCents\": 14000,\n  \"isActive\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/game-packages/{{packageId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"game-packages",
+								"{{packageId}}"
+							]
+						},
+						"description": "Update an existing game package."
+					}
+				},
+				{
+					"name": "Delete Game Package",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/game-packages/{{packageId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"game-packages",
+								"{{packageId}}"
+							]
+						},
+						"description": "Delete a game package."
+					}
+				}
+			],
+			"description": "Admin endpoints for game package management with KWD pricing."
+		},
+		{
+			"name": "Admin - Analytics",
+			"item": [
+				{
+					"name": "Get Sales Analytics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/sales-analytics",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"sales-analytics"
+							]
+						},
+						"description": "Get comprehensive sales and revenue analytics."
+					}
+				}
+			],
+			"description": "Admin endpoints for sales and analytics reporting."
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global pre-request script",
+					"// Automatically handle session cookies"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global test script",
+					"// Log response for debugging",
+					"if (pm.response.code !== 200 && pm.response.code !== 201) {",
+					"    console.log('Response Code:', pm.response.code);",
+					"    console.log('Response Body:', pm.response.text());",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string",
+			"description": "Base URL for the 313 Arabic Trivia API"
+		},
+		{
+			"key": "sessionId",
+			"value": "",
+			"type": "string",
+			"description": "Game session ID (set from game start response)"
+		},
+		{
+			"key": "questionId",
+			"value": "",
+			"type": "string",
+			"description": "Question ID for updates/deletes"
+		},
+		{
+			"key": "userId",
+			"value": "",
+			"type": "string",
+			"description": "User ID for admin operations"
+		},
+		{
+			"key": "packageId",
+			"value": "",
+			"type": "string",
+			"description": "Game package ID"
+		},
+		{
+			"key": "couponId",
+			"value": "",
+			"type": "string",
+			"description": "Coupon ID for admin operations"
+		}
+	]
+}
