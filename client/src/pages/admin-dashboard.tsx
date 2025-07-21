@@ -81,6 +81,7 @@ export default function AdminDashboard() {
   const [editingGamePackage, setEditingGamePackage] = useState<GamePackage | null>(null);
   const [userForm, setUserForm] = useState({
     email: "",
+    phoneNumber: "",
     name: "",
     password: "",
     availableGames: "",
@@ -326,7 +327,7 @@ export default function AdminDashboard() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
-      setUserForm({ email: "", name: "", password: "", availableGames: "", isAdmin: false });
+      setUserForm({ email: "", phoneNumber: "", name: "", password: "", availableGames: "", isAdmin: false });
       toast({ title: "تم إنشاء المستخدم بنجاح" });
     },
     onError: (error: any) => {
@@ -342,7 +343,7 @@ export default function AdminDashboard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
       setEditingUser(null);
-      setUserForm({ email: "", name: "", password: "", availableGames: "", isAdmin: false });
+      setUserForm({ email: "", phoneNumber: "", name: "", password: "", availableGames: "", isAdmin: false });
       toast({ title: "تم تحديث المستخدم بنجاح" });
     },
     onError: (error: any) => {
@@ -577,6 +578,7 @@ export default function AdminDashboard() {
     setEditingUser(user);
     setUserForm({
       email: user.email,
+      phoneNumber: user.phoneNumber || "",
       name: user.name,
       password: "",
       availableGames: user.availableGames.toString(),
@@ -588,6 +590,7 @@ export default function AdminDashboard() {
     if (editingUser) {
       const updates: any = {
         email: userForm.email,
+        phoneNumber: userForm.phoneNumber,
         name: userForm.name,
         availableGames: parseInt(userForm.availableGames),
         isAdmin: userForm.isAdmin,
@@ -1908,6 +1911,16 @@ export default function AdminDashboard() {
                     />
                   </div>
                   <div>
+                    <Label htmlFor="user-phone">رقم الهاتف</Label>
+                    <Input
+                      id="user-phone"
+                      type="tel"
+                      placeholder="+965 1234567"
+                      value={userForm.phoneNumber}
+                      onChange={(e) => setUserForm({ ...userForm, phoneNumber: e.target.value })}
+                    />
+                  </div>
+                  <div>
                     <Label htmlFor="user-name">الاسم</Label>
                     <Input
                       id="user-name"
@@ -2004,6 +2017,7 @@ export default function AdminDashboard() {
                               )}
                             </div>
                             <p className="text-sm text-gray-600">{user.email}</p>
+                            <p className="text-sm text-gray-600">{user.phoneNumber || 'لا يوجد رقم هاتف'}</p>
                             <p className="text-sm text-gray-500">
                               الألعاب المتاحة: {user.availableGames}
                             </p>

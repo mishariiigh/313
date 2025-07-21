@@ -22,6 +22,9 @@ const loginSchema = z.object({
 const registerSchema = z.object({
   name: z.string().min(2, "الاسم يجب أن يكون حرفين على الأقل"),
   email: z.string().email("البريد الإلكتروني غير صحيح"),
+  phoneNumber: z.string()
+    .min(8, "رقم الهاتف يجب أن يكون 8 أرقام على الأقل")
+    .regex(/^[0-9+\-\s()]+$/, "رقم الهاتف يجب أن يحتوي على أرقام فقط"),
   password: z.string().min(6, "كلمة المرور يجب أن تكون 6 أحرف على الأقل"),
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
@@ -48,6 +51,7 @@ export default function AuthPage() {
     defaultValues: {
       name: "",
       email: "",
+      phoneNumber: "",
       password: "",
       confirmPassword: "",
     },
@@ -248,6 +252,19 @@ export default function AuthPage() {
                         <FormLabel className="text-luxury-green-dark font-semibold">البريد الإلكتروني</FormLabel>
                         <FormControl>
                           <Input placeholder="أدخل بريدك الإلكتروني" {...field} className="luxury-input" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={registerForm.control}
+                    name="phoneNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-luxury-green-dark font-semibold">رقم الهاتف</FormLabel>
+                        <FormControl>
+                          <Input placeholder="أدخل رقم الهاتف (مثال: +965 1234567)" {...field} className="luxury-input" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
