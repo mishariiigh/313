@@ -40,6 +40,15 @@ export default function AdminDashboard() {
     explanation: "",
     imageUrl: "",
   });
+  const [bulkQuestionMode, setBulkQuestionMode] = useState(false);
+  const [bulkQuestions, setBulkQuestions] = useState([
+    { question: "", answer: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" },
+    { question: "", answer: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" },
+    { question: "", answer: "", difficulty: "متوسط", hint: "", explanation: "", imageUrl: "" },
+    { question: "", answer: "", difficulty: "متوسط", hint: "", explanation: "", imageUrl: "" },
+    { question: "", answer: "", difficulty: "صعب", hint: "", explanation: "", imageUrl: "" },
+    { question: "", answer: "", difficulty: "صعب", hint: "", explanation: "", imageUrl: "" },
+  ]);
   const [categoryForm, setCategoryForm] = useState({
     name: "",
     displayName: "",
@@ -118,6 +127,39 @@ export default function AdminDashboard() {
     },
     onError: (error: any) => {
       toast({ title: "خطأ في إنشاء السؤال", description: error.message, variant: "destructive" });
+    },
+  });
+
+  const createBulkQuestionsMutation = useMutation({
+    mutationFn: async (data: { category: string; questions: typeof bulkQuestions }) => {
+      const questionsWithCategory = data.questions.map(q => ({
+        ...q,
+        category: data.category
+      }));
+      
+      // Create all questions in parallel
+      const promises = questionsWithCategory.map(question =>
+        apiRequest("POST", "/api/admin/questions", question)
+      );
+      
+      const responses = await Promise.all(promises);
+      return responses;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/questions"] });
+      setBulkQuestions([
+        { question: "", answer: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" },
+        { question: "", answer: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" },
+        { question: "", answer: "", difficulty: "متوسط", hint: "", explanation: "", imageUrl: "" },
+        { question: "", answer: "", difficulty: "متوسط", hint: "", explanation: "", imageUrl: "" },
+        { question: "", answer: "", difficulty: "صعب", hint: "", explanation: "", imageUrl: "" },
+        { question: "", answer: "", difficulty: "صعب", hint: "", explanation: "", imageUrl: "" },
+      ]);
+      setBulkQuestionMode(false);
+      toast({ title: "تم إنشاء 6 أسئلة بنجاح" });
+    },
+    onError: (error: any) => {
+      toast({ title: "خطأ في إنشاء الأسئلة", description: error.message, variant: "destructive" });
     },
   });
 
@@ -940,13 +982,143 @@ export default function AdminDashboard() {
               <Card>
                 <CardHeader>
                   <CardTitle>
-                    {editingQuestion ? "تعديل السؤال" : "إضافة سؤال جديد"}
+                    {editingQuestion ? "تعديل السؤال" : bulkQuestionMode ? "إضافة 6 أسئلة دفعة واحدة" : "إضافة سؤال جديد"}
                   </CardTitle>
                   <CardDescription>
-                    {editingQuestion ? "تعديل بيانات السؤال المحدد" : "أضف سؤالاً جديداً - كل فئة تحتاج 6 أسئلة: 2 سهل (200 نقطة) + 2 متوسط (400 نقطة) + 2 صعب (600 نقطة)"}
+                    {editingQuestion ? "تعديل بيانات السؤال المحدد" : bulkQuestionMode ? "أضف 6 أسئلة كاملة للفئة: 2 سهل (200 نقطة) + 2 متوسط (400 نقطة) + 2 صعب (600 نقطة)" : "أضف سؤالاً جديداً - كل فئة تحتاج 6 أسئلة: 2 سهل (200 نقطة) + 2 متوسط (400 نقطة) + 2 صعب (600 نقطة)"}
                   </CardDescription>
+                  <div className="flex gap-2 mt-2">
+                    <Button 
+                      variant={!bulkQuestionMode ? "default" : "outline"} 
+                      size="sm"
+                      onClick={() => setBulkQuestionMode(false)}
+                    >
+                      سؤال واحد
+                    </Button>
+                    <Button 
+                      variant={bulkQuestionMode ? "default" : "outline"} 
+                      size="sm"
+                      onClick={() => setBulkQuestionMode(true)}
+                    >
+                      6 أسئلة معاً
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  {/* Bulk Questions Form */}
+                  {bulkQuestionMode && !editingQuestion && (
+                    <>
+                      {/* Category Selection for Bulk */}
+                      <div>
+                        <Label htmlFor="bulkCategory">الفئة للأسئلة الستة</Label>
+                        <Select value={questionForm.category} onValueChange={(value) => setQuestionForm({ ...questionForm, category: value })}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="اختر الفئة" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categories?.categories?.map((cat: Category) => (
+                              <SelectItem key={cat.id} value={cat.name}>
+                                <span>{cat.displayName}</span>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      {/* Bulk Questions Grid */}
+                      <div className="space-y-6 max-h-96 overflow-y-auto">
+                        {bulkQuestions.map((question, index) => (
+                          <div key={index} className="p-4 border rounded-lg bg-gray-50">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Badge variant={question.difficulty === "سهل" ? "secondary" : question.difficulty === "متوسط" ? "default" : "destructive"}>
+                                {question.difficulty} - {question.difficulty === "سهل" ? "200" : question.difficulty === "متوسط" ? "400" : "600"} نقطة
+                              </Badge>
+                              <span className="text-sm text-gray-600">السؤال {index + 1}/6</span>
+                            </div>
+                            
+                            <div className="grid gap-3">
+                              <div>
+                                <Label>السؤال</Label>
+                                <Textarea
+                                  value={question.question}
+                                  onChange={(e) => {
+                                    const updated = [...bulkQuestions];
+                                    updated[index].question = e.target.value;
+                                    setBulkQuestions(updated);
+                                  }}
+                                  placeholder="اكتب السؤال هنا..."
+                                  rows={2}
+                                />
+                              </div>
+                              
+                              <div className="grid grid-cols-2 gap-2">
+                                <div>
+                                  <Label>الإجابة</Label>
+                                  <Input
+                                    value={question.answer}
+                                    onChange={(e) => {
+                                      const updated = [...bulkQuestions];
+                                      updated[index].answer = e.target.value;
+                                      setBulkQuestions(updated);
+                                    }}
+                                    placeholder="الإجابة الصحيحة"
+                                  />
+                                </div>
+                                <div>
+                                  <Label>التلميح (مطلوب)</Label>
+                                  <Input
+                                    value={question.hint}
+                                    onChange={(e) => {
+                                      const updated = [...bulkQuestions];
+                                      updated[index].hint = e.target.value;
+                                      setBulkQuestions(updated);
+                                    }}
+                                    placeholder="تلميح مساعد"
+                                  />
+                                </div>
+                              </div>
+                              
+                              <div>
+                                <Label>الشرح (اختياري)</Label>
+                                <Input
+                                  value={question.explanation}
+                                  onChange={(e) => {
+                                    const updated = [...bulkQuestions];
+                                    updated[index].explanation = e.target.value;
+                                    setBulkQuestions(updated);
+                                  }}
+                                  placeholder="شرح إضافي للإجابة"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <Button
+                        onClick={() => {
+                          if (!questionForm.category) {
+                            toast({ title: "يجب اختيار الفئة", variant: "destructive" });
+                            return;
+                          }
+                          const incompleteQuestions = bulkQuestions.filter(q => !q.question.trim() || !q.answer.trim() || !q.hint.trim());
+                          if (incompleteQuestions.length > 0) {
+                            toast({ title: "يجب إكمال جميع الحقول المطلوبة", variant: "destructive" });
+                            return;
+                          }
+                          createBulkQuestionsMutation.mutate({ category: questionForm.category, questions: bulkQuestions });
+                        }}
+                        disabled={createBulkQuestionsMutation.isPending}
+                        className="w-full"
+                      >
+                        {createBulkQuestionsMutation.isPending ? "جاري الإضافة..." : "إضافة 6 أسئلة"}
+                      </Button>
+                    </>
+                  )}
+
+                  {/* Single Question Form */}
+                  {!bulkQuestionMode && (
+                    <>
                   <div>
                     <Label htmlFor="question">السؤال</Label>
                     <Textarea
@@ -1135,6 +1307,8 @@ export default function AdminDashboard() {
                       </Button>
                     )}
                   </div>
+                    </>
+                  )}
                 </CardContent>
               </Card>
 
@@ -1429,14 +1603,14 @@ export default function AdminDashboard() {
                   </div>
                   <div>
                     <Label htmlFor="discountValue">
-                      {couponForm.discountType === "percentage" ? "نسبة الخصم (%)" : "مبلغ الخصم (بالقروش)"}
+                      {couponForm.discountType === "percentage" ? "نسبة الخصم (%)" : "مبلغ الخصم (بالفلس)"}
                     </Label>
                     <Input
                       id="discountValue"
                       type="number"
                       value={couponForm.discountValue}
                       onChange={(e) => setCouponForm({ ...couponForm, discountValue: e.target.value })}
-                      placeholder={couponForm.discountType === "percentage" ? "20" : "500"}
+                      placeholder={couponForm.discountType === "percentage" ? "20" : "500 (0.500 د.ك)"}
                       className="mt-1"
                     />
                   </div>
@@ -1501,7 +1675,7 @@ export default function AdminDashboard() {
                               <p className="text-sm text-gray-600">
                                 {coupon.discountType === "percentage" 
                                   ? `${coupon.discountValue}% خصم` 
-                                  : `${coupon.discountValue / 100}$ خصم`}
+                                  : `${(coupon.discountValue / 100).toFixed(3)} د.ك خصم`}
                               </p>
                               <p className="text-sm text-gray-500">
                                 الاستخدام: {coupon.usageCount} / {coupon.maxUsage || "غير محدود"}
@@ -1575,13 +1749,13 @@ export default function AdminDashboard() {
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="priceInCents">السعر (بالسنتات)</Label>
+                      <Label htmlFor="priceInCents">السعر (بالفلس)</Label>
                       <Input
                         id="priceInCents"
                         type="number"
                         value={gamePackageForm.priceInCents}
                         onChange={(e) => setGamePackageForm({ ...gamePackageForm, priceInCents: e.target.value })}
-                        placeholder="مثل: 1500 (يعني 15.00$)"
+                        placeholder="مثل: 1900 (يعني 1.900 د.ك)"
                         className="mt-1"
                       />
                     </div>
@@ -1648,7 +1822,7 @@ export default function AdminDashboard() {
                                 <h3 className="font-medium">{gamePackage.name}</h3>
                                 <p className="text-sm text-gray-600">{gamePackage.description}</p>
                                 <p className="text-sm text-gray-500">
-                                  {gamePackage.gameCount} ألعاب - ${(gamePackage.priceInCents / 100).toFixed(2)}
+                                  {gamePackage.gameCount} ألعاب - {(gamePackage.priceInCents / 100).toFixed(3)} د.ك
                                 </p>
                                 <p className="text-sm text-gray-400">
                                   الترتيب: {gamePackage.sortOrder}
