@@ -953,26 +953,50 @@ export default function AdminDashboard() {
                       يمكن إضافة عدد غير محدود من الأسئلة لكل فئة
                     </CardDescription>
                   </div>
-                  <Button
-                    onClick={async () => {
-                      try {
-                        const response = await apiRequest("POST", "/api/admin/remove-duplicate-categories");
-                        const result = await response.json();
-                        if (result.success) {
-                          toast({ title: `تم حذف ${result.duplicatesRemoved} فئات مكررة بنجاح` });
-                          queryClient.invalidateQueries({ queryKey: ["/api/admin/categories"] });
-                        } else {
-                          toast({ title: "خطأ في إزالة التكرار", description: result.message, variant: "destructive" });
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={async () => {
+                        try {
+                          const response = await apiRequest("POST", "/api/admin/remove-duplicate-categories");
+                          const result = await response.json();
+                          if (result.success) {
+                            toast({ title: `تم حذف ${result.duplicatesRemoved} فئات مكررة بنجاح` });
+                            queryClient.invalidateQueries({ queryKey: ["/api/admin/categories"] });
+                          } else {
+                            toast({ title: "خطأ في إزالة التكرار", description: result.message, variant: "destructive" });
+                          }
+                        } catch (error) {
+                          toast({ title: "خطأ في العملية", variant: "destructive" });
                         }
-                      } catch (error) {
-                        toast({ title: "خطأ في العملية", variant: "destructive" });
-                      }
-                    }}
-                    variant="outline"
-                    size="sm"
-                  >
-                    إزالة الفئات المكررة
-                  </Button>
+                      }}
+                      variant="outline"
+                      size="sm"
+                    >
+                      إزالة الفئات المكررة
+                    </Button>
+                    <Button
+                      onClick={async () => {
+                        try {
+                          toast({ title: "بدء إضافة الأسئلة...", description: "قد تستغرق هذه العملية بضع دقائق" });
+                          const response = await apiRequest("POST", "/api/admin/bulk-add-questions");
+                          const result = await response.json();
+                          if (result.success) {
+                            toast({ title: `تم إضافة ${result.totalAdded} سؤال بنجاح!` });
+                            queryClient.invalidateQueries({ queryKey: ["/api/admin/questions"] });
+                            queryClient.invalidateQueries({ queryKey: ["/api/admin/categories"] });
+                          } else {
+                            toast({ title: "خطأ في الإضافة", description: result.error, variant: "destructive" });
+                          }
+                        } catch (error) {
+                          toast({ title: "خطأ في العملية", variant: "destructive" });
+                        }
+                      }}
+                      variant="default"
+                      size="sm"
+                    >
+                      إضافة 50 سؤال لكل فئة
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
