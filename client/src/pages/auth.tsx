@@ -148,19 +148,19 @@ export default function AuthPage() {
       <div className="max-w-md w-full space-y-8">
         {/* Logo and Header */}
         <div className="text-center">
-          <div className="mx-auto h-20 w-20 luxury-button rounded-full flex items-center justify-center mb-6 floating glow">
+          <div className="mx-auto h-20 w-20 bg-gradient-to-br from-arabic-sage to-arabic-sage-light rounded-full flex items-center justify-center mb-6 shadow-xl shadow-arabic-glow animate-pulse">
             <Brain className="text-white h-10 w-10" />
           </div>
-          <h1 className="text-4xl font-bold text-gradient mb-4">313</h1>
-          <p className="text-muted-foreground text-lg">اختبر معلوماتك مع الأصدقاء والعائلة</p>
+          <h1 className="text-5xl font-bold arabic-text-gradient mb-4">313</h1>
+          <p className="text-muted-foreground text-lg font-semibold">منصة الألعاب الثقافية العربية</p>
         </div>
 
         {/* Auth Form */}
-        <div className="luxury-card p-8">
+        <div className="arabic-card p-8 backdrop-blur-sm">
           <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="login" className="text-lg">تسجيل الدخول</TabsTrigger>
-              <TabsTrigger value="register" className="text-lg">إنشاء حساب</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 mb-6 bg-arabic-cream border-arabic-sage/20">
+              <TabsTrigger value="login" className="text-lg font-semibold data-[state=active]:bg-arabic-sage data-[state=active]:text-white">تسجيل الدخول</TabsTrigger>
+              <TabsTrigger value="register" className="text-lg font-semibold data-[state=active]:bg-arabic-sage data-[state=active]:text-white">إنشاء حساب</TabsTrigger>
             </TabsList>
 
             <TabsContent value="login">
@@ -171,9 +171,9 @@ export default function AuthPage() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-luxury-green-dark font-semibold">البريد الإلكتروني</FormLabel>
+                        <FormLabel className="text-arabic-sage-dark font-semibold">البريد الإلكتروني</FormLabel>
                         <FormControl>
-                          <Input placeholder="أدخل بريدك الإلكتروني" {...field} className="luxury-input" />
+                          <Input placeholder="أدخل بريدك الإلكتروني" {...field} className="border-arabic-sage/30 focus:border-arabic-sage bg-arabic-cream/50" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -184,21 +184,21 @@ export default function AuthPage() {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-luxury-green-dark font-semibold">كلمة المرور</FormLabel>
+                        <FormLabel className="text-arabic-sage-dark font-semibold">كلمة المرور</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="أدخل كلمة المرور" {...field} className="luxury-input" />
+                          <Input type="password" placeholder="أدخل كلمة المرور" {...field} className="border-arabic-sage/30 focus:border-arabic-sage bg-arabic-cream/50" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <button type="submit" className="luxury-button w-full text-lg py-4" disabled={isLoading}>
+                  <Button type="submit" variant="elegant" className="w-full text-lg py-4" disabled={isLoading}>
                     {isLoading ? (
-                      <div className="luxury-spinner mx-auto" />
+                      <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
                       "تسجيل الدخول"
                     )}
-                  </button>
+                  </Button>
                   
                   <div className="relative">
                     <div className="absolute inset-0 flex items-center">
@@ -209,21 +209,22 @@ export default function AuthPage() {
                     </div>
                   </div>
                   
-                  <button
+                  <Button
                     type="button"
+                    variant="outline"
                     onClick={handleGoogleSignIn}
                     disabled={googleLoading}
-                    className="luxury-button-outline w-full text-lg py-4 flex items-center justify-center gap-3"
+                    className="w-full text-lg py-4 flex items-center justify-center gap-3"
                   >
                     {googleLoading ? (
-                      <div className="luxury-spinner mx-auto" />
+                      <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
                       <>
                         <FaGoogle className="h-5 w-5 text-red-500" />
                         تسجيل الدخول بجوجل
                       </>
                     )}
-                  </button>
+                  </Button>
                 </form>
               </Form>
             </TabsContent>
@@ -236,9 +237,9 @@ export default function AuthPage() {
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-luxury-green-dark font-semibold">الاسم الكامل</FormLabel>
+                        <FormLabel className="text-arabic-sage-dark font-semibold">الاسم الكامل</FormLabel>
                         <FormControl>
-                          <Input placeholder="أدخل اسمك الكامل" {...field} className="luxury-input" />
+                          <Input placeholder="أدخل اسمك الكامل" {...field} className="border-arabic-sage/30 focus:border-arabic-sage bg-arabic-cream/50" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

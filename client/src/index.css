@@ -6,75 +6,101 @@
 
 @layer base {
   :root {
-    /* Off-White & Light Red Theme */
-    --background: hsl(0, 20%, 97%);
-    --foreground: hsl(0, 0%, 20%);
+    /* Elegant Arabic-Inspired Color Palette */
+    --background: hsl(45, 25%, 97%);
+    --foreground: hsl(25, 15%, 15%);
     
-    --card: hsl(0, 15%, 96%);
-    --card-foreground: hsl(0, 0%, 20%);
+    --card: hsl(45, 20%, 95%);
+    --card-foreground: hsl(25, 15%, 15%);
     
-    --popover: hsl(0, 15%, 96%);
-    --popover-foreground: hsl(0, 0%, 20%);
+    --popover: hsl(45, 20%, 96%);
+    --popover-foreground: hsl(25, 15%, 15%);
     
-    --primary: hsl(0, 70%, 70%);
-    --primary-foreground: hsl(0, 0%, 100%);
+    --primary: hsl(160, 45%, 35%);
+    --primary-foreground: hsl(45, 25%, 97%);
     
-    --secondary: hsl(0, 25%, 90%);
-    --secondary-foreground: hsl(0, 0%, 25%);
+    --secondary: hsl(30, 35%, 88%);
+    --secondary-foreground: hsl(25, 20%, 25%);
     
-    --muted: hsl(0, 0%, 95%);
-    --muted-foreground: hsl(0, 0%, 45%);
+    --muted: hsl(45, 15%, 92%);
+    --muted-foreground: hsl(25, 10%, 50%);
     
-    --accent: hsl(0, 50%, 85%);
-    --accent-foreground: hsl(0, 0%, 25%);
+    --accent: hsl(25, 60%, 75%);
+    --accent-foreground: hsl(25, 15%, 15%);
     
-    --destructive: hsl(0, 84%, 60%);
-    --destructive-foreground: hsl(0, 0%, 100%);
+    --destructive: hsl(0, 75%, 55%);
+    --destructive-foreground: hsl(45, 25%, 97%);
     
-    --border: hsl(0, 25%, 88%);
-    --input: hsl(0, 25%, 92%);
-    --ring: hsl(0, 70%, 70%);
+    --border: hsl(45, 20%, 85%);
+    --input: hsl(45, 20%, 90%);
+    --ring: hsl(160, 45%, 35%);
     
     --radius: 0.75rem;
     
-    /* Custom luxury colors */
-    --luxury-cream: hsl(0, 0%, 98%);
-    --luxury-green: hsl(0, 70%, 70%);
-    --luxury-green-light: hsl(0, 50%, 85%);
-    --luxury-green-dark: hsl(0, 85%, 55%);
-    --luxury-gold: hsl(0, 50%, 68%);
-    --luxury-shadow: hsl(0, 0%, 15%, 0.1);
-    --luxury-glow: hsl(0, 70%, 70%, 0.3);
+    /* Custom Arabic-inspired colors */
+    --arabic-cream: hsl(45, 30%, 96%);
+    --arabic-sage: hsl(160, 45%, 35%);
+    --arabic-sage-light: hsl(160, 35%, 55%);
+    --arabic-sage-dark: hsl(160, 55%, 25%);
+    --arabic-gold: hsl(35, 65%, 65%);
+    --arabic-terracotta: hsl(25, 60%, 75%);
+    --arabic-shadow: hsl(25, 15%, 15%, 0.12);
+    --arabic-glow: hsl(160, 45%, 35%, 0.25);
+    
+    /* Success and status colors */
+    --success: hsl(160, 45%, 35%);
+    --success-foreground: hsl(45, 25%, 97%);
+    --warning: hsl(35, 65%, 65%);
+    --warning-foreground: hsl(25, 15%, 15%);
+    --info: hsl(200, 50%, 55%);
+    --info-foreground: hsl(45, 25%, 97%);
   }
 
   .dark {
-    --background: hsl(0, 0%, 12%);
-    --foreground: hsl(0, 0%, 95%);
+    --background: hsl(25, 15%, 8%);
+    --foreground: hsl(45, 25%, 95%);
     
-    --card: hsl(0, 0%, 15%);
-    --card-foreground: hsl(0, 0%, 95%);
+    --card: hsl(25, 20%, 12%);
+    --card-foreground: hsl(45, 25%, 95%);
     
-    --popover: hsl(0, 0%, 12%);
-    --popover-foreground: hsl(0, 0%, 95%);
+    --popover: hsl(25, 15%, 10%);
+    --popover-foreground: hsl(45, 25%, 95%);
     
-    --primary: hsl(0, 70%, 70%);
-    --primary-foreground: hsl(0, 0%, 100%);
+    --primary: hsl(160, 45%, 45%);
+    --primary-foreground: hsl(25, 15%, 8%);
     
-    --secondary: hsl(0, 15%, 20%);
-    --secondary-foreground: hsl(0, 0%, 95%);
+    --secondary: hsl(25, 25%, 18%);
+    --secondary-foreground: hsl(45, 25%, 90%);
     
-    --muted: hsl(0, 15%, 20%);
-    --muted-foreground: hsl(0, 0%, 70%);
+    --muted: hsl(25, 20%, 18%);
+    --muted-foreground: hsl(45, 15%, 65%);
     
-    --accent: hsl(0, 15%, 20%);
-    --accent-foreground: hsl(0, 0%, 95%);
+    --accent: hsl(35, 55%, 55%);
+    --accent-foreground: hsl(25, 15%, 8%);
     
-    --destructive: hsl(0, 62%, 30%);
-    --destructive-foreground: hsl(0, 0%, 100%);
+    --destructive: hsl(0, 75%, 55%);
+    --destructive-foreground: hsl(45, 25%, 95%);
     
-    --border: hsl(0, 15%, 25%);
-    --input: hsl(0, 15%, 25%);
-    --ring: hsl(0, 70%, 70%);
+    --border: hsl(25, 20%, 22%);
+    --input: hsl(25, 20%, 20%);
+    --ring: hsl(160, 45%, 45%);
+    
+    /* Dark mode Arabic colors */
+    --arabic-cream: hsl(25, 15%, 8%);
+    --arabic-sage: hsl(160, 45%, 45%);
+    --arabic-sage-light: hsl(160, 35%, 65%);
+    --arabic-sage-dark: hsl(160, 55%, 35%);
+    --arabic-gold: hsl(35, 55%, 55%);
+    --arabic-terracotta: hsl(25, 50%, 65%);
+    --arabic-shadow: hsl(0, 0%, 0%, 0.4);
+    --arabic-glow: hsl(160, 45%, 45%, 0.3);
+    
+    --success: hsl(160, 45%, 45%);
+    --success-foreground: hsl(25, 15%, 8%);
+    --warning: hsl(35, 55%, 55%);
+    --warning-foreground: hsl(25, 15%, 8%);
+    --info: hsl(200, 50%, 65%);
+    --info-foreground: hsl(25, 15%, 8%);
   }
 }
 
@@ -85,7 +111,7 @@
   
   body {
     @apply bg-background text-foreground font-arabic antialiased;
-    background: linear-gradient(135deg, hsl(355, 30%, 97%) 0%, hsl(355, 25%, 94%) 100%);
+    background: linear-gradient(135deg, hsl(45, 25%, 97%) 0%, hsl(160, 15%, 94%) 5%, hsl(45, 20%, 96%) 100%);
     min-height: 100vh;
     direction: rtl;
   }
@@ -109,7 +135,7 @@
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--luxury-green-dark));
+    background: hsl(var(--arabic-sage-dark));
   }
 }
 
@@ -121,6 +147,83 @@
   
   .font-english {
     font-family: 'Inter', sans-serif;
+  }
+  
+  /* Arabic-inspired component styles */
+  .arabic-card {
+    background: linear-gradient(145deg, hsl(var(--arabic-cream)), hsl(45, 15%, 94%));
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 4px 12px hsl(var(--arabic-shadow));
+    transition: all 0.3s ease;
+  }
+  
+  .arabic-card:hover {
+    box-shadow: 0 8px 24px hsl(var(--arabic-shadow)), 0 0 0 1px hsl(var(--arabic-sage-light));
+    transform: translateY(-2px);
+  }
+  
+  .arabic-button {
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--arabic-sage-light)));
+    border: none;
+    box-shadow: 0 2px 8px hsl(var(--arabic-glow));
+    transition: all 0.3s ease;
+  }
+  
+  .arabic-button:hover {
+    background: linear-gradient(135deg, hsl(var(--arabic-sage-dark)), hsl(var(--primary)));
+    box-shadow: 0 4px 16px hsl(var(--arabic-glow));
+    transform: translateY(-1px);
+  }
+  
+  .arabic-accent {
+    background: linear-gradient(135deg, hsl(var(--arabic-gold)), hsl(var(--arabic-terracotta)));
+    color: hsl(var(--foreground));
+  }
+  
+  .arabic-text-gradient {
+    background: linear-gradient(135deg, hsl(var(--arabic-sage)), hsl(var(--arabic-gold)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .arabic-border {
+    border-image: linear-gradient(90deg, hsl(var(--arabic-sage)), hsl(var(--arabic-gold)), hsl(var(--arabic-sage))) 1;
+  }
+  
+  /* Game board styling */
+  .game-cell {
+    background: linear-gradient(145deg, hsl(var(--card)), hsl(45, 10%, 92%));
+    border: 2px solid hsl(var(--border));
+    transition: all 0.3s ease;
+  }
+  
+  .game-cell:hover {
+    background: linear-gradient(145deg, hsl(var(--arabic-sage-light)), hsl(var(--arabic-cream)));
+    border-color: hsl(var(--arabic-sage));
+    box-shadow: 0 4px 12px hsl(var(--arabic-glow));
+  }
+  
+  .game-cell.selected {
+    background: linear-gradient(145deg, hsl(var(--primary)), hsl(var(--arabic-sage-light)));
+    color: hsl(var(--primary-foreground));
+    border-color: hsl(var(--arabic-sage-dark));
+  }
+  
+  /* Status indicators */
+  .status-success {
+    background: hsl(var(--success));
+    color: hsl(var(--success-foreground));
+  }
+  
+  .status-warning {
+    background: hsl(var(--warning));
+    color: hsl(var(--warning-foreground));
+  }
+  
+  .status-info {
+    background: hsl(var(--info));
+    color: hsl(var(--info-foreground));
   }
   
   /* Luxury container */
