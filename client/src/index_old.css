@@ -1,0 +1,801 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Off-White & Light Red Theme */
+    --background: hsl(0, 20%, 97%);
+    --foreground: hsl(0, 0%, 20%);
+    
+    --card: hsl(0, 15%, 96%);
+    --card-foreground: hsl(0, 0%, 20%);
+    
+    --popover: hsl(0, 15%, 96%);
+    --popover-foreground: hsl(0, 0%, 20%);
+    
+    --primary: hsl(0, 70%, 70%);
+    --primary-foreground: hsl(0, 0%, 100%);
+    
+    --secondary: hsl(0, 25%, 90%);
+    --secondary-foreground: hsl(0, 0%, 25%);
+    
+    --muted: hsl(0, 0%, 95%);
+    --muted-foreground: hsl(0, 0%, 45%);
+    
+    --accent: hsl(0, 50%, 85%);
+    --accent-foreground: hsl(0, 0%, 25%);
+    
+    --destructive: hsl(0, 84%, 60%);
+    --destructive-foreground: hsl(0, 0%, 100%);
+    
+    --border: hsl(0, 25%, 88%);
+    --input: hsl(0, 25%, 92%);
+    --ring: hsl(0, 70%, 70%);
+    
+    --radius: 0.75rem;
+    
+    /* Custom luxury colors */
+    --luxury-cream: hsl(0, 0%, 98%);
+    --luxury-green: hsl(0, 70%, 70%);
+    --luxury-green-light: hsl(0, 50%, 85%);
+    --luxury-green-dark: hsl(0, 85%, 55%);
+    --luxury-gold: hsl(0, 50%, 68%);
+    --luxury-shadow: hsl(0, 0%, 15%, 0.1);
+    --luxury-glow: hsl(0, 70%, 70%, 0.3);
+  }
+
+  .dark {
+    --background: hsl(0, 0%, 12%);
+    --foreground: hsl(0, 0%, 95%);
+    
+    --card: hsl(0, 0%, 15%);
+    --card-foreground: hsl(0, 0%, 95%);
+    
+    --popover: hsl(0, 0%, 12%);
+    --popover-foreground: hsl(0, 0%, 95%);
+    
+    --primary: hsl(0, 70%, 70%);
+    --primary-foreground: hsl(0, 0%, 100%);
+    
+    --secondary: hsl(0, 15%, 20%);
+    --secondary-foreground: hsl(0, 0%, 95%);
+    
+    --muted: hsl(0, 15%, 20%);
+    --muted-foreground: hsl(0, 0%, 70%);
+    
+    --accent: hsl(0, 15%, 20%);
+    --accent-foreground: hsl(0, 0%, 95%);
+    
+    --destructive: hsl(0, 62%, 30%);
+    --destructive-foreground: hsl(0, 0%, 100%);
+    
+    --border: hsl(0, 15%, 25%);
+    --input: hsl(0, 15%, 25%);
+    --ring: hsl(0, 70%, 70%);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground font-arabic antialiased;
+    background: linear-gradient(135deg, hsl(355, 30%, 97%) 0%, hsl(355, 25%, 94%) 100%);
+    min-height: 100vh;
+    direction: rtl;
+  }
+  
+  html {
+    direction: rtl;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary));
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--luxury-green-dark));
+  }
+}
+
+@layer components {
+  /* Typography */
+  .font-arabic {
+    font-family: 'Noto Sans Arabic', sans-serif;
+  }
+  
+  .font-english {
+    font-family: 'Inter', sans-serif;
+  }
+  
+  /* Luxury container */
+  .luxury-container {
+    @apply max-w-6xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  /* Luxury card with glass effect */
+  .luxury-card {
+    @apply backdrop-blur-sm border rounded-xl shadow-xl;
+    background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--card)) 100%);
+    border-color: hsl(var(--border));
+    box-shadow: 0 8px 32px hsl(var(--luxury-shadow)), 0 0 0 1px hsl(var(--border));
+    transition: all 0.3s ease;
+  }
+  
+  .luxury-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px hsl(var(--luxury-shadow)), 0 0 0 1px hsl(var(--border));
+  }
+  
+  /* Luxury buttons */
+  .luxury-button {
+    @apply text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg cursor-pointer;
+    background: linear-gradient(135deg, hsl(355, 75%, 65%) 0%, hsl(355, 85%, 55%) 100%);
+    box-shadow: 0 4px 16px hsla(355, 75%, 65%, 0.3), 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    border: none;
+  }
+  
+  .luxury-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+  
+  .luxury-button:hover::before {
+    left: 100%;
+  }
+  
+  .luxury-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px hsla(355, 75%, 65%, 0.4), 0 4px 16px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(135deg, hsl(355, 85%, 55%) 0%, hsl(355, 90%, 45%) 100%);
+  }
+  
+  .luxury-button:active {
+    transform: translateY(0);
+  }
+  
+  /* Secondary luxury button */
+  .luxury-button-secondary {
+    @apply px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-md cursor-pointer;
+    background: linear-gradient(135deg, hsl(355, 60%, 95%) 0%, hsl(355, 50%, 88%) 100%);
+    color: hsl(355, 85%, 55%);
+    border: 2px solid hsl(355, 75%, 65%);
+  }
+  
+  .luxury-button-secondary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px hsla(355, 75%, 65%, 0.3);
+    background: linear-gradient(135deg, hsl(355, 75%, 65%) 0%, hsl(355, 85%, 55%) 100%);
+    color: white;
+  }
+  
+  /* Luxury inputs */
+  .luxury-input {
+    @apply w-full px-4 py-3 backdrop-blur-sm border border-border rounded-xl focus:outline-none focus:ring-2 focus:border-primary transition-all duration-300;
+    background-color: hsl(var(--input));
+    box-shadow: inset 0 2px 4px hsl(var(--luxury-shadow));
+  }
+  
+  .luxury-input:focus {
+    box-shadow: inset 0 2px 4px hsl(var(--luxury-shadow)), 0 0 0 3px hsl(var(--luxury-glow));
+    border-color: hsl(var(--primary));
+  }
+  
+  /* Luxury text gradient */
+  .text-gradient {
+    background: linear-gradient(135deg, hsl(var(--luxury-green)) 0%, hsl(var(--luxury-green-dark)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+  }
+  
+  /* Floating animation */
+  .floating {
+    animation: floating 3s ease-in-out infinite;
+  }
+  
+  @keyframes floating {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+  }
+
+  /* Question Board Animation Effects */
+  .question-board-enter {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  .question-board-enter-active {
+    opacity: 1;
+    transform: scale(1);
+    transition: all 0.5s ease-out;
+  }
+
+  .question-reveal-enter {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  .question-reveal-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  .question-slide-in {
+    animation: slideInFromTop 0.6s ease-out;
+  }
+
+  @keyframes slideInFromTop {
+    from {
+      opacity: 0;
+      transform: translateY(-50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .answer-reveal {
+    animation: revealAnswer 0.8s ease-out;
+  }
+
+  @keyframes revealAnswer {
+    0% {
+      opacity: 0;
+      transform: scale(0.8) rotateX(90deg);
+    }
+    50% {
+      opacity: 0.5;
+      transform: scale(1.05) rotateX(45deg);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) rotateX(0deg);
+    }
+  }
+
+  .hint-reveal {
+    animation: fadeInUp 0.5s ease-out;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .team-score-update {
+    animation: scoreUpdate 0.8s ease-out;
+  }
+
+  @keyframes scoreUpdate {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.3);
+      color: #10b981;
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .question-box-used {
+    animation: fadeToGray 0.5s ease-out;
+  }
+
+  @keyframes fadeToGray {
+    from {
+      background-color: var(--luxury-green);
+      transform: scale(1);
+    }
+    to {
+      background-color: #9ca3af;
+      transform: scale(0.95);
+    }
+  }
+
+  .question-box-hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  
+  .question-box-gradient {
+    background: linear-gradient(135deg, #166534 0%, #15803d 100%);
+    box-shadow: 0 4px 20px rgba(22, 101, 52, 0.4);
+  }
+
+  .luxury-game-board {
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.1) 0%, 
+      rgba(34, 197, 94, 0.05) 50%, 
+      rgba(255, 255, 255, 0.1) 100%
+    );
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+  }
+
+  .category-frame {
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.95) 0%, 
+      rgba(34, 197, 94, 0.05) 100%
+    );
+    backdrop-filter: blur(20px);
+    border: 2px solid rgba(34, 197, 94, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .category-frame:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+    border-color: rgba(34, 197, 94, 0.5);
+  }
+
+  .question-section {
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.8) 0%, 
+      rgba(34, 197, 94, 0.1) 100%
+    );
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    backdrop-filter: blur(10px);
+  }
+
+  .game-header-enhanced {
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.98) 0%, 
+      rgba(34, 197, 94, 0.1) 100%
+    );
+    backdrop-filter: blur(20px);
+    border-bottom: 3px solid rgba(34, 197, 94, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+
+  .board-transition {
+    animation: boardSlide 0.5s ease-out;
+  }
+
+  @keyframes boardSlide {
+    from {
+      opacity: 0;
+      transform: translateX(-100px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .turn-indicator {
+    animation: turnHighlight 1s ease-in-out infinite alternate;
+  }
+
+  @keyframes turnHighlight {
+    from {
+      background-color: var(--luxury-green);
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+    }
+    to {
+      background-color: var(--luxury-green-dark);
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.8);
+    }
+  }
+
+  .question-category-pulse {
+    animation: categoryPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes categoryPulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.02);
+    }
+  }
+
+  /* Staggered animation for question grid */
+  .question-grid-item {
+    animation: gridItemAppear 0.4s ease-out;
+  }
+
+  .question-grid-item:nth-child(1) { animation-delay: 0.1s; }
+  .question-grid-item:nth-child(2) { animation-delay: 0.2s; }
+  .question-grid-item:nth-child(3) { animation-delay: 0.3s; }
+  .question-grid-item:nth-child(4) { animation-delay: 0.4s; }
+  .question-grid-item:nth-child(5) { animation-delay: 0.5s; }
+  .question-grid-item:nth-child(6) { animation-delay: 0.6s; }
+
+  @keyframes gridItemAppear {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Smooth fade transition for page changes */
+  .page-transition {
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Question card flip animation */
+  .question-card-flip {
+    animation: cardFlip 0.6s ease-in-out;
+  }
+
+  @keyframes cardFlip {
+    0% {
+      transform: rotateY(0deg);
+    }
+    50% {
+      transform: rotateY(90deg);
+    }
+    100% {
+      transform: rotateY(0deg);
+    }
+  }
+  
+  /* Pulse animation */
+  .pulse-luxury {
+    animation: pulse-luxury 2s ease-in-out infinite;
+  }
+  
+  @keyframes pulse-luxury {
+    0%, 100% { 
+      box-shadow: 0 0 0 0 hsl(var(--luxury-glow));
+    }
+    50% { 
+      box-shadow: 0 0 0 8px hsl(var(--luxury-glow), 0);
+    }
+  }
+  
+  /* Glow effect */
+  .glow {
+    box-shadow: 0 0 20px hsl(var(--luxury-glow));
+  }
+  
+  /* Luxury navigation */
+  .luxury-nav {
+    @apply backdrop-blur-md border-b sticky top-0 z-50;
+    background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--card)) 100%);
+    border-color: hsl(var(--border));
+    box-shadow: 0 2px 20px hsl(var(--luxury-shadow));
+  }
+  
+  /* Luxury section headers */
+  .luxury-section-header {
+    @apply text-3xl md:text-4xl font-bold text-center mb-12;
+    background: linear-gradient(135deg, hsl(var(--foreground)) 0%, hsl(var(--luxury-green-dark)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Luxury stats card */
+  .luxury-stats-card {
+    @apply luxury-card p-6 text-center;
+    background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--luxury-green-light)/0.1) 100%);
+  }
+  
+  /* Luxury badge */
+  .luxury-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+    background: linear-gradient(135deg, hsl(var(--luxury-green-light)) 0%, hsl(var(--luxury-green)/0.8) 100%);
+    color: hsl(var(--luxury-green-dark));
+    box-shadow: 0 2px 8px hsl(var(--luxury-glow));
+  }
+  
+  /* Hero section */
+  .hero-section {
+    @apply relative overflow-hidden py-20 lg:py-32;
+    background: linear-gradient(135deg, hsl(var(--luxury-cream)) 0%, hsl(var(--luxury-green-light)/0.3) 100%);
+  }
+  
+  .hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 40%, hsl(var(--luxury-glow)) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, hsl(var(--luxury-gold)/0.3) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  
+  /* Loading spinner */
+  .luxury-spinner {
+    @apply w-6 h-6 border-2 border-t-primary rounded-full animate-spin;
+    border-color: hsl(var(--primary) / 0.2);
+    border-top-color: hsl(var(--primary));
+  }
+
+  /* Luxury input styling */
+  .luxury-input {
+    @apply w-full px-4 py-3 rounded-xl border-2 focus:outline-none 
+           transition-all duration-300 backdrop-blur-sm;
+    background: hsl(var(--luxury-bg) / 0.5);
+    border-color: hsl(var(--luxury-green-light) / 0.5);
+    color: hsl(var(--luxury-green-dark));
+  }
+  
+  .luxury-input:focus {
+    border-color: hsl(var(--luxury-green));
+    box-shadow: 0 0 0 2px hsl(var(--luxury-green) / 0.2);
+  }
+  
+  .luxury-input::placeholder {
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Game specific styles */
+  .game-progress-bar {
+    @apply w-full h-4 rounded-full overflow-hidden;
+    background: linear-gradient(135deg, hsl(var(--luxury-bg)), hsl(var(--luxury-green-light)/0.3));
+    border: 2px solid hsl(var(--luxury-green-light));
+  }
+
+  .game-progress-fill {
+    @apply h-full transition-all duration-500;
+    background: linear-gradient(135deg, hsl(var(--luxury-green)), hsl(var(--luxury-gold)));
+    box-shadow: 0 0 20px hsl(var(--luxury-green)/0.5);
+  }
+
+  .question-card {
+    @apply luxury-card p-8 mb-6;
+    min-height: 200px;
+    background: linear-gradient(135deg, 
+      hsl(var(--luxury-bg)), 
+      hsl(var(--luxury-green-light)/0.1)
+    );
+    border: 3px solid hsl(var(--luxury-green-light));
+  }
+
+  .action-buttons {
+    @apply grid grid-cols-1 md:grid-cols-3 gap-4 mb-6;
+  }
+
+  .hint-section {
+    @apply luxury-card p-6 mb-4;
+    background: linear-gradient(135deg, 
+      hsl(var(--luxury-gold)/0.1), 
+      hsl(var(--luxury-bg))
+    );
+    border: 2px solid hsl(var(--luxury-gold)/0.3);
+  }
+
+  .answer-section {
+    @apply luxury-card p-6 mb-4;
+    background: linear-gradient(135deg, 
+      hsl(var(--luxury-green)/0.1), 
+      hsl(var(--luxury-bg))
+    );
+    border: 2px solid hsl(var(--luxury-green)/0.3);
+  }
+
+  /* Luxury badges */
+  .luxury-badge {
+    @apply inline-flex items-center rounded-full px-3 py-1 text-sm font-medium;
+    box-shadow: 0 4px 12px hsl(var(--luxury-green)/0.15);
+    transition: all 0.3s ease;
+  }
+
+  .luxury-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px hsl(var(--luxury-green)/0.25);
+  }
+  
+  /* Question card specific styles */
+  .question-card {
+    @apply luxury-card p-8 space-y-6;
+    background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--luxury-green-light)/0.05) 100%);
+    border: 2px solid hsl(var(--border));
+  }
+  
+  .question-card:hover {
+    border-color: hsl(var(--primary)/0.3);
+  }
+  
+  /* Answer choice styles */
+  .answer-choice {
+    @apply luxury-card p-4 cursor-pointer transition-all duration-300;
+    background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--muted)) 100%);
+    border: 2px solid hsl(var(--border));
+  }
+  
+  .answer-choice:hover {
+    border-color: hsl(var(--primary));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px hsl(var(--luxury-glow));
+  }
+  
+  .answer-choice.selected {
+    border-color: hsl(var(--primary));
+    background: linear-gradient(135deg, hsl(var(--primary)/0.1) 0%, hsl(var(--primary)/0.05) 100%);
+  }
+  
+  /* Category colors */
+  .category-history { @apply bg-blue-100 text-blue-800; }
+  .category-geography { @apply bg-green-100 text-green-800; }
+  .category-religion { @apply bg-purple-100 text-purple-800; }
+  .category-sports { @apply bg-orange-100 text-orange-800; }
+  .category-culture { @apply bg-pink-100 text-pink-800; }
+  .category-science { @apply bg-indigo-100 text-indigo-800; }
+  
+  /* Difficulty colors */
+  .difficulty-easy { @apply bg-green-100 text-green-800; }
+  .difficulty-medium { @apply bg-yellow-100 text-yellow-800; }
+  .difficulty-hard { @apply bg-red-100 text-red-800; }
+  
+  /* Payment success animation */
+  .payment-success {
+    animation: payment-success 0.6s ease-out;
+  }
+  
+  @keyframes payment-success {
+    0% { transform: scale(0.8); opacity: 0; }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  
+  /* Responsive utilities */
+  @media (max-width: 768px) {
+    .luxury-container {
+      @apply px-3;
+    }
+    
+    .luxury-card {
+      @apply mx-2;
+    }
+    
+    .luxury-section-header {
+      @apply text-2xl;
+    }
+  }
+}
+
+@layer utilities {
+  /* Background utilities */
+  .bg-luxury-cream { background-color: hsl(var(--luxury-cream)); }
+  .bg-luxury-green { background-color: hsl(var(--luxury-green)); }
+  .bg-luxury-green-light { background-color: hsl(var(--luxury-green-light)); }
+  .bg-luxury-green-dark { background-color: hsl(var(--luxury-green-dark)); }
+  .bg-luxury-gold { background-color: hsl(var(--luxury-gold)); }
+  
+  /* Text utilities */
+  .text-luxury-green { color: hsl(var(--luxury-green)); }
+  .text-luxury-green-dark { color: hsl(var(--luxury-green-dark)); }
+  .text-luxury-gold { color: hsl(var(--luxury-gold)); }
+  
+  /* Border utilities */
+  .border-luxury-green { border-color: hsl(var(--luxury-green)); }
+  .border-luxury-green-light { border-color: hsl(var(--luxury-green-light)); }
+  
+  /* Glass effect utilities */
+  .glass {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  
+  .glass-light {
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+  }
+  
+  /* Shadow utilities */
+  .shadow-luxury {
+    box-shadow: 0 8px 32px hsl(var(--luxury-shadow));
+  }
+  
+  .shadow-luxury-lg {
+    box-shadow: 0 12px 40px hsl(var(--luxury-shadow));
+  }
+  
+  /* Icon improvements */
+  .lucide {
+    color: inherit;
+    stroke-width: 2.5;
+    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.1));
+  }
+
+  /* Make icons more visible */
+  .luxury-nav .lucide,
+  .luxury-button .lucide,
+  .luxury-button-secondary .lucide {
+    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.2));
+    stroke-width: 3;
+  }
+
+  /* Timer animations */
+  .timer-beat {
+    animation: timerBeat 1s ease-in-out infinite;
+  }
+
+  @keyframes timerBeat {
+    0%, 100% { 
+      transform: scale(1); 
+    }
+    50% { 
+      transform: scale(1.1); 
+    }
+  }
+
+  .timer-urgent {
+    animation: timerUrgent 1s ease-in-out infinite;
+  }
+
+  @keyframes timerUrgent {
+    0%, 100% { 
+      transform: scale(1); 
+      box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    }
+    50% { 
+      transform: scale(1.05); 
+      box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+    }
+  }
+
+  .timer-danger {
+    animation: timerDanger 0.5s ease-in-out infinite;
+  }
+
+  @keyframes timerDanger {
+    0%, 100% { 
+      transform: scale(1); 
+      background-color: #dc2626;
+    }
+    50% { 
+      transform: scale(1.1); 
+      background-color: #ef4444;
+    }
+  }
+}
