@@ -1,25 +1,18 @@
-/**
- * Server Entry Point
- * 
- * Initializes Express server with Firebase data synchronization,
- * API routes, and development/production static file serving.
- */
-
 import express, { type Request, Response, NextFunction } from "express";
-import { config } from "dotenv";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
-import { dataLoader } from "./services/data-loader";
+import { firebaseAutoSync } from "./firebase-auto-sync";
 import { config as appConfig } from "@shared/config";
 
 // Load environment variables
+import { config } from "dotenv";
 config();
 
 // Validate configuration
 console.log("🔧 Validating environment configuration...");
 const isValid = appConfig.validate();
 if (!isValid) {
-  console.warn("⚠️ Some environment variables are missing. Check your .env file.");
+  console.warn("⚠️  Some environment variables are missing. Check your .env file.");
 }
 
 const app = express();
@@ -59,14 +52,8 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Initialize Firebase data synchronization on startup
-  console.log("🔄 Checking Firebase collections...");
-  try {
-    await dataLoader.seedFirebaseData();
-    console.log("✅ Firebase collections initialized");
-  } catch (error) {
-    console.error("❌ Firebase initialization failed:", error);
-  }
+  // Initialize Firebase auto-sync on startup
+  await firebaseAutoSync.initialize();
   
   const server = await registerRoutes(app);
 

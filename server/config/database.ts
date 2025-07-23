@@ -1,34 +1,45 @@
-/**
- * Database Configuration
- * 
- * Configures PostgreSQL connection using Drizzle ORM.
- * This is optional - Firebase is the primary database.
- */
-
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-serverless';
-import ws from "ws";
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
 import * as schema from "@shared/schema";
+import { config } from "@shared/config";
 
-// Configure WebSocket for Neon serverless
-neonConfig.webSocketConstructor = ws;
-
-// Database connection with fallback
-const databaseUrl = process.env.DATABASE_URL;
-
-let pool: Pool | null = null;
+// Database connection
 let db: ReturnType<typeof drizzle> | null = null;
+let pool: any = null; // Using HTTP connection instead of pool
 
-if (databaseUrl) {
-  try {
-    pool = new Pool({ connectionString: databaseUrl });
-    db = drizzle({ client: pool, schema });
-    console.log("✅ PostgreSQL database connected");
-  } catch (error) {
-    console.warn("⚠️ PostgreSQL connection failed:", error);
+export function initializeDatabase() {
+  if (!config.database.url) {
+    console.warn("DATABASE_URL not provided. Database features will be disabled.");
+    return null;
   }
-} else {
-  console.log("ℹ️ No DATABASE_URL provided. Using Firebase only.");
+
+  try {
+    // Use HTTP connection instead of WebSocket for better stability
+    const sql = neon(config.database.url);
+    db = drizzle({ client: sql, schema });
+    console.log("✅ Database connection initialized");
+    return db;
+  } catch (error) {
+    console.error("❌ Failed to initialize database:", error);
+    return null;
+  }
 }
 
+export function getDatabase() {
+  if (!db) {
+    db = initializeDatabase();
+  }
+  return db;
+}
+
+export function getDatabasePool() {
+  return pool;
+}
+
+// Initialize database on import if URL is available
+if (config.database.url) {
+  db = initializeDatabase();
+}
+
+// Export initialized database
 export { db, pool };
