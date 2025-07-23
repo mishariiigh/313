@@ -602,7 +602,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   <div className="flex justify-center pt-2">
                     <Button
                       onClick={() => setShowAnswer(true)}
-                      className="btn-golden px-6 py-3 text-lg arabic-text rounded-3xl"
+                      className="btn-primary px-6 py-3 text-lg arabic-text rounded-3xl"
                     >
                       🔍 إظهار الإجابة
                     </Button>
@@ -670,7 +670,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                             handleUseHint();
                           }
                         }}
-                        className={`btn-sapphire w-full py-3 text-md arabic-text rounded-2xl ${currentTeamHintUsed ? 'opacity-50 cursor-not-allowed' : isHintUsed ? 'opacity-75' : ''}`}
+                        className={`btn-info w-full py-3 text-md arabic-text rounded-2xl ${currentTeamHintUsed ? 'opacity-50 cursor-not-allowed' : isHintUsed ? 'opacity-75' : ''}`}
                         disabled={useHintMutation.isPending || currentTeamHintUsed}
                       >
                         <HelpCircle className="ml-2 h-5 w-5" />
@@ -687,7 +687,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 <div className="space-y-3">
                   <Button
                     onClick={() => handleSkipQuestion()}
-                    className="btn-ruby w-full py-3 text-md arabic-text rounded-2xl"
+                    className="btn-danger w-full py-3 text-md arabic-text rounded-2xl"
                     disabled={skipQuestionMutation.isPending}
                   >
                     تخطي السؤال
@@ -954,7 +954,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
           <div className="flex items-center gap-4">
             <Button
               onClick={() => setLocation("/dashboard")}
-              className="btn-emerald px-4 py-2"
+              className="btn-success px-4 py-2"
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
@@ -972,7 +972,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 size="sm"
                 onClick={() => switchTeamTurnMutation.mutate()}
                 disabled={switchTeamTurnMutation.isPending}
-                className="btn-amethyst px-3 py-2"
+              className="btn-warning px-3 py-2"
                 title="تبديل الدور"
               >
                 <Shuffle className="h-4 w-4" />
@@ -995,7 +995,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     size="sm"
                     onClick={() => adjustScoreMutation.mutate({ teamIndex: index, scoreChange: -50 })}
                     disabled={adjustScoreMutation.isPending}
-                    className="btn-ruby p-1 h-6 w-6 hover:scale-110 transition-transform duration-200"
+                    className="btn-danger p-1 h-6 w-6 hover:scale-110 transition-transform duration-200"
                     title="تقليل النقاط"
                   >
                     <Minus className="h-3 w-3" />
@@ -1007,7 +1007,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     size="sm"
                     onClick={() => adjustScoreMutation.mutate({ teamIndex: index, scoreChange: 50 })}
                     disabled={adjustScoreMutation.isPending}
-                    className="btn-emerald p-1 h-6 w-6 hover:scale-110 transition-transform duration-200"
+                    className="btn-success p-1 h-6 w-6 hover:scale-110 transition-transform duration-200"
                     title="زيادة النقاط"
                   >
                     <Plus className="h-3 w-3" />

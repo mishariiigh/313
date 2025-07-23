@@ -194,7 +194,7 @@ export default function AuthPage() {
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" className="btn-golden w-full text-lg py-4 arabic-text" disabled={isLoading}>
+                  <Button type="submit" className="btn-primary w-full text-lg py-4 arabic-text" disabled={isLoading}>
                     {isLoading ? (
                       <Loader2 className="h-4 w-4 animate-spin mx-auto" />
                     ) : (
@@ -215,7 +215,7 @@ export default function AuthPage() {
                     type="button"
                     onClick={handleGoogleSignIn}
                     disabled={googleLoading}
-                    className="btn-emerald w-full text-lg py-4 arabic-text"
+                    className="btn-success w-full text-lg py-4 arabic-text"
                   >
                     {googleLoading ? (
                       <Loader2 className="h-4 w-4 animate-spin mx-auto" />
@@ -298,7 +298,7 @@ export default function AuthPage() {
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" className="btn-golden w-full text-lg py-4 arabic-text" disabled={isLoading}>
+                  <Button type="submit" className="btn-primary w-full text-lg py-4 arabic-text" disabled={isLoading}>
                     {isLoading ? (
                       <Loader2 className="h-4 w-4 animate-spin mx-auto" />
                     ) : (

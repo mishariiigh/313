@@ -6,97 +6,89 @@
 
 @layer base {
   :root {
-    /* Golden Islamic Theme - Inspired by the 313 Logo */
-    --background: 45 20% 98%;  /* Warm off-white */
-    --foreground: 30 8% 12%;   /* Dark brown text */
-    --card: 0 0% 100%;         /* Pure white cards */
-    --card-foreground: 30 8% 12%;
+    /* Modern Clean Design */
+    --background: 0 0% 100%;    /* Pure white */
+    --foreground: 240 10% 3.9%; /* Near black text */
+    --card: 0 0% 100%;          /* White cards */
+    --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 30 8% 12%;
+    --popover-foreground: 240 10% 3.9%;
     
-    /* Primary: Rich Golden */
-    --primary: 45 75% 55%;     /* Main gold #DBB132 */
-    --primary-foreground: 45 20% 98%;
+    /* Primary: Modern Blue */
+    --primary: 221 83% 53%;     /* Clean blue #2563EB */
+    --primary-foreground: 210 40% 98%;
     
-    /* Secondary: Warm Gold */
-    --secondary: 45 60% 70%;   /* Lighter gold #EDD960 */
-    --secondary-foreground: 30 8% 12%;
+    /* Secondary: Light Gray */
+    --secondary: 210 40% 96%;   /* Light gray background */
+    --secondary-foreground: 222 47% 11%;
     
-    /* Muted: Light Golden */
-    --muted: 45 35% 88%;       /* Very light gold #F1E0A2 */
-    --muted-foreground: 30 8% 45%;
+    /* Muted: Neutral Gray */
+    --muted: 210 40% 96%;       /* Neutral background */
+    --muted-foreground: 215 16% 47%;
     
-    /* Accent: Deep Gold */
-    --accent: 40 70% 45%;      /* Deeper gold for accents */
-    --accent-foreground: 45 20% 98%;
+    /* Accent: Modern Purple */
+    --accent: 262 83% 58%;      /* Purple accent #8B5CF6 */
+    --accent-foreground: 210 40% 98%;
     
-    /* Destructive: Elegant Red */
-    --destructive: 0 75% 47%;  /* Deep red #DF0E0E */
-    --destructive-foreground: 0 0% 100%;
+    /* Destructive: Modern Red */
+    --destructive: 0 84% 60%;   /* Clean red */
+    --destructive-foreground: 210 40% 98%;
     
     /* Borders and Inputs */
-    --border: 45 25% 85%;      /* Soft golden border */
-    --input: 45 25% 92%;       /* Light golden input */
-    --ring: 45 75% 55%;        /* Gold focus ring */
+    --border: 214 32% 91%;      /* Light border */
+    --input: 214 32% 91%;       /* Light input */
+    --ring: 221 83% 53%;        /* Blue focus ring */
     
-    --radius: 0.75rem;         /* Slightly more rounded for Islamic aesthetic */
+    --radius: 0.5rem;           /* Modern rounded corners */
     
-    /* Charts - Golden palette */
-    --chart-1: 45 75% 55%;     /* Primary gold */
-    --chart-2: 40 70% 45%;     /* Deep gold */
-    --chart-3: 50 60% 60%;     /* Light gold */
-    --chart-4: 35 65% 50%;     /* Amber */
-    --chart-5: 25 55% 45%;     /* Bronze */
-    
-    /* Custom luxury colors */
-    --luxury-cream: 45 30% 96%;
-    --luxury-gold: 45 75% 55%;
-    --luxury-gold-light: 45 60% 70%;
-    --luxury-gold-dark: 40 80% 45%;
-    --luxury-shadow: 30 20% 15% / 0.1;
-    --luxury-glow: 45 75% 55% / 0.3;
+    /* Charts - Modern palette */
+    --chart-1: 221 83% 53%;     /* Primary blue */
+    --chart-2: 262 83% 58%;     /* Purple */
+    --chart-3: 142 76% 36%;     /* Green */
+    --chart-4: 38 92% 50%;      /* Orange */
+    --chart-5: 0 84% 60%;       /* Red */
   }
 
   .dark {
-    /* Dark mode with elegant golden accents */
-    --background: 30 15% 8%;    /* Very dark brown */
-    --foreground: 45 20% 95%;   /* Light cream text */
-    --card: 30 12% 12%;         /* Dark brown cards */
-    --card-foreground: 45 20% 95%;
-    --popover: 30 12% 12%;
-    --popover-foreground: 45 20% 95%;
+    /* Dark mode with modern colors */
+    --background: 222 84% 4.9%; /* Dark background */
+    --foreground: 210 40% 98%;  /* Light text */
+    --card: 222 84% 4.9%;       /* Dark cards */
+    --card-foreground: 210 40% 98%;
+    --popover: 222 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
     
-    /* Primary: Bright Gold for dark mode */
-    --primary: 45 85% 65%;      /* Brighter gold for contrast */
-    --primary-foreground: 30 15% 8%;
+    /* Primary: Bright Blue for dark mode */
+    --primary: 217 91% 60%;     /* Bright blue for contrast */
+    --primary-foreground: 222 84% 4.9%;
     
-    /* Secondary: Muted Gold */
-    --secondary: 30 20% 20%;    /* Dark golden brown */
-    --secondary-foreground: 45 20% 95%;
+    /* Secondary: Dark Gray */
+    --secondary: 217 33% 17%;   /* Dark gray */
+    --secondary-foreground: 210 40% 98%;
     
-    /* Muted: Dark Golden */
-    --muted: 30 20% 18%;        /* Dark muted gold */
-    --muted-foreground: 45 15% 65%;
+    /* Muted: Dark mode */
+    --muted: 217 33% 17%;       /* Dark gray */
+    --muted-foreground: 215 20% 65%;
     
-    /* Accent: Warm Gold */
-    --accent: 45 70% 60%;       /* Warm accent gold */
-    --accent-foreground: 30 15% 8%;
+    /* Accent: Purple for dark mode */
+    --accent: 217 33% 17%;      /* Dark accent */
+    --accent-foreground: 210 40% 98%;
     
-    /* Destructive: Bright Red */
-    --destructive: 0 85% 60%;   /* Brighter red for dark mode */
-    --destructive-foreground: 0 0% 100%;
+    /* Destructive: Modern Red */
+    --destructive: 0 62% 30%;   /* Dark red for dark mode */
+    --destructive-foreground: 210 40% 98%;
     
-    /* Borders and Inputs */
-    --border: 30 20% 25%;       /* Dark golden border */
-    --input: 30 20% 22%;        /* Dark golden input */
-    --ring: 45 85% 65%;         /* Bright gold focus ring */
+    /* Borders and Inputs - Dark mode */
+    --border: 217 33% 17%;      /* Dark border */
+    --input: 217 33% 17%;       /* Dark input */
+    --ring: 217 91% 60%;        /* Bright blue focus ring */
     
-    /* Charts - Dark mode golden palette */
-    --chart-1: 45 85% 65%;      /* Bright gold */
-    --chart-2: 40 80% 60%;      /* Warm gold */
-    --chart-3: 50 70% 70%;      /* Light gold */
-    --chart-4: 35 75% 55%;      /* Amber */
-    --chart-5: 25 65% 50%;      /* Bronze */
+    /* Charts - Dark mode modern palette */
+    --chart-1: 217 91% 60%;     /* Bright blue */
+    --chart-2: 262 83% 58%;     /* Purple */
+    --chart-3: 142 76% 36%;     /* Green */
+    --chart-4: 38 92% 50%;      /* Orange */
+    --chart-5: 0 84% 60%;       /* Red */
   }
 }
 
@@ -107,11 +99,8 @@
   
   body {
     @apply bg-background text-foreground font-arabic antialiased;
-    /* Islamic-inspired background pattern */
-    background: 
-      radial-gradient(circle at 25% 25%, hsl(var(--muted) / 0.3) 0%, transparent 25%),
-      radial-gradient(circle at 75% 75%, hsl(var(--muted) / 0.2) 0%, transparent 25%),
-      linear-gradient(135deg, hsl(var(--background)) 0%, hsl(45 25% 96%) 100%);
+    /* Clean modern background */
+    background: hsl(var(--background));
     min-height: 100vh;
     direction: rtl;
   }
@@ -120,34 +109,16 @@
     direction: rtl;
   }
   
-  /* Islamic geometric patterns for special elements */
-  .islamic-pattern {
-    background-image: 
-      repeating-linear-gradient(45deg, 
-        hsl(var(--primary) / 0.1) 0px, 
-        hsl(var(--primary) / 0.1) 2px, 
-        transparent 2px, 
-        transparent 10px
-      ),
-      repeating-linear-gradient(-45deg, 
-        hsl(var(--accent) / 0.05) 0px, 
-        hsl(var(--accent) / 0.05) 2px, 
-        transparent 2px, 
-        transparent 10px
-      );
-  }
-  
-  /* Golden glow effect for important elements */
-  .golden-glow {
+  /* Modern shadow effect for important elements */
+  .modern-shadow {
     box-shadow: 
-      0 0 20px hsl(var(--primary) / 0.3),
-      0 0 40px hsl(var(--primary) / 0.2),
-      0 0 80px hsl(var(--primary) / 0.1);
+      0 1px 3px 0 hsl(var(--foreground) / 0.1),
+      0 1px 2px -1px hsl(var(--foreground) / 0.1);
   }
   
-  /* Mosque-inspired rounded corners */
-  .mosque-corners {
-    border-radius: 20px 20px 40px 40px;
+  /* Modern rounded corners */
+  .modern-corners {
+    border-radius: 0.5rem;
   }
   
   /* Custom scrollbar with golden theme */
@@ -189,278 +160,105 @@
     font-family: 'Inter', sans-serif;
   }
   
-  /* Creative Button Styles */
-  .btn-golden {
-    background: linear-gradient(135deg, #DBB132 0%, #E8BD45 50%, #EDD960 100%);
-    border: 2px solid #DCC03E;
-    color: #2D1810;
-    font-weight: 600;
-    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
-    box-shadow: 
-      0 4px 15px rgba(219, 177, 50, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
+  /* Modern Button Styles */
+  .btn-primary {
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    border: 1px solid hsl(var(--primary));
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   }
   
-  .btn-golden::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    transition: left 0.5s;
+  .btn-primary:hover {
+    background: hsl(var(--primary) / 0.9);
   }
   
-  .btn-golden:hover::before {
-    left: 100%;
+  .btn-secondary {
+    background: hsl(var(--secondary));
+    color: hsl(var(--secondary-foreground));
+    border: 1px solid hsl(var(--secondary));
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   }
   
-  .btn-golden:hover {
-    background: linear-gradient(135deg, #E8BD45 0%, #EDD960 50%, #F1E0A2 100%);
-    border-color: #DBB132;
-    transform: translateY(-2px);
-    box-shadow: 
-      0 8px 30px rgba(219, 177, 50, 0.4),
-      0 4px 15px rgba(232, 189, 69, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  .btn-secondary:hover {
+    background: hsl(var(--secondary) / 0.8);
   }
   
-  .btn-golden:active {
-    transform: translateY(0);
-    box-shadow: 
-      0 4px 15px rgba(219, 177, 50, 0.3),
-      inset 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .btn-emerald {
-    background: linear-gradient(135deg, #10B981 0%, #34D399 50%, #6EE7B7 100%);
-    border: 2px solid #059669;
+  .btn-success {
+    background: #10b981;
     color: white;
-    font-weight: 600;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    box-shadow: 
-      0 4px 15px rgba(16, 185, 129, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid #10b981;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   }
   
-  .btn-emerald:hover {
-    background: linear-gradient(135deg, #059669 0%, #10B981 50%, #34D399 100%);
-    transform: translateY(-2px);
-    box-shadow: 
-      0 8px 30px rgba(16, 185, 129, 0.4),
-      0 4px 15px rgba(52, 211, 153, 0.3);
+  .btn-success:hover {
+    background: #059669;
   }
   
-  .btn-ruby {
-    background: linear-gradient(135deg, #DC2626 0%, #EF4444 50%, #F87171 100%);
-    border: 2px solid #B91C1C;
+  .btn-danger {
+    background: #ef4444;
     color: white;
-    font-weight: 600;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    box-shadow: 
-      0 4px 15px rgba(220, 38, 38, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid #ef4444;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   }
   
-  .btn-ruby:hover {
-    background: linear-gradient(135deg, #B91C1C 0%, #DC2626 50%, #EF4444 100%);
-    transform: translateY(-2px);
-    box-shadow: 
-      0 8px 30px rgba(220, 38, 38, 0.4),
-      0 4px 15px rgba(239, 68, 68, 0.3);
+  .btn-danger:hover {
+    background: #dc2626;
   }
   
-  .btn-sapphire {
-    background: linear-gradient(135deg, #2563EB 0%, #3B82F6 50%, #60A5FA 100%);
-    border: 2px solid #1D4ED8;
+  .btn-info {
+    background: #3b82f6;
     color: white;
-    font-weight: 600;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    box-shadow: 
-      0 4px 15px rgba(37, 99, 235, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid #3b82f6;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   }
   
-  .btn-sapphire:hover {
-    background: linear-gradient(135deg, #1D4ED8 0%, #2563EB 50%, #3B82F6 100%);
-    transform: translateY(-2px);
-    box-shadow: 
-      0 8px 30px rgba(37, 99, 235, 0.4),
-      0 4px 15px rgba(59, 130, 246, 0.3);
+  .btn-info:hover {
+    background: #2563eb;
   }
   
-  .btn-amethyst {
-    background: linear-gradient(135deg, #7C3AED 0%, #8B5CF6 50%, #A78BFA 100%);
-    border: 2px solid #6D28D9;
+  .btn-warning {
+    background: #f59e0b;
     color: white;
-    font-weight: 600;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    box-shadow: 
-      0 4px 15px rgba(124, 58, 237, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid #f59e0b;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   }
   
-  .btn-amethyst:hover {
-    background: linear-gradient(135deg, #6D28D9 0%, #7C3AED 50%, #8B5CF6 100%);
-    transform: translateY(-2px);
-    box-shadow: 
-      0 8px 30px rgba(124, 58, 237, 0.4),
-      0 4px 15px rgba(139, 92, 246, 0.3);
+  .btn-warning:hover {
+    background: #d97706;
   }
   
-  .btn-bronze {
-    background: linear-gradient(135deg, #92400E 0%, #B45309 50%, #D97706 100%);
-    border: 2px solid #78350F;
-    color: white;
-    font-weight: 600;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    box-shadow: 
-      0 4px 15px rgba(146, 64, 14, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Modern card styling */
+  .modern-card {
+    @apply bg-card shadow-sm hover:shadow-md transition-all duration-200;
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
   }
   
-  .btn-bronze:hover {
-    background: linear-gradient(135deg, #78350F 0%, #92400E 50%, #B45309 100%);
-    transform: translateY(-2px);
-    box-shadow: 
-      0 8px 30px rgba(146, 64, 14, 0.4),
-      0 4px 15px rgba(180, 83, 9, 0.3);
+  .modern-card:hover {
+    transform: translateY(-1px);
   }
   
-  /* Islamic-inspired cards */
-  .card-islamic {
-    @apply bg-card backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300;
-    border: 1px solid hsl(var(--border) / 0.5);
-    border-radius: 1rem;
-    background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--card) / 0.95) 100%);
-  }
-  
-  .card-islamic:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 40px hsl(var(--primary) / 0.15);
-  }
-  
-  /* Golden separator */
-  .golden-separator {
-    height: 2px;
-    background: linear-gradient(90deg, 
-      transparent 0%, 
-      hsl(var(--primary)) 20%, 
-      hsl(var(--accent)) 50%, 
-      hsl(var(--primary)) 80%, 
-      transparent 100%
-    );
-  }
-  
-  /* Luxury game board styling */
-  .game-board {
-    @apply islamic-pattern;
-    background-color: hsl(var(--card));
-    border: 2px solid hsl(var(--primary) / 0.2);
-    border-radius: 1.5rem;
-    box-shadow: 
-      0 10px 40px hsl(var(--primary) / 0.1),
-      inset 0 1px 0 hsl(var(--primary) / 0.1);
-  }
-  
-  /* Question cards with golden accents */
-  .question-card {
-    @apply shadow-lg hover:shadow-xl transition-all duration-300;
-    border: 2px solid hsl(var(--primary) / 0.3);
-    border-radius: 1rem;
-    background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--card) / 0.95) 100%);
-  }
-  
-  .question-card:hover {
-    border-color: hsl(var(--primary));
-    @apply golden-glow;
-  }
-  
-  .question-card.selected {
-    background: linear-gradient(135deg, hsl(var(--primary) / 0.1) 0%, hsl(var(--accent) / 0.1) 100%);
-    border-color: hsl(var(--primary));
-  }
-  
-  /* Team score displays */
-  .team-score {
-    @apply rounded-xl shadow-lg;
-    background: linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--accent) / 0.1));
-    border: 2px solid hsl(var(--primary) / 0.3);
-  }
-  
-  .team-score.winning {
-    background: linear-gradient(135deg, hsl(var(--primary) / 0.2), hsl(var(--accent) / 0.2));
-    border-color: hsl(var(--primary));
-    box-shadow: 
-      0 0 20px hsl(var(--primary) / 0.3),
-      0 0 40px hsl(var(--primary) / 0.2),
-      0 0 80px hsl(var(--primary) / 0.1);
-  }
-  
-  /* Admin dashboard enhancements */
-  .admin-card {
-    @apply shadow-lg hover:shadow-xl transition-all duration-300;
-    border: 1px solid hsl(var(--border) / 0.5);
-    border-radius: 1rem;
-    background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--muted) / 0.3) 100%);
-  }
-  
-  /* Modal and dialog enhancements */
-  .modal-overlay {
-    background: hsl(var(--background) / 0.8);
-    backdrop-filter: blur(8px);
-  }
-  
-  .modal-content {
-    @apply shadow-lg backdrop-blur-md;
-    background: hsl(var(--card) / 0.95);
-    border: 2px solid hsl(var(--primary) / 0.2);
-    border-radius: 1rem;
-  }
-  
-  /* Loading states with golden theme */
+  /* Loading states */
   .loading-spinner {
-    border: 3px solid hsl(var(--muted));
-    border-top: 3px solid hsl(var(--primary));
+    border: 2px solid hsl(var(--muted));
+    border-top: 2px solid hsl(var(--primary));
     animation: spin 1s linear infinite;
   }
   
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-  }
-  
-  /* Golden pulse animation for important elements */
-  .golden-pulse {
-    animation: golden-pulse 2s ease-in-out infinite;
-  }
-  
-  @keyframes golden-pulse {
-    0%, 100% {
-      box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
-    }
-    50% {
-      box-shadow: 0 0 40px hsl(var(--primary) / 0.6);
-    }
-  }
-  
-  /* Responsive Islamic patterns */
-  @media (max-width: 768px) {
-    .islamic-pattern {
-      background-size: 8px 8px;
-    }
-    
-    .golden-glow {
-      box-shadow: 0 0 10px hsl(var(--primary) / 0.3);
-    }
   }
 }

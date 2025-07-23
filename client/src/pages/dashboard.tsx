@@ -139,7 +139,7 @@ export default function Dashboard() {
             <div className="flex items-center space-x-reverse space-x-3">
               {user?.isAdmin && (
                 <Button
-                  className="btn-amethyst px-6 py-3 arabic-text"
+                  className="btn-secondary px-6 py-3 arabic-text"
                   onClick={() => setLocation("/admin-dashboard")}
                 >
                   <Settings className="h-5 w-5 ml-2" />
@@ -147,7 +147,7 @@ export default function Dashboard() {
                 </Button>
               )}
               <Button
-                className="btn-ruby px-6 py-3 arabic-text"
+                className="btn-danger px-6 py-3 arabic-text"
                 onClick={handleLogout}
               >
                 <LogOut className="h-5 w-5 ml-2" />
@@ -294,7 +294,7 @@ export default function Dashboard() {
               <h3 className="text-2xl font-bold text-luxury-green-dark mb-4">متابعة اللعبة</h3>
               <p className="text-muted-foreground mb-8 text-lg">لديك لعبة نشطة، تابع من حيث توقفت</p>
               <Button 
-                className="btn-sapphire w-full text-lg py-4 arabic-text"
+                className="btn-info w-full text-lg py-4 arabic-text"
                 onClick={() => setLocation(`/game/${activeGameData.activeSession.id}`)}
               >
                 <Play className="ml-2 h-6 w-6" />
@@ -314,7 +314,7 @@ export default function Dashboard() {
             <h3 className="text-2xl font-bold text-luxury-green-dark mb-4">بدء لعبة جديدة</h3>
             <p className="text-muted-foreground mb-8 text-lg">ابدأ جلسة جديدة بـ 36 سؤالاً متنوعاً عبر 6 فئات مختلفة</p>
             <Button 
-              className="btn-golden w-full text-lg py-4 arabic-text"
+              className="btn-primary w-full text-lg py-4 arabic-text"
               onClick={handleStartGame}
               disabled={user?.availableGames <= 0}
             >
@@ -358,7 +358,7 @@ export default function Dashboard() {
 
             <div className="space-y-3">
               <Button 
-                className="btn-emerald w-full text-lg py-4 arabic-text"
+                className="btn-primary w-full text-lg py-4 arabic-text"
                 onClick={handlePurchaseGames}
               >
                 <ShoppingCart className="ml-2 h-6 w-6" />
@@ -369,7 +369,7 @@ export default function Dashboard() {
               
               <div className="grid grid-cols-2 gap-3">
                 <Button 
-                  className="btn-bronze py-3 text-sm arabic-text"
+                  className="btn-secondary py-3 text-sm arabic-text"
                   onClick={() => handleAddGames(1)}
                   disabled={addGamesMutation.isPending}
                 >
@@ -384,7 +384,7 @@ export default function Dashboard() {
                 </Button>
                 
                 <Button 
-                  className="btn-bronze py-3 text-sm arabic-text"
+                  className="btn-secondary py-3 text-sm arabic-text"
                   onClick={() => handleAddGames(5)}
                   disabled={addGamesMutation.isPending}
                 >
