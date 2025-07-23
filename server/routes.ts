@@ -6,6 +6,7 @@ import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
 import { storage } from "./firebase-storage";
 import { insertUserSchema, insertQuestionSchema, insertGameSessionSchema, insertCategorySchema, insertCouponSchema, insertGamePackageSchema } from "@shared/firebase-schema";
+import { registerBulkAdminRoutes } from "./routes-admin-bulk";
 import { z } from "zod";
 import Stripe from "stripe";
 import { verifyIdToken, createOrUpdateFirebaseUser } from "./firebase-auth";
@@ -898,6 +899,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "خطأ في تحديث الأسعار", error: error.message });
     }
   });
+
+  // Register bulk admin routes
+  registerBulkAdminRoutes(app);
 
   // Simple add games route for testing (bypasses payment)
   app.post("/api/add-games", async (req, res) => {

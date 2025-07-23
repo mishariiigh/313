@@ -54,6 +54,7 @@ export default function AdminDashboard() {
     { question: "", answer: "", difficulty: "صعب", hint: "", explanation: "", imageUrl: "" },
     { question: "", answer: "", difficulty: "صعب", hint: "", explanation: "", imageUrl: "" },
   ]);
+  const [selectedBulkCategory, setSelectedBulkCategory] = useState("");
   const [categoryForm, setCategoryForm] = useState({
     name: "",
     displayName: "",
@@ -138,21 +139,29 @@ export default function AdminDashboard() {
 
   const createBulkQuestionsMutation = useMutation({
     mutationFn: async (data: { category: string; questions: typeof bulkQuestions }) => {
-      const questionsWithCategory = data.questions.map(q => ({
+      // Filter out empty questions
+      const validQuestions = data.questions.filter(q => q.question.trim() && q.answer.trim());
+      
+      if (validQuestions.length === 0) {
+        throw new Error("يجب إضافة سؤال واحد على الأقل");
+      }
+      
+      const questionsWithCategory = validQuestions.map(q => ({
         ...q,
-        category: data.category
+        category: data.category,
+        isPublished: true
       }));
       
-      // Create all questions in parallel
-      const promises = questionsWithCategory.map(question =>
-        apiRequest("POST", "/api/admin/questions", question)
-      );
-      
-      const responses = await Promise.all(promises);
-      return responses;
+      // Use batch creation endpoint
+      const response = await apiRequest("POST", "/api/admin/questions/bulk", {
+        category: data.category,
+        questions: questionsWithCategory
+      });
+      return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/questions"] });
+      // Reset to initial state
       setBulkQuestions([
         { question: "", answer: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" },
         { question: "", answer: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" },
@@ -161,8 +170,9 @@ export default function AdminDashboard() {
         { question: "", answer: "", difficulty: "صعب", hint: "", explanation: "", imageUrl: "" },
         { question: "", answer: "", difficulty: "صعب", hint: "", explanation: "", imageUrl: "" },
       ]);
+      setSelectedBulkCategory("");
       setBulkQuestionMode(false);
-      toast({ title: "تم إنشاء 6 أسئلة بنجاح" });
+      toast({ title: `تم إنشاء ${data.count} أسئلة بنجاح` });
     },
     onError: (error: any) => {
       toast({ title: "خطأ في إنشاء الأسئلة", description: error.message, variant: "destructive" });
@@ -484,6 +494,41 @@ export default function AdminDashboard() {
       total: totalCount,
       isComplete: totalCount === 6 && easyCount === 2 && mediumCount === 2 && hardCount === 2
     };
+  };
+
+  // Helper functions for bulk questions
+  const addBulkQuestion = () => {
+    setBulkQuestions([...bulkQuestions, { question: "", answer: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" }]);
+  };
+
+  const removeBulkQuestion = (index: number) => {
+    if (bulkQuestions.length > 1) {
+      setBulkQuestions(bulkQuestions.filter((_, i) => i !== index));
+    }
+  };
+
+  const updateBulkQuestion = (index: number, field: string, value: string) => {
+    const updated = [...bulkQuestions];
+    updated[index] = { ...updated[index], [field]: value };
+    setBulkQuestions(updated);
+  };
+
+  const handleBulkSubmit = () => {
+    if (!selectedBulkCategory) {
+      toast({ title: "يجب اختيار الفئة", variant: "destructive" });
+      return;
+    }
+    
+    const validQuestions = bulkQuestions.filter(q => q.question.trim() && q.answer.trim());
+    if (validQuestions.length === 0) {
+      toast({ title: "يجب إضافة سؤال واحد على الأقل", variant: "destructive" });
+      return;
+    }
+
+    createBulkQuestionsMutation.mutate({
+      category: selectedBulkCategory,
+      questions: bulkQuestions
+    });
   };
 
   // Helper functions for editing
@@ -990,10 +1035,10 @@ export default function AdminDashboard() {
               <Card>
                 <CardHeader>
                   <CardTitle>
-                    {editingQuestion ? "تعديل السؤال" : bulkQuestionMode ? "إضافة 6 أسئلة دفعة واحدة" : "إضافة سؤال جديد"}
+                    {editingQuestion ? "تعديل السؤال" : bulkQuestionMode ? "إضافة أسئلة متعددة" : "إضافة سؤال جديد"}
                   </CardTitle>
                   <CardDescription>
-                    {editingQuestion ? "تعديل بيانات السؤال المحدد" : bulkQuestionMode ? "أضف 6 أسئلة كاملة للفئة: 2 سهل (200 نقطة) + 2 متوسط (400 نقطة) + 2 صعب (600 نقطة)" : "أضف سؤالاً جديداً - كل فئة تحتاج 6 أسئلة: 2 سهل (200 نقطة) + 2 متوسط (400 نقطة) + 2 صعب (600 نقطة)"}
+                    {editingQuestion ? "تعديل بيانات السؤال المحدد" : bulkQuestionMode ? "أضف أي عدد من الأسئلة للفئة المحددة - يمكنك إضافة أو حذف أسئلة حسب الحاجة" : "أضف سؤالاً جديداً لأي فئة"}
                   </CardDescription>
                   <div className="flex gap-2 mt-2">
                     <Button 
@@ -1008,7 +1053,7 @@ export default function AdminDashboard() {
                       size="sm"
                       onClick={() => setBulkQuestionMode(true)}
                     >
-                      6 أسئلة معاً
+                      أسئلة متعددة
                     </Button>
                   </div>
                 </CardHeader>
@@ -1018,8 +1063,8 @@ export default function AdminDashboard() {
                     <>
                       {/* Category Selection for Bulk */}
                       <div>
-                        <Label htmlFor="bulkCategory">الفئة للأسئلة الستة</Label>
-                        <Select value={questionForm.category} onValueChange={(value) => setQuestionForm({ ...questionForm, category: value })}>
+                        <Label htmlFor="bulkCategory">الفئة للأسئلة</Label>
+                        <Select value={selectedBulkCategory} onValueChange={setSelectedBulkCategory}>
                           <SelectTrigger>
                             <SelectValue placeholder="اختر الفئة" />
                           </SelectTrigger>
@@ -1031,17 +1076,58 @@ export default function AdminDashboard() {
                             ))}
                           </SelectContent>
                         </Select>
+                        {selectedBulkCategory && (
+                          <div className="mt-2 p-2 bg-blue-50 rounded text-sm">
+                            <div className="font-medium text-blue-800">
+                              {categories?.categories?.find(c => c.name === selectedBulkCategory)?.displayName}
+                            </div>
+                            <div className="text-blue-600 text-xs mt-1">
+                              الأسئلة الحالية: {getQuestionCount(selectedBulkCategory)}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Add/Remove Question Controls */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Button
+                            type="button"
+                            onClick={addBulkQuestion}
+                            size="sm"
+                            variant="outline"
+                          >
+                            <Plus className="h-4 w-4 mr-1" />
+                            إضافة سؤال
+                          </Button>
+                          <span className="text-sm text-gray-600">
+                            {bulkQuestions.length} {bulkQuestions.length === 1 ? 'سؤال' : 'أسئلة'}
+                          </span>
+                        </div>
                       </div>
                       
                       {/* Bulk Questions Grid */}
-                      <div className="space-y-6 max-h-96 overflow-y-auto">
+                      <div className="space-y-4 max-h-96 overflow-y-auto">
                         {bulkQuestions.map((question, index) => (
                           <div key={index} className="p-4 border rounded-lg bg-gray-50">
-                            <div className="flex items-center gap-2 mb-2">
-                              <Badge variant={question.difficulty === "سهل" ? "secondary" : question.difficulty === "متوسط" ? "default" : "destructive"}>
-                                {question.difficulty} - {question.difficulty === "سهل" ? "200" : question.difficulty === "متوسط" ? "400" : "600"} نقطة
-                              </Badge>
-                              <span className="text-sm text-gray-600">السؤال {index + 1}/6</span>
+                            <div className="flex items-center justify-between mb-3">
+                              <div className="flex items-center gap-2">
+                                <Badge variant={question.difficulty === "سهل" ? "secondary" : question.difficulty === "متوسط" ? "default" : "destructive"}>
+                                  {question.difficulty} - {question.difficulty === "سهل" ? "200" : question.difficulty === "متوسط" ? "400" : "600"} نقطة
+                                </Badge>
+                                <span className="text-sm text-gray-600">السؤال {index + 1}</span>
+                              </div>
+                              {bulkQuestions.length > 1 && (
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => removeBulkQuestion(index)}
+                                  className="text-red-600 hover:text-red-800 hover:bg-red-50"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              )}
                             </div>
                             
                             <div className="grid gap-3">
@@ -1049,11 +1135,7 @@ export default function AdminDashboard() {
                                 <Label>السؤال</Label>
                                 <Textarea
                                   value={question.question}
-                                  onChange={(e) => {
-                                    const updated = [...bulkQuestions];
-                                    updated[index].question = e.target.value;
-                                    setBulkQuestions(updated);
-                                  }}
+                                  onChange={(e) => updateBulkQuestion(index, 'question', e.target.value)}
                                   placeholder="اكتب السؤال هنا..."
                                   rows={2}
                                 />
@@ -1064,11 +1146,7 @@ export default function AdminDashboard() {
                                   <Label>الإجابة</Label>
                                   <Input
                                     value={question.answer}
-                                    onChange={(e) => {
-                                      const updated = [...bulkQuestions];
-                                      updated[index].answer = e.target.value;
-                                      setBulkQuestions(updated);
-                                    }}
+                                    onChange={(e) => updateBulkQuestion(index, 'answer', e.target.value)}
                                     placeholder="الإجابة الصحيحة"
                                   />
                                 </div>
@@ -1076,51 +1154,63 @@ export default function AdminDashboard() {
                                   <Label>التلميح (مطلوب)</Label>
                                   <Input
                                     value={question.hint}
-                                    onChange={(e) => {
-                                      const updated = [...bulkQuestions];
-                                      updated[index].hint = e.target.value;
-                                      setBulkQuestions(updated);
-                                    }}
+                                    onChange={(e) => updateBulkQuestion(index, 'hint', e.target.value)}
                                     placeholder="تلميح مساعد"
                                   />
                                 </div>
                               </div>
                               
-                              <div>
-                                <Label>الشرح (اختياري)</Label>
-                                <Input
-                                  value={question.explanation}
-                                  onChange={(e) => {
-                                    const updated = [...bulkQuestions];
-                                    updated[index].explanation = e.target.value;
-                                    setBulkQuestions(updated);
-                                  }}
-                                  placeholder="شرح إضافي للإجابة"
-                                />
+                              <div className="grid grid-cols-2 gap-2">
+                                <div>
+                                  <Label>الصعوبة</Label>
+                                  <Select 
+                                    value={question.difficulty} 
+                                    onValueChange={(value) => updateBulkQuestion(index, 'difficulty', value)}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="سهل">سهل (200 نقطة)</SelectItem>
+                                      <SelectItem value="متوسط">متوسط (400 نقطة)</SelectItem>
+                                      <SelectItem value="صعب">صعب (600 نقطة)</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                <div>
+                                  <Label>الوصف (اختياري)</Label>
+                                  <Input
+                                    value={question.explanation}
+                                    onChange={(e) => updateBulkQuestion(index, 'explanation', e.target.value)}
+                                    placeholder="شرح إضافي"
+                                  />
+                                </div>
                               </div>
                             </div>
                           </div>
                         ))}
                       </div>
                       
-                      <Button
-                        onClick={() => {
-                          if (!questionForm.category) {
-                            toast({ title: "يجب اختيار الفئة", variant: "destructive" });
-                            return;
-                          }
-                          const incompleteQuestions = bulkQuestions.filter(q => !q.question.trim() || !q.answer.trim() || !q.hint.trim());
-                          if (incompleteQuestions.length > 0) {
-                            toast({ title: "يجب إكمال جميع الحقول المطلوبة", variant: "destructive" });
-                            return;
-                          }
-                          createBulkQuestionsMutation.mutate({ category: questionForm.category, questions: bulkQuestions });
-                        }}
-                        disabled={createBulkQuestionsMutation.isPending}
-                        className="w-full"
-                      >
-                        {createBulkQuestionsMutation.isPending ? "جاري الإضافة..." : "إضافة 6 أسئلة"}
-                      </Button>
+                      {/* Submit Bulk Questions */}
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={handleBulkSubmit}
+                          disabled={createBulkQuestionsMutation.isPending || !selectedBulkCategory}
+                          className="flex-1"
+                        >
+                          {createBulkQuestionsMutation.isPending ? "جاري الحفظ..." : `حفظ ${bulkQuestions.filter(q => q.question.trim() && q.answer.trim()).length} أسئلة`}
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => {
+                            setBulkQuestionMode(false);
+                            setSelectedBulkCategory("");
+                          }}
+                        >
+                          إلغاء
+                        </Button>
+                      </div>
                     </>
                   )}
 
