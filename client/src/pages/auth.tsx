@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Logo } from "@/components/Logo";
 import { Brain, Loader2 } from "lucide-react";
 import { FaGoogle } from "react-icons/fa";
 import { signInWithGoogle, handleGoogleRedirect } from "@/lib/firebase";
@@ -149,20 +148,19 @@ export default function AuthPage() {
       <div className="max-w-md w-full space-y-8">
         {/* Logo and Header */}
         <div className="text-center">
-          <div className="flex justify-center mb-6">
-            <Logo size="xl" showText={false} className="golden-glow" />
+          <div className="mx-auto h-20 w-20 luxury-button rounded-full flex items-center justify-center mb-6 floating glow">
+            <Brain className="text-white h-10 w-10" />
           </div>
-          <h1 className="text-4xl font-bold arabic-heading text-primary mb-2">313</h1>
-          <h2 className="text-2xl font-semibold arabic-heading text-accent mb-4">منصة الألعاب الثقافية</h2>
-          <p className="text-muted-foreground text-lg arabic-text">اختبر معلوماتك مع الأصدقاء والعائلة</p>
+          <h1 className="text-4xl font-bold text-gradient mb-4">313</h1>
+          <p className="text-muted-foreground text-lg">اختبر معلوماتك مع الأصدقاء والعائلة</p>
         </div>
 
         {/* Auth Form */}
-        <Card className="card-islamic p-8">
+        <div className="luxury-card p-8">
           <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-6 bg-muted/50 border border-primary/20">
-              <TabsTrigger value="login" className="text-lg arabic-text data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">تسجيل الدخول</TabsTrigger>
-              <TabsTrigger value="register" className="text-lg arabic-text data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">إنشاء حساب</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsTrigger value="login" className="text-lg">تسجيل الدخول</TabsTrigger>
+              <TabsTrigger value="register" className="text-lg">إنشاء حساب</TabsTrigger>
             </TabsList>
 
             <TabsContent value="login">
@@ -173,9 +171,9 @@ export default function AuthPage() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-primary font-semibold arabic-text">البريد الإلكتروني</FormLabel>
+                        <FormLabel className="text-luxury-green-dark font-semibold">البريد الإلكتروني</FormLabel>
                         <FormControl>
-                          <Input placeholder="أدخل بريدك الإلكتروني" {...field} className="border-primary/30 focus:border-primary focus:ring-primary" />
+                          <Input placeholder="أدخل بريدك الإلكتروني" {...field} className="luxury-input" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -186,21 +184,21 @@ export default function AuthPage() {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-primary font-semibold arabic-text">كلمة المرور</FormLabel>
+                        <FormLabel className="text-luxury-green-dark font-semibold">كلمة المرور</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="أدخل كلمة المرور" {...field} className="border-primary/30 focus:border-primary focus:ring-primary" />
+                          <Input type="password" placeholder="أدخل كلمة المرور" {...field} className="luxury-input" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" className="btn-primary w-full text-lg py-4 arabic-text" disabled={isLoading}>
+                  <button type="submit" className="luxury-button w-full text-lg py-4" disabled={isLoading}>
                     {isLoading ? (
-                      <Loader2 className="h-4 w-4 animate-spin mx-auto" />
+                      <div className="luxury-spinner mx-auto" />
                     ) : (
                       "تسجيل الدخول"
                     )}
-                  </Button>
+                  </button>
                   
                   <div className="relative">
                     <div className="absolute inset-0 flex items-center">
@@ -211,21 +209,21 @@ export default function AuthPage() {
                     </div>
                   </div>
                   
-                  <Button
+                  <button
                     type="button"
                     onClick={handleGoogleSignIn}
                     disabled={googleLoading}
-                    className="btn-success w-full text-lg py-4 arabic-text"
+                    className="luxury-button-outline w-full text-lg py-4 flex items-center justify-center gap-3"
                   >
                     {googleLoading ? (
-                      <Loader2 className="h-4 w-4 animate-spin mx-auto" />
+                      <div className="luxury-spinner mx-auto" />
                     ) : (
                       <>
-                        <FaGoogle className="h-5 w-5 text-red-500 mr-3" />
+                        <FaGoogle className="h-5 w-5 text-red-500" />
                         تسجيل الدخول بجوجل
                       </>
                     )}
-                  </Button>
+                  </button>
                 </form>
               </Form>
             </TabsContent>
@@ -238,9 +236,9 @@ export default function AuthPage() {
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-primary font-semibold arabic-text">الاسم الكامل</FormLabel>
+                        <FormLabel className="text-luxury-green-dark font-semibold">الاسم الكامل</FormLabel>
                         <FormControl>
-                          <Input placeholder="أدخل اسمك الكامل" {...field} className="border-primary/30 focus:border-primary focus:ring-primary" />
+                          <Input placeholder="أدخل اسمك الكامل" {...field} className="luxury-input" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -251,9 +249,9 @@ export default function AuthPage() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-primary font-semibold arabic-text">البريد الإلكتروني</FormLabel>
+                        <FormLabel className="text-luxury-green-dark font-semibold">البريد الإلكتروني</FormLabel>
                         <FormControl>
-                          <Input placeholder="أدخل بريدك الإلكتروني" {...field} className="border-primary/30 focus:border-primary focus:ring-primary" />
+                          <Input placeholder="أدخل بريدك الإلكتروني" {...field} className="luxury-input" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -264,9 +262,9 @@ export default function AuthPage() {
                     name="phoneNumber"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-primary font-semibold arabic-text">رقم الهاتف</FormLabel>
+                        <FormLabel className="text-luxury-green-dark font-semibold">رقم الهاتف</FormLabel>
                         <FormControl>
-                          <Input placeholder="أدخل رقم الهاتف (مثال: +965 1234567)" {...field} className="border-primary/30 focus:border-primary focus:ring-primary" />
+                          <Input placeholder="أدخل رقم الهاتف (مثال: +965 1234567)" {...field} className="luxury-input" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -277,9 +275,9 @@ export default function AuthPage() {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-primary font-semibold arabic-text">كلمة المرور</FormLabel>
+                        <FormLabel className="text-luxury-green-dark font-semibold">كلمة المرور</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="أدخل كلمة المرور" {...field} className="border-primary/30 focus:border-primary focus:ring-primary" />
+                          <Input type="password" placeholder="أدخل كلمة المرور" {...field} className="luxury-input" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -290,26 +288,26 @@ export default function AuthPage() {
                     name="confirmPassword"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-primary font-semibold arabic-text">تأكيد كلمة المرور</FormLabel>
+                        <FormLabel className="text-luxury-green-dark font-semibold">تأكيد كلمة المرور</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="أعد إدخال كلمة المرور" {...field} className="border-primary/30 focus:border-primary focus:ring-primary" />
+                          <Input type="password" placeholder="أعد إدخال كلمة المرور" {...field} className="luxury-input" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" className="btn-primary w-full text-lg py-4 arabic-text" disabled={isLoading}>
+                  <button type="submit" className="luxury-button w-full text-lg py-4" disabled={isLoading}>
                     {isLoading ? (
-                      <Loader2 className="h-4 w-4 animate-spin mx-auto" />
+                      <div className="luxury-spinner mx-auto" />
                     ) : (
                       "إنشاء حساب جديد"
                     )}
-                  </Button>
+                  </button>
                 </form>
               </Form>
             </TabsContent>
           </Tabs>
-        </Card>
+        </div>
       </div>
     </div>
   );

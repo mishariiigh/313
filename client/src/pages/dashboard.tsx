@@ -7,7 +7,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Logo } from "@/components/Logo";
 import { Brain, Gamepad2, Trophy, Star, Play, ShoppingCart, Home, Settings, LogOut, Plus } from "lucide-react";
 
 export default function Dashboard() {
@@ -121,16 +120,24 @@ export default function Dashboard() {
           <div className="flex justify-between items-center py-8">
             <div className="flex items-center space-x-reverse space-x-6">
               {/* Enhanced Logo */}
-              <div className="flex items-center">
-                <Logo size="lg" showText={true} className="golden-glow" />
+              <div className="relative">
+                <div className="h-16 w-16 bg-gradient-to-br from-red-400 to-red-600 rounded-2xl flex items-center justify-center shadow-xl transform hover:scale-105 transition-all duration-300">
+                  <Brain className="text-white h-8 w-8" />
+                </div>
+                <div className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center animate-pulse">
+                  <Star className="text-white h-3 w-3" />
+                </div>
               </div>
               
-              {/* Welcome Message */}
-              <div className="mr-4">
+              {/* Enhanced Title */}
+              <div className="space-y-1">
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-red-600 via-red-700 to-red-800 bg-clip-text text-transparent">
+                  313
+                </h1>
                 <div className="flex items-center space-x-2 space-x-reverse">
-                  <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-                  <p className="text-primary font-semibold arabic-text text-lg">مرحباً، {user?.name}</p>
-                  <Trophy className="h-5 w-5 text-accent" />
+                  <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
+                  <p className="text-red-600 font-medium">مرحباً، {user?.name}</p>
+                  <Trophy className="h-4 w-4 text-red-500" />
                 </div>
               </div>
             </div>
@@ -138,21 +145,26 @@ export default function Dashboard() {
             {/* Enhanced Action Buttons */}
             <div className="flex items-center space-x-reverse space-x-3">
               {user?.isAdmin && (
-                <Button
-                  className="btn-secondary px-6 py-3 arabic-text"
+                <button
+                  className="group relative px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                   onClick={() => setLocation("/admin-dashboard")}
                 >
-                  <Settings className="h-5 w-5 ml-2" />
-                  الإدارة
-                </Button>
+                  <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-red-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="relative flex items-center">
+                    <Settings className="h-5 w-5 ml-2" />
+                    الإدارة
+                  </div>
+                </button>
               )}
-              <Button
-                className="btn-danger px-6 py-3 arabic-text"
+              <button
+                className="group relative px-6 py-3 bg-white border-2 border-red-300 text-red-600 rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:bg-red-50"
                 onClick={handleLogout}
               >
-                <LogOut className="h-5 w-5 ml-2" />
-                خروج
-              </Button>
+                <div className="flex items-center">
+                  <LogOut className="h-5 w-5 ml-2" />
+                  خروج
+                </div>
+              </button>
             </div>
           </div>
         </div>
@@ -293,13 +305,13 @@ export default function Dashboard() {
               </div>
               <h3 className="text-2xl font-bold text-luxury-green-dark mb-4">متابعة اللعبة</h3>
               <p className="text-muted-foreground mb-8 text-lg">لديك لعبة نشطة، تابع من حيث توقفت</p>
-              <Button 
-                className="btn-info w-full text-lg py-4 arabic-text"
+              <button 
+                className="luxury-button w-full text-lg py-4 glow question-card-flip"
                 onClick={() => setLocation(`/game/${activeGameData.activeSession.id}`)}
               >
                 <Play className="ml-2 h-6 w-6" />
                 متابعة اللعبة
-              </Button>
+              </button>
               <p className="text-sm text-muted-foreground mt-4">
                 نوع اللعبة: {activeGameData.activeSession.gameType === "team" ? "فريقين" : "فردية"}
               </p>
@@ -313,14 +325,14 @@ export default function Dashboard() {
             </div>
             <h3 className="text-2xl font-bold text-luxury-green-dark mb-4">بدء لعبة جديدة</h3>
             <p className="text-muted-foreground mb-8 text-lg">ابدأ جلسة جديدة بـ 36 سؤالاً متنوعاً عبر 6 فئات مختلفة</p>
-            <Button 
-              className="btn-primary w-full text-lg py-4 arabic-text"
+            <button 
+              className="luxury-button w-full text-lg py-4 glow question-card-flip"
               onClick={handleStartGame}
               disabled={user?.availableGames <= 0}
             >
               <Gamepad2 className="ml-2 h-6 w-6" />
               بدء اللعبة الآن
-            </Button>
+            </button>
             <p className="text-sm text-muted-foreground mt-4">
               {user?.availableGames || 0} ألعاب متاحة
             </p>
@@ -357,46 +369,46 @@ export default function Dashboard() {
             </div>
 
             <div className="space-y-3">
-              <Button 
-                className="btn-primary w-full text-lg py-4 arabic-text"
+              <button 
+                className="luxury-button-secondary w-full text-lg py-4 question-card-flip"
                 onClick={handlePurchaseGames}
               >
                 <ShoppingCart className="ml-2 h-6 w-6" />
                 شراء الآن
-              </Button>
+              </button>
               
               <div className="text-center text-sm text-muted-foreground">أو</div>
               
               <div className="grid grid-cols-2 gap-3">
-                <Button 
-                  className="btn-secondary py-3 text-sm arabic-text"
+                <button 
+                  className="luxury-button py-3 text-sm question-card-flip"
                   onClick={() => handleAddGames(1)}
                   disabled={addGamesMutation.isPending}
                 >
                   {addGamesMutation.isPending ? (
-                    <Loader2 className="h-4 w-4 animate-spin mx-auto" />
+                    <div className="luxury-spinner mx-auto scale-75" />
                   ) : (
                     <>
                       <Plus className="ml-1 h-4 w-4" />
                       إضافة لعبة
                     </>
                   )}
-                </Button>
+                </button>
                 
-                <Button 
-                  className="btn-secondary py-3 text-sm arabic-text"
+                <button 
+                  className="luxury-button py-3 text-sm question-card-flip"
                   onClick={() => handleAddGames(5)}
                   disabled={addGamesMutation.isPending}
                 >
                   {addGamesMutation.isPending ? (
-                    <Loader2 className="h-4 w-4 animate-spin mx-auto" />
+                    <div className="luxury-spinner mx-auto scale-75" />
                   ) : (
                     <>
                       <Plus className="ml-1 h-4 w-4" />
                       إضافة 5 ألعاب
                     </>
                   )}
-                </Button>
+                </button>
               </div>
             </div>
           </div>

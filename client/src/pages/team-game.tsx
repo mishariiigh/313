@@ -602,7 +602,11 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   <div className="flex justify-center pt-2">
                     <Button
                       onClick={() => setShowAnswer(true)}
-                      className="btn-primary px-6 py-3 text-lg arabic-text rounded-3xl"
+                      className="text-white px-6 py-3 text-lg font-bold rounded-3xl transition-all duration-300 shadow-xl transform hover:scale-105"
+                      style={{
+                        background: 'linear-gradient(135deg, hsl(25, 85%, 60%) 0%, hsl(25, 90%, 50%) 100%)',
+                        boxShadow: '0 8px 24px hsla(25, 85%, 60%, 0.4)'
+                      }}
                     >
                       🔍 إظهار الإجابة
                     </Button>
@@ -670,7 +674,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                             handleUseHint();
                           }
                         }}
-                        className={`btn-info w-full py-3 text-md arabic-text rounded-2xl ${currentTeamHintUsed ? 'opacity-50 cursor-not-allowed' : isHintUsed ? 'opacity-75' : ''}`}
+                        className={`w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-3 text-md font-bold rounded-2xl transition-all duration-300 shadow-lg border border-white border-opacity-30 ${currentTeamHintUsed ? 'opacity-50 cursor-not-allowed' : isHintUsed ? 'opacity-75' : ''}`}
                         disabled={useHintMutation.isPending || currentTeamHintUsed}
                       >
                         <HelpCircle className="ml-2 h-5 w-5" />
@@ -687,7 +691,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 <div className="space-y-3">
                   <Button
                     onClick={() => handleSkipQuestion()}
-                    className="btn-danger w-full py-3 text-md arabic-text rounded-2xl"
+                    className="w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-3 text-md font-bold rounded-2xl transition-all duration-300 shadow-lg border border-white border-opacity-30"
                     disabled={skipQuestionMutation.isPending}
                   >
                     تخطي السؤال
@@ -953,8 +957,14 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button
+              variant="outline"
               onClick={() => setLocation("/dashboard")}
-              className="btn-success px-4 py-2"
+              className="border-2 hover:scale-105 transition-transform duration-200"
+              style={{
+                background: 'hsla(0, 0%, 100%, 0.9)',
+                color: 'hsl(345, 35%, 25%)',
+                borderColor: 'hsl(355, 75%, 65%)'
+              }}
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
@@ -969,10 +979,16 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 </span>
               </p>
               <Button
+                variant="outline"
                 size="sm"
                 onClick={() => switchTeamTurnMutation.mutate()}
                 disabled={switchTeamTurnMutation.isPending}
-              className="btn-warning px-3 py-2"
+                className="border-2 hover:scale-105 transition-transform duration-200"
+                style={{
+                  background: 'hsla(0, 0%, 100%, 0.9)',
+                  color: 'hsl(345, 35%, 25%)',
+                  borderColor: 'hsl(355, 75%, 65%)'
+                }}
                 title="تبديل الدور"
               >
                 <Shuffle className="h-4 w-4" />
@@ -992,10 +1008,16 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 <div className="text-sm font-semibold">{team}</div>
                 <div className="flex items-center justify-center gap-2 mt-1">
                   <Button
+                    variant="outline"
                     size="sm"
                     onClick={() => adjustScoreMutation.mutate({ teamIndex: index, scoreChange: -50 })}
                     disabled={adjustScoreMutation.isPending}
-                    className="btn-danger p-1 h-6 w-6 hover:scale-110 transition-transform duration-200"
+                    className="border hover:scale-110 transition-transform duration-200 p-1 h-6 w-6"
+                    style={{
+                      background: 'hsla(0, 0%, 100%, 0.9)',
+                      color: 'hsl(355, 85%, 55%)',
+                      borderColor: 'hsl(355, 65%, 75%)'
+                    }}
                     title="تقليل النقاط"
                   >
                     <Minus className="h-3 w-3" />
@@ -1004,10 +1026,16 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     {gameSession.teamScores[index] || 0}
                   </div>
                   <Button
+                    variant="outline"
                     size="sm"
                     onClick={() => adjustScoreMutation.mutate({ teamIndex: index, scoreChange: 50 })}
                     disabled={adjustScoreMutation.isPending}
-                    className="btn-success p-1 h-6 w-6 hover:scale-110 transition-transform duration-200"
+                    className="border hover:scale-110 transition-transform duration-200 p-1 h-6 w-6"
+                    style={{
+                      background: 'hsla(0, 0%, 100%, 0.9)',
+                      color: 'hsl(355, 85%, 55%)',
+                      borderColor: 'hsl(355, 65%, 75%)'
+                    }}
                     title="زيادة النقاط"
                   >
                     <Plus className="h-3 w-3" />
