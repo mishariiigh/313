@@ -48,6 +48,11 @@ export default function AdminDashboard() {
   const [bulkQuestionMode, setBulkQuestionMode] = useState(false);
   const [bulkQuestions, setBulkQuestions] = useState([
     { question: "", answer: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" },
+    { question: "", answer: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" },
+    { question: "", answer: "", difficulty: "متوسط", hint: "", explanation: "", imageUrl: "" },
+    { question: "", answer: "", difficulty: "متوسط", hint: "", explanation: "", imageUrl: "" },
+    { question: "", answer: "", difficulty: "صعب", hint: "", explanation: "", imageUrl: "" },
+    { question: "", answer: "", difficulty: "صعب", hint: "", explanation: "", imageUrl: "" },
   ]);
   const [categoryForm, setCategoryForm] = useState({
     name: "",
@@ -146,13 +151,18 @@ export default function AdminDashboard() {
       const responses = await Promise.all(promises);
       return responses;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/questions"] });
       setBulkQuestions([
         { question: "", answer: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" },
+        { question: "", answer: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" },
+        { question: "", answer: "", difficulty: "متوسط", hint: "", explanation: "", imageUrl: "" },
+        { question: "", answer: "", difficulty: "متوسط", hint: "", explanation: "", imageUrl: "" },
+        { question: "", answer: "", difficulty: "صعب", hint: "", explanation: "", imageUrl: "" },
+        { question: "", answer: "", difficulty: "صعب", hint: "", explanation: "", imageUrl: "" },
       ]);
       setBulkQuestionMode(false);
-      toast({ title: `تم إنشاء ${data.length} أسئلة بنجاح` });
+      toast({ title: "تم إنشاء 6 أسئلة بنجاح" });
     },
     onError: (error: any) => {
       toast({ title: "خطأ في إنشاء الأسئلة", description: error.message, variant: "destructive" });
@@ -980,10 +990,10 @@ export default function AdminDashboard() {
               <Card>
                 <CardHeader>
                   <CardTitle>
-                    {editingQuestion ? "تعديل السؤال" : bulkQuestionMode ? "إضافة أسئلة متعددة دفعة واحدة" : "إضافة سؤال جديد"}
+                    {editingQuestion ? "تعديل السؤال" : bulkQuestionMode ? "إضافة 6 أسئلة دفعة واحدة" : "إضافة سؤال جديد"}
                   </CardTitle>
                   <CardDescription>
-                    {editingQuestion ? "تعديل بيانات السؤال المحدد" : bulkQuestionMode ? "أضف عدد غير محدود من الأسئلة للفئة المختارة" : "أضف سؤالاً جديداً للفئة المحددة"}
+                    {editingQuestion ? "تعديل بيانات السؤال المحدد" : bulkQuestionMode ? "أضف 6 أسئلة كاملة للفئة: 2 سهل (200 نقطة) + 2 متوسط (400 نقطة) + 2 صعب (600 نقطة)" : "أضف سؤالاً جديداً - كل فئة تحتاج 6 أسئلة: 2 سهل (200 نقطة) + 2 متوسط (400 نقطة) + 2 صعب (600 نقطة)"}
                   </CardDescription>
                   <div className="flex gap-2 mt-2">
                     <Button 
@@ -998,7 +1008,7 @@ export default function AdminDashboard() {
                       size="sm"
                       onClick={() => setBulkQuestionMode(true)}
                     >
-                      أسئلة متعددة
+                      6 أسئلة معاً
                     </Button>
                   </div>
                 </CardHeader>
@@ -1008,7 +1018,7 @@ export default function AdminDashboard() {
                     <>
                       {/* Category Selection for Bulk */}
                       <div>
-                        <Label htmlFor="bulkCategory">الفئة للأسئلة</Label>
+                        <Label htmlFor="bulkCategory">الفئة للأسئلة الستة</Label>
                         <Select value={questionForm.category} onValueChange={(value) => setQuestionForm({ ...questionForm, category: value })}>
                           <SelectTrigger>
                             <SelectValue placeholder="اختر الفئة" />
@@ -1031,21 +1041,7 @@ export default function AdminDashboard() {
                               <Badge variant={question.difficulty === "سهل" ? "secondary" : question.difficulty === "متوسط" ? "default" : "destructive"}>
                                 {question.difficulty} - {question.difficulty === "سهل" ? "200" : question.difficulty === "متوسط" ? "400" : "600"} نقطة
                               </Badge>
-                              <span className="text-sm text-gray-600">السؤال {index + 1}</span>
-                              {bulkQuestions.length > 1 && (
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => {
-                                    const updated = [...bulkQuestions];
-                                    updated.splice(index, 1);
-                                    setBulkQuestions(updated);
-                                  }}
-                                  className="text-red-600 hover:text-red-800"
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                </Button>
-                              )}
+                              <span className="text-sm text-gray-600">السؤال {index + 1}/6</span>
                             </div>
                             
                             <div className="grid gap-3">
@@ -1102,103 +1098,9 @@ export default function AdminDashboard() {
                                   placeholder="شرح إضافي للإجابة"
                                 />
                               </div>
-                              
-                              <div>
-                                <Label>مستوى الصعوبة</Label>
-                                <Select 
-                                  value={question.difficulty} 
-                                  onValueChange={(value) => {
-                                    const updated = [...bulkQuestions];
-                                    updated[index].difficulty = value;
-                                    setBulkQuestions(updated);
-                                  }}
-                                >
-                                  <SelectTrigger>
-                                    <SelectValue />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="سهل">سهل (200 نقطة)</SelectItem>
-                                    <SelectItem value="متوسط">متوسط (400 نقطة)</SelectItem>
-                                    <SelectItem value="صعب">صعب (600 نقطة)</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </div>
                             </div>
                           </div>
                         ))}
-                      </div>
-                      
-                      {/* Add Question Button */}
-                      <div className="space-y-2">
-                        <div className="flex gap-2">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => {
-                              setBulkQuestions([...bulkQuestions, { 
-                                question: "", 
-                                answer: "", 
-                                difficulty: "سهل", 
-                                hint: "", 
-                                explanation: "", 
-                                imageUrl: "" 
-                              }]);
-                            }}
-                            className="flex-1"
-                          >
-                            <Plus className="w-4 h-4 mr-2" />
-                            إضافة سؤال آخر
-                          </Button>
-                          <span className="text-sm text-gray-600 self-center">
-                            {bulkQuestions.length} {bulkQuestions.length === 1 ? 'سؤال' : 'أسئلة'}
-                          </span>
-                        </div>
-                        
-                        {/* Quick Add Sets */}
-                        <div className="grid grid-cols-3 gap-2">
-                          <Button
-                            type="button"
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => {
-                              setBulkQuestions([...bulkQuestions, 
-                                { question: "", answer: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" },
-                                { question: "", answer: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" },
-                              ]);
-                            }}
-                            className="text-xs"
-                          >
-                            +2 سهل
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => {
-                              setBulkQuestions([...bulkQuestions, 
-                                { question: "", answer: "", difficulty: "متوسط", hint: "", explanation: "", imageUrl: "" },
-                                { question: "", answer: "", difficulty: "متوسط", hint: "", explanation: "", imageUrl: "" },
-                              ]);
-                            }}
-                            className="text-xs"
-                          >
-                            +2 متوسط
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => {
-                              setBulkQuestions([...bulkQuestions, 
-                                { question: "", answer: "", difficulty: "صعب", hint: "", explanation: "", imageUrl: "" },
-                                { question: "", answer: "", difficulty: "صعب", hint: "", explanation: "", imageUrl: "" },
-                              ]);
-                            }}
-                            className="text-xs"
-                          >
-                            +2 صعب
-                          </Button>
-                        </div>
                       </div>
                       
                       <Button
@@ -1209,7 +1111,7 @@ export default function AdminDashboard() {
                           }
                           const incompleteQuestions = bulkQuestions.filter(q => !q.question.trim() || !q.answer.trim() || !q.hint.trim());
                           if (incompleteQuestions.length > 0) {
-                            toast({ title: `يجب إكمال جميع الحقول المطلوبة في ${incompleteQuestions.length} أسئلة`, variant: "destructive" });
+                            toast({ title: "يجب إكمال جميع الحقول المطلوبة", variant: "destructive" });
                             return;
                           }
                           createBulkQuestionsMutation.mutate({ category: questionForm.category, questions: bulkQuestions });
@@ -1217,7 +1119,7 @@ export default function AdminDashboard() {
                         disabled={createBulkQuestionsMutation.isPending}
                         className="w-full"
                       >
-                        {createBulkQuestionsMutation.isPending ? "جاري الإضافة..." : `إضافة ${bulkQuestions.length} ${bulkQuestions.length === 1 ? 'سؤال' : 'أسئلة'}`}
+                        {createBulkQuestionsMutation.isPending ? "جاري الإضافة..." : "إضافة 6 أسئلة"}
                       </Button>
                     </>
                   )}
