@@ -1052,7 +1052,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
         <div className="max-w-7xl mx-auto">
           {/* Enhanced Category Layout - Matching Provided Image */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 max-w-7xl mx-auto" dir="rtl">
-            {categories.slice(0, 6).map((category, categoryIndex) => (
+            {categories.map((category, categoryIndex) => (
               <div key={`category-enhanced-${categoryIndex}`} className="relative">
                 {/* Category Card with Enhanced Layout */}
                 <div className="rounded-3xl shadow-xl overflow-hidden border-3 p-2" style={{
