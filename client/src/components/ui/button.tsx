@@ -5,21 +5,19 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all duration-300 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 font-arabic",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "logo-button text-white hover:scale-105 shadow-lg",
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-lg hover:shadow-xl",
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-          "border-2 border-logo-sage bg-background hover:bg-logo-sage hover:text-white shadow-sm hover:shadow-lg transition-all duration-300",
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         secondary:
-          "logo-accent text-foreground hover:scale-105 shadow-md",
-        ghost: "hover:bg-logo-cream hover:text-logo-sage-dark transition-all duration-300",
-        link: "text-logo-sage underline-offset-4 hover:underline logo-text-gradient",
-        elegant: "bg-gradient-to-r from-logo-sage to-logo-sage-light text-white hover:from-logo-sage-dark hover:to-logo-sage shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300",
-        golden: "bg-gradient-to-r from-logo-gold to-logo-bronze text-white hover:from-logo-bronze hover:to-logo-gold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300",
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
         default: "h-10 px-4 py-2",

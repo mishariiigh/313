@@ -6,112 +6,75 @@
 
 @layer base {
   :root {
-    /* Elegant Arabic-Inspired Color Palette */
-    --background: hsl(45, 25%, 97%);
-    --foreground: hsl(25, 15%, 15%);
+    /* Off-White & Light Red Theme */
+    --background: hsl(0, 20%, 97%);
+    --foreground: hsl(0, 0%, 20%);
     
-    --card: hsl(45, 20%, 95%);
-    --card-foreground: hsl(25, 15%, 15%);
+    --card: hsl(0, 15%, 96%);
+    --card-foreground: hsl(0, 0%, 20%);
     
-    --popover: hsl(45, 20%, 96%);
-    --popover-foreground: hsl(25, 15%, 15%);
+    --popover: hsl(0, 15%, 96%);
+    --popover-foreground: hsl(0, 0%, 20%);
     
-    --primary: hsl(155, 40%, 35%);
-    --primary-foreground: hsl(48, 35%, 98%);
+    --primary: hsl(0, 70%, 70%);
+    --primary-foreground: hsl(0, 0%, 100%);
     
-    --secondary: hsl(40, 25%, 88%);
-    --secondary-foreground: hsl(155, 20%, 25%);
+    --secondary: hsl(0, 25%, 90%);
+    --secondary-foreground: hsl(0, 0%, 25%);
     
-    --muted: hsl(48, 20%, 92%);
-    --muted-foreground: hsl(155, 15%, 45%);
+    --muted: hsl(0, 0%, 95%);
+    --muted-foreground: hsl(0, 0%, 45%);
     
-    --accent: hsl(40, 70%, 60%);
-    --accent-foreground: hsl(155, 40%, 15%);
+    --accent: hsl(0, 50%, 85%);
+    --accent-foreground: hsl(0, 0%, 25%);
     
-    --destructive: hsl(0, 75%, 55%);
-    --destructive-foreground: hsl(45, 25%, 97%);
+    --destructive: hsl(0, 84%, 60%);
+    --destructive-foreground: hsl(0, 0%, 100%);
     
-    --border: hsl(45, 20%, 85%);
-    --input: hsl(45, 20%, 90%);
-    --ring: hsl(160, 45%, 35%);
+    --border: hsl(0, 25%, 88%);
+    --input: hsl(0, 25%, 92%);
+    --ring: hsl(0, 70%, 70%);
     
     --radius: 0.75rem;
     
-    /* Logo-inspired colors for 313 platform */
-    --logo-sage: hsl(155, 40%, 35%);
-    --logo-sage-light: hsl(155, 35%, 55%);
-    --logo-sage-dark: hsl(155, 50%, 25%);
-    --logo-gold: hsl(40, 70%, 60%);
-    --logo-bronze: hsl(25, 55%, 65%);
-    --logo-cream: hsl(48, 35%, 96%);
-    --logo-warm-white: hsl(45, 25%, 98%);
-    --logo-shadow: hsl(155, 40%, 15%, 0.15);
-    --logo-glow: hsl(155, 40%, 35%, 0.3);
-    
-    /* Legacy aliases for compatibility */
-    --arabic-cream: hsl(48, 35%, 96%);
-    --arabic-sage: hsl(155, 40%, 35%);
-    --arabic-sage-light: hsl(155, 35%, 55%);
-    --arabic-sage-dark: hsl(155, 50%, 25%);
-    --arabic-gold: hsl(40, 70%, 60%);
-    --arabic-terracotta: hsl(25, 55%, 65%);
-    --arabic-shadow: hsl(155, 40%, 15%, 0.15);
-    --arabic-glow: hsl(155, 40%, 35%, 0.3);
-    
-    /* Success and status colors */
-    --success: hsl(160, 45%, 35%);
-    --success-foreground: hsl(45, 25%, 97%);
-    --warning: hsl(35, 65%, 65%);
-    --warning-foreground: hsl(25, 15%, 15%);
-    --info: hsl(200, 50%, 55%);
-    --info-foreground: hsl(45, 25%, 97%);
+    /* Custom luxury colors */
+    --luxury-cream: hsl(0, 0%, 98%);
+    --luxury-green: hsl(0, 70%, 70%);
+    --luxury-green-light: hsl(0, 50%, 85%);
+    --luxury-green-dark: hsl(0, 85%, 55%);
+    --luxury-gold: hsl(0, 50%, 68%);
+    --luxury-shadow: hsl(0, 0%, 15%, 0.1);
+    --luxury-glow: hsl(0, 70%, 70%, 0.3);
   }
 
   .dark {
-    --background: hsl(25, 15%, 8%);
-    --foreground: hsl(45, 25%, 95%);
+    --background: hsl(0, 0%, 12%);
+    --foreground: hsl(0, 0%, 95%);
     
-    --card: hsl(25, 20%, 12%);
-    --card-foreground: hsl(45, 25%, 95%);
+    --card: hsl(0, 0%, 15%);
+    --card-foreground: hsl(0, 0%, 95%);
     
-    --popover: hsl(25, 15%, 10%);
-    --popover-foreground: hsl(45, 25%, 95%);
+    --popover: hsl(0, 0%, 12%);
+    --popover-foreground: hsl(0, 0%, 95%);
     
-    --primary: hsl(160, 45%, 45%);
-    --primary-foreground: hsl(25, 15%, 8%);
+    --primary: hsl(0, 70%, 70%);
+    --primary-foreground: hsl(0, 0%, 100%);
     
-    --secondary: hsl(25, 25%, 18%);
-    --secondary-foreground: hsl(45, 25%, 90%);
+    --secondary: hsl(0, 15%, 20%);
+    --secondary-foreground: hsl(0, 0%, 95%);
     
-    --muted: hsl(25, 20%, 18%);
-    --muted-foreground: hsl(45, 15%, 65%);
+    --muted: hsl(0, 15%, 20%);
+    --muted-foreground: hsl(0, 0%, 70%);
     
-    --accent: hsl(35, 55%, 55%);
-    --accent-foreground: hsl(25, 15%, 8%);
+    --accent: hsl(0, 15%, 20%);
+    --accent-foreground: hsl(0, 0%, 95%);
     
-    --destructive: hsl(0, 75%, 55%);
-    --destructive-foreground: hsl(45, 25%, 95%);
+    --destructive: hsl(0, 62%, 30%);
+    --destructive-foreground: hsl(0, 0%, 100%);
     
-    --border: hsl(25, 20%, 22%);
-    --input: hsl(25, 20%, 20%);
-    --ring: hsl(160, 45%, 45%);
-    
-    /* Dark mode Arabic colors */
-    --arabic-cream: hsl(25, 15%, 8%);
-    --arabic-sage: hsl(160, 45%, 45%);
-    --arabic-sage-light: hsl(160, 35%, 65%);
-    --arabic-sage-dark: hsl(160, 55%, 35%);
-    --arabic-gold: hsl(35, 55%, 55%);
-    --arabic-terracotta: hsl(25, 50%, 65%);
-    --arabic-shadow: hsl(0, 0%, 0%, 0.4);
-    --arabic-glow: hsl(160, 45%, 45%, 0.3);
-    
-    --success: hsl(160, 45%, 45%);
-    --success-foreground: hsl(25, 15%, 8%);
-    --warning: hsl(35, 55%, 55%);
-    --warning-foreground: hsl(25, 15%, 8%);
-    --info: hsl(200, 50%, 65%);
-    --info-foreground: hsl(25, 15%, 8%);
+    --border: hsl(0, 15%, 25%);
+    --input: hsl(0, 15%, 25%);
+    --ring: hsl(0, 70%, 70%);
   }
 }
 
@@ -122,7 +85,7 @@
   
   body {
     @apply bg-background text-foreground font-arabic antialiased;
-    background: linear-gradient(135deg, hsl(var(--logo-warm-white)) 0%, hsl(var(--logo-cream)) 40%, hsl(var(--logo-sage)/0.05) 100%);
+    background: linear-gradient(135deg, hsl(355, 30%, 97%) 0%, hsl(355, 25%, 94%) 100%);
     min-height: 100vh;
     direction: rtl;
   }
@@ -146,7 +109,7 @@
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--arabic-sage-dark));
+    background: hsl(var(--luxury-green-dark));
   }
 }
 
@@ -158,94 +121,6 @@
   
   .font-english {
     font-family: 'Inter', sans-serif;
-  }
-  
-  /* Logo-inspired component styles */
-  .logo-card {
-    background: linear-gradient(145deg, hsl(var(--logo-warm-white)), hsl(var(--logo-cream)));
-    border: 1px solid hsl(var(--border));
-    box-shadow: 0 4px 16px hsl(var(--logo-shadow));
-    transition: all 0.3s ease;
-  }
-  
-  .logo-card:hover {
-    box-shadow: 0 8px 32px hsl(var(--logo-shadow)), 0 0 0 1px hsl(var(--logo-sage-light));
-    transform: translateY(-2px);
-  }
-  
-  .logo-button {
-    background: linear-gradient(135deg, hsl(var(--logo-sage)), hsl(var(--logo-sage-light)));
-    border: none;
-    color: white;
-    box-shadow: 0 2px 12px hsl(var(--logo-glow));
-    transition: all 0.3s ease;
-  }
-  
-  .logo-button:hover {
-    background: linear-gradient(135deg, hsl(var(--logo-sage-dark)), hsl(var(--logo-sage)));
-    box-shadow: 0 4px 20px hsl(var(--logo-glow));
-    transform: translateY(-1px);
-  }
-  
-  .logo-accent {
-    background: linear-gradient(135deg, hsl(var(--logo-gold)), hsl(var(--logo-bronze)));
-    color: hsl(var(--foreground));
-  }
-  
-  .logo-text-gradient {
-    background: linear-gradient(135deg, hsl(var(--logo-sage)), hsl(var(--logo-gold)));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  
-  .logo-border {
-    border-image: linear-gradient(90deg, hsl(var(--logo-sage)), hsl(var(--logo-gold)), hsl(var(--logo-sage))) 1;
-  }
-  
-  /* Legacy aliases for compatibility */
-  .arabic-card { @apply logo-card; }
-  .arabic-button { @apply logo-button; }
-  .arabic-accent { @apply logo-accent; }
-  .arabic-text-gradient { @apply logo-text-gradient; }
-  .arabic-border { @apply logo-border; }
-  
-  /* Game board styling */
-  .game-cell {
-    background: linear-gradient(145deg, hsl(var(--logo-warm-white)), hsl(var(--logo-cream)));
-    border: 2px solid hsl(var(--border));
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px hsl(var(--logo-shadow));
-  }
-  
-  .game-cell:hover {
-    background: linear-gradient(145deg, hsl(var(--logo-sage-light)), hsl(var(--logo-cream)));
-    border-color: hsl(var(--logo-sage));
-    box-shadow: 0 6px 20px hsl(var(--logo-glow));
-    transform: translateY(-2px);
-  }
-  
-  .game-cell.selected {
-    background: linear-gradient(145deg, hsl(var(--logo-sage)), hsl(var(--logo-sage-light)));
-    color: white;
-    border-color: hsl(var(--logo-sage-dark));
-    box-shadow: 0 8px 24px hsl(var(--logo-glow));
-  }
-  
-  /* Status indicators */
-  .status-success {
-    background: hsl(var(--success));
-    color: hsl(var(--success-foreground));
-  }
-  
-  .status-warning {
-    background: hsl(var(--warning));
-    color: hsl(var(--warning-foreground));
-  }
-  
-  .status-info {
-    background: hsl(var(--info));
-    color: hsl(var(--info-foreground));
   }
   
   /* Luxury container */

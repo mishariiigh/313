@@ -44,41 +44,6 @@ export default {
         border: "var(--border)",
         input: "var(--input)",
         ring: "var(--ring)",
-        // Logo-inspired colors for 313 platform
-        logo: {
-          sage: {
-            DEFAULT: "var(--logo-sage)",
-            light: "var(--logo-sage-light)",
-            dark: "var(--logo-sage-dark)",
-          },
-          gold: "var(--logo-gold)",
-          bronze: "var(--logo-bronze)",
-          cream: "var(--logo-cream)",
-          white: "var(--logo-warm-white)",
-        },
-        // Arabic-inspired custom colors (legacy)
-        arabic: {
-          cream: "var(--arabic-cream)",
-          sage: {
-            DEFAULT: "var(--arabic-sage)",
-            light: "var(--arabic-sage-light)",
-            dark: "var(--arabic-sage-dark)",
-          },
-          gold: "var(--arabic-gold)",
-          terracotta: "var(--arabic-terracotta)",
-        },
-        success: {
-          DEFAULT: "var(--success)",
-          foreground: "var(--success-foreground)",
-        },
-        warning: {
-          DEFAULT: "var(--warning)",
-          foreground: "var(--warning-foreground)",
-        },
-        info: {
-          DEFAULT: "var(--info)",
-          foreground: "var(--info-foreground)",
-        },
         chart: {
           "1": "var(--chart-1)",
           "2": "var(--chart-2)",

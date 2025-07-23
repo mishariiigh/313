@@ -11,11 +11,8 @@ export default function ArabicLayout({ children }: ArabicLayoutProps) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-logo-warm-white via-background to-logo-cream font-arabic">
-      <div className="fixed inset-0 bg-gradient-to-br from-logo-sage/3 via-transparent to-logo-gold/3 pointer-events-none" />
-      <div className="relative z-10">
-        {children}
-      </div>
+    <div className="min-h-screen bg-neutral-50 font-arabic">
+      {children}
     </div>
   );
 }

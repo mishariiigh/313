@@ -107,13 +107,13 @@ export default function Dashboard() {
       {/* Creative Header */}
       <header className="relative overflow-hidden">
         {/* Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-r from-logo-cream via-logo-warm-white to-logo-cream opacity-90"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-red-50 via-red-100 to-red-50 opacity-80"></div>
         
         {/* Decorative Elements */}
         <div className="absolute top-0 left-0 w-full h-full">
-          <div className="absolute top-4 left-16 w-32 h-32 bg-logo-sage/20 rounded-full animate-pulse"></div>
-          <div className="absolute top-12 right-24 w-24 h-24 bg-logo-gold/15 rounded-full animate-bounce"></div>
-          <div className="absolute bottom-8 left-1/3 w-20 h-20 bg-logo-bronze/25 rounded-full"></div>
+          <div className="absolute top-4 left-16 w-32 h-32 bg-red-200 rounded-full opacity-20 animate-pulse"></div>
+          <div className="absolute top-12 right-24 w-24 h-24 bg-red-300 rounded-full opacity-15 animate-bounce"></div>
+          <div className="absolute bottom-8 left-1/3 w-20 h-20 bg-red-200 rounded-full opacity-10"></div>
         </div>
 
         <div className="relative z-10 luxury-container">
@@ -121,23 +121,23 @@ export default function Dashboard() {
             <div className="flex items-center space-x-reverse space-x-6">
               {/* Enhanced Logo */}
               <div className="relative">
-                <div className="h-16 w-16 bg-gradient-to-br from-logo-sage to-logo-sage-dark rounded-2xl flex items-center justify-center shadow-xl transform hover:scale-105 transition-all duration-300">
+                <div className="h-16 w-16 bg-gradient-to-br from-red-400 to-red-600 rounded-2xl flex items-center justify-center shadow-xl transform hover:scale-105 transition-all duration-300">
                   <Brain className="text-white h-8 w-8" />
                 </div>
-                <div className="absolute -top-1 -right-1 w-6 h-6 bg-logo-gold rounded-full flex items-center justify-center animate-pulse">
+                <div className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center animate-pulse">
                   <Star className="text-white h-3 w-3" />
                 </div>
               </div>
               
               {/* Enhanced Title */}
               <div className="space-y-1">
-                <h1 className="text-3xl font-bold logo-text-gradient">
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-red-600 via-red-700 to-red-800 bg-clip-text text-transparent">
                   313
                 </h1>
                 <div className="flex items-center space-x-2 space-x-reverse">
-                  <div className="w-2 h-2 bg-logo-gold rounded-full animate-pulse"></div>
-                  <p className="text-logo-sage-dark font-medium">مرحباً، {user?.name}</p>
-                  <Trophy className="h-4 w-4 text-logo-gold" />
+                  <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
+                  <p className="text-red-600 font-medium">مرحباً، {user?.name}</p>
+                  <Trophy className="h-4 w-4 text-red-500" />
                 </div>
               </div>
             </div>
@@ -146,17 +146,18 @@ export default function Dashboard() {
             <div className="flex items-center space-x-reverse space-x-3">
               {user?.isAdmin && (
                 <button
-                  className="logo-button px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  className="group relative px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                   onClick={() => setLocation("/admin-dashboard")}
                 >
-                  <div className="flex items-center">
+                  <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-red-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="relative flex items-center">
                     <Settings className="h-5 w-5 ml-2" />
                     الإدارة
                   </div>
                 </button>
               )}
               <button
-                className="px-6 py-3 bg-logo-warm-white border-2 border-logo-sage/30 text-logo-sage-dark rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:bg-logo-cream"
+                className="group relative px-6 py-3 bg-white border-2 border-red-300 text-red-600 rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:bg-red-50"
                 onClick={handleLogout}
               >
                 <div className="flex items-center">
@@ -169,7 +170,7 @@ export default function Dashboard() {
         </div>
         
         {/* Bottom Border */}
-        <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-logo-gold/30 via-logo-sage to-logo-gold/30"></div>
+        <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-red-300 via-red-500 to-red-300"></div>
       </header>
 
       {/* Main Content */}
@@ -188,30 +189,30 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           
           {/* Available Games Card */}
-          <div className="logo-card group relative overflow-hidden rounded-2xl bg-gradient-to-br from-logo-warm-white to-logo-cream border-2 border-logo-sage/20 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+          <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-red-50 to-red-100 border-2 border-red-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
             {/* Decorative Background */}
             <div className="absolute inset-0 opacity-10">
-              <div className="absolute top-4 right-4 w-20 h-20 bg-logo-sage/30 rounded-full animate-pulse"></div>
-              <div className="absolute bottom-4 left-4 w-16 h-16 bg-logo-gold/30 rounded-full animate-bounce"></div>
+              <div className="absolute top-4 right-4 w-20 h-20 bg-red-300 rounded-full animate-pulse"></div>
+              <div className="absolute bottom-4 left-4 w-16 h-16 bg-red-400 rounded-full animate-bounce"></div>
             </div>
             
             <div className="relative z-10 p-8">
               <div className="flex items-center justify-between mb-6">
-                <div className="w-14 h-14 bg-gradient-to-br from-logo-sage to-logo-sage-dark rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <div className="w-14 h-14 bg-gradient-to-br from-red-400 to-red-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
                   <Gamepad2 className="text-white h-7 w-7" />
                 </div>
                 <div className="text-right">
-                  <div className="text-3xl font-bold text-logo-sage-dark mb-1">{user?.availableGames || 0}</div>
-                  <div className="text-sm text-logo-sage font-medium">ألعاب متاحة</div>
+                  <div className="text-3xl font-bold text-red-700 mb-1">{user?.availableGames || 0}</div>
+                  <div className="text-sm text-red-500 font-medium">ألعاب متاحة</div>
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-logo-sage-dark mb-2">الألعاب المتاحة</h3>
-              <p className="text-logo-sage text-sm">جاهز للعب والاستمتاع</p>
+              <h3 className="text-xl font-bold text-red-800 mb-2">الألعاب المتاحة</h3>
+              <p className="text-red-600 text-sm">جاهز للعب والاستمتاع</p>
               
               {/* Progress Bar */}
-              <div className="mt-4 bg-logo-sage/20 rounded-full h-2">
+              <div className="mt-4 bg-red-200 rounded-full h-2">
                 <div 
-                  className="bg-gradient-to-r from-logo-sage to-logo-sage-light h-2 rounded-full transition-all duration-500"
+                  className="bg-gradient-to-r from-red-400 to-red-600 h-2 rounded-full transition-all duration-500"
                   style={{ width: `${Math.min((user?.availableGames || 0) * 10, 100)}%` }}
                 ></div>
               </div>
@@ -219,50 +220,50 @@ export default function Dashboard() {
           </div>
 
           {/* Completed Games Card */}
-          <div className="logo-card group relative overflow-hidden rounded-2xl bg-gradient-to-br from-logo-cream to-logo-warm-white border-2 border-logo-gold/20 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+          <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-50 to-orange-100 border-2 border-orange-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
             {/* Decorative Background */}
             <div className="absolute inset-0 opacity-10">
-              <div className="absolute top-6 left-6 w-24 h-24 bg-logo-gold/30 rounded-full animate-pulse"></div>
-              <div className="absolute bottom-2 right-2 w-12 h-12 bg-logo-bronze/30 rounded-full animate-bounce"></div>
+              <div className="absolute top-6 left-6 w-24 h-24 bg-orange-300 rounded-full animate-pulse"></div>
+              <div className="absolute bottom-2 right-2 w-12 h-12 bg-orange-400 rounded-full animate-bounce"></div>
             </div>
             
             <div className="relative z-10 p-8">
               <div className="flex items-center justify-between mb-6">
-                <div className="w-14 h-14 bg-gradient-to-br from-logo-gold to-logo-bronze rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <div className="w-14 h-14 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
                   <Trophy className="text-white h-7 w-7" />
                 </div>
                 <div className="text-right">
-                  <div className="text-3xl font-bold text-logo-sage-dark mb-1">{historyData?.gameSessions?.filter((session: any) => session.isCompleted).length || 0}</div>
-                  <div className="text-sm text-logo-gold font-medium">ألعاب مكتملة</div>
+                  <div className="text-3xl font-bold text-orange-700 mb-1">{historyData?.gameSessions?.filter((session: any) => session.isCompleted).length || 0}</div>
+                  <div className="text-sm text-orange-500 font-medium">ألعاب مكتملة</div>
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-logo-sage-dark mb-2">الألعاب المكتملة</h3>
-              <p className="text-logo-gold text-sm">إنجازات محققة بنجاح</p>
+              <h3 className="text-xl font-bold text-orange-800 mb-2">الألعاب المكتملة</h3>
+              <p className="text-orange-600 text-sm">إنجازات محققة بنجاح</p>
               
               {/* Achievement Stars */}
               <div className="mt-4 flex items-center space-x-1 space-x-reverse">
                 {[...Array(Math.min(historyData?.gameSessions?.filter((session: any) => session.isCompleted).length || 0, 5))].map((_, i) => (
-                  <Star key={i} className="h-4 w-4 text-logo-gold fill-current animate-pulse" style={{ animationDelay: `${i * 0.1}s` }} />
+                  <Star key={i} className="h-4 w-4 text-orange-400 fill-current animate-pulse" style={{ animationDelay: `${i * 0.1}s` }} />
                 ))}
               </div>
             </div>
           </div>
 
           {/* Total Score Card */}
-          <div className="logo-card group relative overflow-hidden rounded-2xl bg-gradient-to-br from-logo-warm-white to-logo-cream border-2 border-logo-bronze/20 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+          <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-yellow-50 to-yellow-100 border-2 border-yellow-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
             {/* Decorative Background */}
             <div className="absolute inset-0 opacity-10">
-              <div className="absolute top-2 right-8 w-18 h-18 bg-logo-bronze/30 rounded-full animate-pulse"></div>
-              <div className="absolute bottom-6 left-2 w-14 h-14 bg-logo-gold/30 rounded-full animate-bounce"></div>
+              <div className="absolute top-2 right-8 w-18 h-18 bg-yellow-300 rounded-full animate-pulse"></div>
+              <div className="absolute bottom-6 left-2 w-14 h-14 bg-yellow-400 rounded-full animate-bounce"></div>
             </div>
             
             <div className="relative z-10 p-8">
               <div className="flex items-center justify-between mb-6">
-                <div className="w-14 h-14 bg-gradient-to-br from-logo-bronze to-logo-gold rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <div className="w-14 h-14 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
                   <Star className="text-white h-7 w-7" />
                 </div>
                 <div className="text-right">
-                  <div className="text-3xl font-bold text-logo-sage-dark mb-1">
+                  <div className="text-3xl font-bold text-yellow-700 mb-1">
                     {historyData?.gameSessions?.reduce((total: number, session: any) => {
                       if (session.gameType === "team") {
                         return total + (session.team1Score || 0) + (session.team2Score || 0);
@@ -270,7 +271,7 @@ export default function Dashboard() {
                       return total + (session.score || 0);
                     }, 0) || 0}
                   </div>
-                  <div className="text-sm text-logo-bronze font-medium">نقطة إجمالية</div>
+                  <div className="text-sm text-yellow-500 font-medium">نقطة إجمالية</div>
                 </div>
               </div>
               <h3 className="text-xl font-bold text-yellow-800 mb-2">النقاط الإجمالية</h3>
