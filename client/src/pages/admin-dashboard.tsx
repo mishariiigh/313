@@ -456,8 +456,7 @@ export default function AdminDashboard() {
   // Helper function to check if we can add more questions to a category/difficulty
   const canAddQuestion = (category: string, difficulty: string) => {
     if (!category || !difficulty) return false;
-    const currentCount = getQuestionCount(category, difficulty);
-    return currentCount < 2; // Max 2 questions per difficulty per category
+    return true; // Allow unlimited questions per category and difficulty
   };
 
   // Helper function to get category status
@@ -472,7 +471,7 @@ export default function AdminDashboard() {
       medium: mediumCount,
       hard: hardCount,
       total: totalCount,
-      isComplete: totalCount === 6 && easyCount === 2 && mediumCount === 2 && hardCount === 2
+      isComplete: totalCount > 0 // Show as complete if there are any questions
     };
   };
 
@@ -900,7 +899,7 @@ export default function AdminDashboard() {
               <CardHeader>
                 <CardTitle>نظرة عامة على الفئات</CardTitle>
                 <CardDescription>
-                  كل فئة تحتاج 6 أسئلة بالضبط: 2 سهل (200 نقطة) + 2 متوسط (400 نقطة) + 2 صعب (600 نقطة)
+                  يمكن إضافة عدد غير محدود من الأسئلة لكل فئة وكل مستوى صعوبة
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -912,26 +911,26 @@ export default function AdminDashboard() {
                         <div className="flex items-center justify-between mb-2">
                           <h3 className="font-medium">{category.displayName}</h3>
                           <Badge variant={status.isComplete ? "default" : "secondary"}>
-                            {status.total}/6
+                            {status.total}
                           </Badge>
                         </div>
                         <div className="space-y-1 text-sm">
                           <div className="flex justify-between">
                             <span className="text-green-600">سهل (200):</span>
-                            <span className={status.easy === 2 ? "text-green-600" : "text-gray-500"}>
-                              {status.easy}/2
+                            <span className="text-green-600">
+                              {status.easy}
                             </span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-yellow-600">متوسط (400):</span>
-                            <span className={status.medium === 2 ? "text-green-600" : "text-gray-500"}>
-                              {status.medium}/2
+                            <span className="text-green-600">
+                              {status.medium}
                             </span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-red-600">صعب (600):</span>
-                            <span className={status.hard === 2 ? "text-green-600" : "text-gray-500"}>
-                              {status.hard}/2
+                            <span className="text-green-600">
+                              {status.hard}
                             </span>
                           </div>
                         </div>
