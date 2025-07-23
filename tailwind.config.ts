@@ -44,7 +44,19 @@ export default {
         border: "var(--border)",
         input: "var(--input)",
         ring: "var(--ring)",
-        // Arabic-inspired custom colors
+        // Logo-inspired colors for 313 platform
+        logo: {
+          sage: {
+            DEFAULT: "var(--logo-sage)",
+            light: "var(--logo-sage-light)",
+            dark: "var(--logo-sage-dark)",
+          },
+          gold: "var(--logo-gold)",
+          bronze: "var(--logo-bronze)",
+          cream: "var(--logo-cream)",
+          white: "var(--logo-warm-white)",
+        },
+        // Arabic-inspired custom colors (legacy)
         arabic: {
           cream: "var(--arabic-cream)",
           sage: {

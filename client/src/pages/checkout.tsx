@@ -63,31 +63,33 @@ const CheckoutForm = ({ selectedPackage, finalPrice }: { selectedPackage: GamePa
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
-      <div className="luxury-card p-6">
+      <div className="logo-card p-6">
         <PaymentElement />
       </div>
       <div className="flex space-x-reverse space-x-4">
-        <button 
+        <Button 
           type="button" 
-          className="luxury-button-secondary flex-1 py-4" 
+          variant="outline"
+          className="flex-1 py-4" 
           onClick={() => setLocation("/dashboard")}
         >
           إلغاء
-        </button>
-        <button 
+        </Button>
+        <Button 
           type="submit" 
-          className="luxury-button flex-1 py-4" 
+          variant="elegant"
+          className="flex-1 py-4" 
           disabled={!stripe || isProcessing}
         >
           {isProcessing ? (
-            <div className="luxury-spinner mx-auto" />
+            <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
             <>
               <CreditCard className="ml-2 h-5 w-5" />
               دفع ${finalPrice.toFixed(2)}
             </>
           )}
-        </button>
+        </Button>
       </div>
     </form>
   );
