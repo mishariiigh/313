@@ -82,15 +82,18 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   // Create categories array from selected categories in game session
   const gameSession = gameData?.gameSession || {};
   const selectedCategoryNames = gameSession?.selectedCategories || gameSession?.categories || [];
-  const categories = categoriesData?.categories?.filter((cat: any) => 
-    cat.isActive && selectedCategoryNames.includes(cat.name) && cat.name && cat.displayName
-  ).map((cat: any) => ({
-    id: cat.name,
-    name: cat.name,        // Use English name for backend API compatibility
-    displayName: cat.displayName, // Use Arabic name for UI display
-    logoUrl: cat.logoUrl,  // Include the uploaded image URL
-    icon: CATEGORY_ICONS[cat.name] || CATEGORY_ICONS[cat.displayName] || "📝"
-  })) || [];
+  
+  // Maintain the same order as selectedCategories to match question organization
+  const categories = selectedCategoryNames.map((categoryName: string) => {
+    const cat = categoriesData?.categories?.find((c: any) => c.name === categoryName && c.isActive);
+    return cat ? {
+      id: cat.name,
+      name: cat.name,        // Use English name for backend API compatibility
+      displayName: cat.displayName, // Use Arabic name for UI display
+      logoUrl: cat.logoUrl,  // Include the uploaded image URL
+      icon: CATEGORY_ICONS[cat.name] || CATEGORY_ICONS[cat.displayName] || "📝"
+    } : null;
+  }).filter(Boolean);
 
   useEffect(() => {
     if (!user) {
@@ -266,16 +269,14 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
     // Debug: Log game data structure
     console.log(`Clicking question: categoryName=${categoryName}, index=${index}, questionKey=${questionKey}`);
-    console.log('Game data structure:', gameData);
-    console.log('Available questions:', gameData?.questions?.length || 0);
-    console.log('Categories:', categories);
     
-    // Find the question - questions are organized by category in groups of 6
-    const categoryIndex = categories.findIndex((cat: any) => cat.name === categoryName);
+    // Find the question - questions are organized by selected categories in order
+    const selectedCategories = gameSession?.selectedCategories || [];
+    const categoryIndex = selectedCategories.findIndex((cat: string) => cat === categoryName);
     const questionIndex = categoryIndex * 6 + index;
     const question = gameData?.questions?.[questionIndex];
     
-    console.log(`categoryIndex=${categoryIndex}, questionIndex=${questionIndex}, question found:`, !!question);
+    console.log(`selectedCategories=${JSON.stringify(selectedCategories)}, categoryIndex=${categoryIndex}, questionIndex=${questionIndex}, question found:`, !!question);
     
     if (question) {
       // Store the question key with the question so we can use it later
