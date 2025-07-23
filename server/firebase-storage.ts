@@ -38,6 +38,7 @@ export interface IFirebaseStorage {
   // User operations
   getUser(id: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
+  getUserByPhoneNumber(phoneNumber: string): Promise<User | undefined>;
   createUser(insertUser: InsertUser): Promise<User>;
   updateUserGames(id: string, availableGames: number): Promise<User>;
   getAllUsers(): Promise<User[]>;
@@ -123,6 +124,16 @@ export class FirebaseStorage implements IFirebaseStorage {
 
   async getUserByEmail(email: string): Promise<User | undefined> {
     const q = query(collection(db, "users"), where("email", "==", email));
+    const snapshot = await getDocs(q);
+    if (!snapshot.empty) {
+      const userDoc = snapshot.docs[0];
+      return { id: userDoc.id, ...userDoc.data() } as User;
+    }
+    return undefined;
+  }
+
+  async getUserByPhoneNumber(phoneNumber: string): Promise<User | undefined> {
+    const q = query(collection(db, "users"), where("phoneNumber", "==", phoneNumber));
     const snapshot = await getDocs(q);
     if (!snapshot.empty) {
       const userDoc = snapshot.docs[0];

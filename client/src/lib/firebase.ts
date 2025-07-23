@@ -1,15 +1,25 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult } from "firebase/auth";
+import { clientConfig } from "./config";
 
+// Validate Firebase configuration
+if (!clientConfig.firebase.apiKey || !clientConfig.firebase.projectId || !clientConfig.firebase.appId) {
+  throw new Error(
+    "Missing required Firebase environment variables. Please check your .env file and ensure you have:\n" +
+    "- VITE_FIREBASE_API_KEY\n" +
+    "- VITE_FIREBASE_PROJECT_ID\n" +
+    "- VITE_FIREBASE_APP_ID"
+  );
+}
+
+// Firebase configuration from environment variables
 const firebaseConfig = {
-  apiKey: "AIzaSyBQwHA7qmGPAuxqxqYFL_v53NwmWKMsBiU",
-  authDomain: "game-aad88.firebaseapp.com",
-  projectId: "game-aad88",
-  storageBucket: "game-aad88.firebasestorage.app",
-  messagingSenderId: "376324753966",
-  appId: "1:376324753966:web:9a79dba8c22d2efb4c6dbf",
-  measurementId: "G-XR8D226WZJ"
+  apiKey: clientConfig.firebase.apiKey,
+  authDomain: clientConfig.firebase.authDomain,
+  projectId: clientConfig.firebase.projectId,
+  storageBucket: clientConfig.firebase.storageBucket,
+  appId: clientConfig.firebase.appId,
 };
 
 // Initialize Firebase

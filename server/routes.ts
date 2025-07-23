@@ -74,12 +74,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication routes
   app.post("/api/auth/register", async (req, res) => {
     try {
-      const { email, password, name } = insertUserSchema.parse(req.body);
+      const { email, password, name, phoneNumber } = insertUserSchema.parse(req.body);
       
-      // Check if user already exists
-      const existingUser = await storage.getUserByEmail(email);
-      if (existingUser) {
-        return res.status(400).json({ message: "المستخدم موجود بالفعل" });
+      // Check if user already exists with email
+      const existingUserByEmail = await storage.getUserByEmail(email);
+      if (existingUserByEmail) {
+        return res.status(400).json({ message: "البريد الإلكتروني مستخدم بالفعل" });
+      }
+
+      // Check if user already exists with phone number
+      const existingUserByPhone = await storage.getUserByPhoneNumber(phoneNumber);
+      if (existingUserByPhone) {
+        return res.status(400).json({ message: "رقم الهاتف مستخدم بالفعل" });
       }
 
       // Hash password
@@ -88,6 +94,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create user with 2 free games
       const user = await storage.createUser({
         email,
+        phoneNumber,
         password: hashedPassword,
         name,
         availableGames: 2,
@@ -98,16 +105,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (err) {
           return res.status(500).json({ message: "خطأ في تسجيل الدخول" });
         }
-        res.json({ user: { id: user.id, email: user.email, name: user.name, availableGames: user.availableGames, isAdmin: user.isAdmin } });
+        res.json({ user: { id: user.id, email: user.email, name: user.name, phoneNumber: user.phoneNumber, availableGames: user.availableGames, isAdmin: user.isAdmin } });
       });
     } catch (error) {
+      console.error('Registration error:', error);
+      if (error instanceof z.ZodError) {
+        const arabicErrors = error.errors.map(err => {
+          if (err.path.includes('phoneNumber')) {
+            return "رقم الهاتف غير صحيح";
+          }
+          return err.message;
+        });
+        return res.status(400).json({ message: arabicErrors.join(', ') });
+      }
       res.status(400).json({ message: "خطأ في إنشاء الحساب" });
     }
   });
 
   app.post("/api/auth/login", passport.authenticate("local"), (req, res) => {
     const user = req.user as any;
-    res.json({ user: { id: user.id, email: user.email, name: user.name, availableGames: user.availableGames, isAdmin: user.isAdmin } });
+    res.json({ user: { id: user.id, email: user.email, name: user.name, phoneNumber: user.phoneNumber, availableGames: user.availableGames, isAdmin: user.isAdmin } });
   });
 
   app.post("/api/auth/logout", (req, res) => {
@@ -122,7 +139,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/auth/me", (req, res) => {
     if (req.isAuthenticated()) {
       const user = req.user as any;
-      res.json({ user: { id: user.id, email: user.email, name: user.name, availableGames: user.availableGames, isAdmin: user.isAdmin } });
+      res.json({ user: { id: user.id, email: user.email, name: user.name, phoneNumber: user.phoneNumber, availableGames: user.availableGames, isAdmin: user.isAdmin } });
     } else {
       res.status(401).json({ message: "غير مسجل الدخول" });
     }
@@ -1535,12 +1552,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      const { email, name, password, availableGames = 0, isAdmin = false } = req.body;
+      const { email, phoneNumber, name, password, availableGames = 0, isAdmin = false } = req.body;
       
-      // Check if user already exists
-      const existingUser = await storage.getUserByEmail(email);
-      if (existingUser) {
-        return res.status(400).json({ message: "المستخدم موجود بالفعل" });
+      // Check if user already exists with email
+      const existingUserByEmail = await storage.getUserByEmail(email);
+      if (existingUserByEmail) {
+        return res.status(400).json({ message: "البريد الإلكتروني مستخدم بالفعل" });
+      }
+
+      // Check if user already exists with phone number
+      if (phoneNumber) {
+        const existingUserByPhone = await storage.getUserByPhoneNumber(phoneNumber);
+        if (existingUserByPhone) {
+          return res.status(400).json({ message: "رقم الهاتف مستخدم بالفعل" });
+        }
       }
 
       // Hash password
@@ -1548,6 +1573,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const userData = insertUserSchema.parse({
         email,
+        phoneNumber: phoneNumber || '',
         name,
         password: hashedPassword,
         availableGames,
@@ -1573,16 +1599,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     try {
       const userId = req.params.id; // Use string ID for Firebase
-      const { email, name, password, availableGames, isAdmin } = req.body;
+      const { email, phoneNumber, name, password, availableGames, isAdmin } = req.body;
       
       // Don't allow admin to modify their own admin status
       if (userId === user.id && isAdmin !== undefined) {
         return res.status(400).json({ message: "لا يمكن تعديل صلاحيات المدير الخاص بك" });
       }
 
+      // Check if phone number is being changed and is already in use
+      if (phoneNumber !== undefined && phoneNumber !== '') {
+        const existingUserByPhone = await storage.getUserByPhoneNumber(phoneNumber);
+        if (existingUserByPhone && existingUserByPhone.id !== userId) {
+          return res.status(400).json({ message: "رقم الهاتف مستخدم بالفعل" });
+        }
+      }
+
       const updates: Partial<InsertUser> = {};
       
       if (email !== undefined) updates.email = email;
+      if (phoneNumber !== undefined) updates.phoneNumber = phoneNumber;
       if (name !== undefined) updates.name = name;
       if (availableGames !== undefined) updates.availableGames = availableGames;
       if (isAdmin !== undefined) updates.isAdmin = isAdmin;

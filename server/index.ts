@@ -2,10 +2,18 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { firebaseAutoSync } from "./firebase-auto-sync";
+import { config as appConfig } from "@shared/config";
 
 // Load environment variables
 import { config } from "dotenv";
 config();
+
+// Validate configuration
+console.log("🔧 Validating environment configuration...");
+const isValid = appConfig.validate();
+if (!isValid) {
+  console.warn("⚠️  Some environment variables are missing. Check your .env file.");
+}
 
 const app = express();
 app.use(express.json());

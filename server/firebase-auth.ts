@@ -17,7 +17,7 @@ export const verifyIdToken = async (idToken: string) => {
 // Create or update user in our database using Firebase storage
 export const createOrUpdateFirebaseUser = async (firebaseUser: any) => {
   try {
-    const { uid, email, name, picture } = firebaseUser;
+    const { uid, email, name, picture, phoneNumber } = firebaseUser;
     
     // Import storage here to avoid circular dependency
     const { storage } = await import('./firebase-storage');
@@ -26,9 +26,10 @@ export const createOrUpdateFirebaseUser = async (firebaseUser: any) => {
     const existingUser = await storage.getUser(uid);
     
     if (!existingUser) {
-      // Create new user
+      // Create new user - Google users might not have phone numbers
       const newUser = await storage.createUser({
         email: email || '',
+        phoneNumber: phoneNumber || '', // Phone number might be empty for Google auth
         name: name || email?.split('@')[0] || 'مستخدم',
         password: '', // No password for Google auth users
         availableGames: 2, // Give new users 2 free games
@@ -41,6 +42,7 @@ export const createOrUpdateFirebaseUser = async (firebaseUser: any) => {
       const updatedUser = await storage.updateUser(uid, {
         email: email || existingUser.email,
         name: name || existingUser.name,
+        phoneNumber: phoneNumber || existingUser.phoneNumber,
       });
       
       return updatedUser;

@@ -1,0 +1,326 @@
+[
+  {
+    "question": "من هو مؤسس الدولة السعودية الأولى؟",
+    "answer": "محمد بن سعود",
+    "category": "history",
+    "difficulty": "سهل",
+    "hint": "أسس الدولة السعودية في القرن الثامن عشر",
+    "explanation": "محمد بن سعود هو مؤسس الدولة السعودية الأولى عام 1744",
+    "isPublished": true
+  },
+  {
+    "question": "في أي عام تم توحيد المملكة العربية السعودية؟",
+    "answer": "1932",
+    "category": "history",
+    "difficulty": "متوسط",
+    "hint": "في القرن العشرين",
+    "explanation": "تم توحيد المملكة العربية السعودية على يد الملك عبد العزيز آل سعود عام 1932",
+    "isPublished": true
+  },
+  {
+    "question": "ما هي عاصمة الدولة الأموية؟",
+    "answer": "دمشق",
+    "category": "history",
+    "difficulty": "سهل",
+    "hint": "عاصمة سوريا الحالية",
+    "explanation": "دمشق كانت عاصمة الدولة الأموية من 661 إلى 750 ميلادية",
+    "isPublished": true
+  },
+  {
+    "question": "من هو القائد الذي فتح الأندلس؟",
+    "answer": "طارق بن زياد",
+    "category": "history",
+    "difficulty": "متوسط",
+    "hint": "اسمه مرتبط بجبل في إسبانيا",
+    "explanation": "طارق بن زياد فتح الأندلس عام 711 ميلادية",
+    "isPublished": true
+  },
+  {
+    "question": "في أي معركة انتصر صلاح الدين على الصليبيين؟",
+    "answer": "حطين",
+    "category": "history",
+    "difficulty": "صعب",
+    "hint": "معركة شهيرة في فلسطين",
+    "explanation": "معركة حطين عام 1187 ميلادية كانت نصراً حاسماً لصلاح الدين",
+    "isPublished": true
+  },
+  {
+    "question": "من هو الخليفة الذي أمر بجمع القرآن؟",
+    "answer": "عثمان بن عفان",
+    "category": "history",
+    "difficulty": "صعب",
+    "hint": "ثالث الخلفاء الراشدين",
+    "explanation": "عثمان بن عفان أمر بجمع القرآن في مصحف واحد",
+    "isPublished": true
+  },
+  {
+    "question": "ما هي أكبر دولة في العالم من حيث المساحة؟",
+    "answer": "روسيا",
+    "category": "geography",
+    "difficulty": "سهل",
+    "hint": "تقع في أوروبا وآسيا",
+    "explanation": "روسيا هي أكبر دولة في العالم بمساحة 17.1 مليون كيلومتر مربع",
+    "isPublished": true
+  },
+  {
+    "question": "ما هو أطول نهر في العالم؟",
+    "answer": "النيل",
+    "category": "geography",
+    "difficulty": "سهل",
+    "hint": "يمر عبر مصر والسودان",
+    "explanation": "نهر النيل هو أطول نهر في العالم بطول 6650 كيلومتر",
+    "isPublished": true
+  },
+  {
+    "question": "في أي قارة تقع صحراء كلهاري؟",
+    "answer": "أفريقيا",
+    "category": "geography",
+    "difficulty": "متوسط",
+    "hint": "قارة سمراء",
+    "explanation": "صحراء كلهاري تقع في جنوب أفريقيا",
+    "isPublished": true
+  },
+  {
+    "question": "ما هي عاصمة أستراليا؟",
+    "answer": "كانبيرا",
+    "category": "geography",
+    "difficulty": "متوسط",
+    "hint": "ليست سيدني أو ملبورن",
+    "explanation": "كانبيرا هي العاصمة الفيدرالية لأستراليا",
+    "isPublished": true
+  },
+  {
+    "question": "أي دولة تحتوي على أكبر عدد من الجزر؟",
+    "answer": "فنلندا",
+    "category": "geography",
+    "difficulty": "صعب",
+    "hint": "دولة إسكندنافية",
+    "explanation": "فنلندا تحتوي على أكثر من 267,570 جزيرة",
+    "isPublished": true
+  },
+  {
+    "question": "ما هو أعمق محيط في العالم؟",
+    "answer": "المحيط الهادئ",
+    "category": "geography",
+    "difficulty": "صعب",
+    "hint": "أكبر محيط في العالم",
+    "explanation": "المحيط الهادئ يحتوي على أعمق نقطة في العالم - خندق ماريانا",
+    "isPublished": true
+  },
+  {
+    "question": "كم عدد أركان الإسلام؟",
+    "answer": "خمسة",
+    "category": "religion",
+    "difficulty": "سهل",
+    "hint": "عدد أصابع اليد الواحدة",
+    "explanation": "أركان الإسلام خمسة: الشهادة، الصلاة، الزكاة، الصيام، الحج",
+    "isPublished": true
+  },
+  {
+    "question": "ما هو أول شهر في السنة الهجرية؟",
+    "answer": "محرم",
+    "category": "religion",
+    "difficulty": "سهل",
+    "hint": "شهر حرام",
+    "explanation": "محرم هو أول شهر في السنة الهجرية وهو من الأشهر الحرم",
+    "isPublished": true
+  },
+  {
+    "question": "في أي غار نزل الوحي على الرسول محمد؟",
+    "answer": "غار حراء",
+    "category": "religion",
+    "difficulty": "متوسط",
+    "hint": "في جبل النور",
+    "explanation": "غار حراء في جبل النور بمكة المكرمة حيث نزل الوحي أول مرة",
+    "isPublished": true
+  },
+  {
+    "question": "كم عدد سور القرآن الكريم؟",
+    "answer": "114",
+    "category": "religion",
+    "difficulty": "متوسط",
+    "hint": "أكثر من مائة",
+    "explanation": "القرآن الكريم يحتوي على 114 سورة",
+    "isPublished": true
+  },
+  {
+    "question": "ما هي أطول سورة في القرآن الكريم؟",
+    "answer": "البقرة",
+    "category": "religion",
+    "difficulty": "صعب",
+    "hint": "اسم حيوان",
+    "explanation": "سورة البقرة هي أطول سورة في القرآن الكريم",
+    "isPublished": true
+  },
+  {
+    "question": "في أي عام كانت غزوة بدر؟",
+    "answer": "2 هجري",
+    "category": "religion",
+    "difficulty": "صعب",
+    "hint": "السنة الثانية من الهجرة",
+    "explanation": "غزوة بدر كانت في السنة الثانية من الهجرة",
+    "isPublished": true
+  },
+  {
+    "question": "ما هو العنصر الكيميائي الأكثر انتشاراً في الكون؟",
+    "answer": "الهيدروجين",
+    "category": "science",
+    "difficulty": "سهل",
+    "hint": "أبسط عنصر في الجدول الدوري",
+    "explanation": "الهيدروجين يشكل حوالي 75% من كتلة الكون المرئي",
+    "isPublished": true
+  },
+  {
+    "question": "كم عدد الكروموسومات في الخلية البشرية؟",
+    "answer": "46",
+    "category": "science",
+    "difficulty": "سهل",
+    "hint": "23 زوج",
+    "explanation": "الإنسان لديه 46 كروموسوماً مرتبة في 23 زوجاً",
+    "isPublished": true
+  },
+  {
+    "question": "ما هو أسرع حيوان بري في العالم؟",
+    "answer": "الفهد",
+    "category": "science",
+    "difficulty": "متوسط",
+    "hint": "حيوان مفترس أفريقي",
+    "explanation": "الفهد يمكنه الوصول لسرعة 120 كم/ساعة",
+    "isPublished": true
+  },
+  {
+    "question": "ما هي وحدة قياس الطاقة في النظام الدولي؟",
+    "answer": "الجول",
+    "category": "science",
+    "difficulty": "متوسط",
+    "hint": "تسمى باسم عالم إنجليزي",
+    "explanation": "الجول هو وحدة الطاقة في النظام الدولي للوحدات",
+    "isPublished": true
+  },
+  {
+    "question": "كم عدد القلوب في الأخطبوط؟",
+    "answer": "3",
+    "category": "science",
+    "difficulty": "صعب",
+    "hint": "أكثر من قلبين",
+    "explanation": "الأخطبوط لديه ثلاثة قلوب لضخ الدم",
+    "isPublished": true
+  },
+  {
+    "question": "ما هي درجة الحرارة المطلقة صفر بالكلفن؟",
+    "answer": "-273.15 درجة مئوية",
+    "category": "science",
+    "difficulty": "صعب",
+    "hint": "أبرد درجة حرارة ممكنة",
+    "explanation": "الصفر المطلق هو -273.15 درجة مئوية أو 0 كلفن",
+    "isPublished": true
+  },
+  {
+    "question": "ما هي أكبر مدينة في العالم من حيث عدد السكان؟",
+    "answer": "طوكيو",
+    "category": "culture",
+    "difficulty": "سهل",
+    "hint": "عاصمة اليابان",
+    "explanation": "طوكيو هي أكبر منطقة حضرية في العالم بأكثر من 37 مليون نسمة",
+    "isPublished": true
+  },
+  {
+    "question": "من هو مؤلف رواية 'مئة عام من العزلة'؟",
+    "answer": "غابرييل غارسيا ماركيز",
+    "category": "culture",
+    "difficulty": "سهل",
+    "hint": "كاتب كولومبي حائز على نوبل",
+    "explanation": "غابرييل غارسيا ماركيز كاتب كولومبي كتب هذه الرواية الشهيرة",
+    "isPublished": true
+  },
+  {
+    "question": "في أي بلد تم اختراع البيتزا؟",
+    "answer": "إيطاليا",
+    "category": "culture",
+    "difficulty": "متوسط",
+    "hint": "بلد البوت والمعكرونة",
+    "explanation": "البيتزا تم اختراعها في نابولي، إيطاليا في القرن الثامن عشر",
+    "isPublished": true
+  },
+  {
+    "question": "ما هو أطول فيلم في تاريخ السينما؟",
+    "answer": "أمبيانس",
+    "category": "culture",
+    "difficulty": "متوسط",
+    "hint": "فيلم تجريبي مدته أسابيع",
+    "explanation": "فيلم أمبيانس للمخرج أندرش فايبرغ مدته 720 ساعة (30 يوماً)",
+    "isPublished": true
+  },
+  {
+    "question": "كم عدد المفاتيح في البيانو القياسي؟",
+    "answer": "88",
+    "category": "culture",
+    "difficulty": "صعب",
+    "hint": "بين 80 و 90",
+    "explanation": "البيانو القياسي يحتوي على 88 مفتاحاً (52 أبيض و 36 أسود)",
+    "isPublished": true
+  },
+  {
+    "question": "ما هي أقدم جامعة في العالم ما زالت تعمل؟",
+    "answer": "جامعة القرويين",
+    "category": "culture",
+    "difficulty": "صعب",
+    "hint": "في المغرب، أسستها امرأة",
+    "explanation": "جامعة القرويين في فاس بالمغرب أسست عام 859 م",
+    "isPublished": true
+  },
+  {
+    "question": "ما معنى كلمة 'محقان' في اللهجة الكويتية؟",
+    "answer": "متأكد أو واثق",
+    "category": "me7gan",
+    "difficulty": "سهل",
+    "hint": "يعبر عن الثقة",
+    "explanation": "محقان تعني متأكد أو واثق في اللهجة الكويتية",
+    "isPublished": true
+  },
+  {
+    "question": "ما هو 'الدشداشة' في الثقافة الكويتية؟",
+    "answer": "الثوب التقليدي",
+    "category": "me7gan",
+    "difficulty": "سهل",
+    "hint": "لباس تقليدي",
+    "explanation": "الدشداشة هي الثوب التقليدي الذي يرتديه الرجال في الكويت والخليج",
+    "isPublished": true
+  },
+  {
+    "question": "ما معنى 'يا هلا وغلا' في التحية الكويتية؟",
+    "answer": "أهلاً وسهلاً",
+    "category": "me7gan",
+    "difficulty": "متوسط",
+    "hint": "تحية ترحيب",
+    "explanation": "يا هلا وغلا هي طريقة ترحيب شائعة في الكويت تعني أهلاً وسهلاً",
+    "isPublished": true
+  },
+  {
+    "question": "ما هو 'المجبوس' في المطبخ الكويتي؟",
+    "answer": "طبق أرز بالدجاج أو اللحم",
+    "category": "me7gan",
+    "difficulty": "متوسط",
+    "hint": "طبق رئيسي تقليدي",
+    "explanation": "المجبوس هو طبق كويتي تقليدي من الأرز المتبل مع الدجاج أو اللحم",
+    "isPublished": true
+  },
+  {
+    "question": "ما معنى 'لا تحاتي' في اللهجة الكويتية؟",
+    "answer": "لا تتعب نفسك أو لا تزعج نفسك",
+    "category": "me7gan",
+    "difficulty": "صعب",
+    "hint": "نصيحة للراحة",
+    "explanation": "لا تحاتي تعني لا تتعب نفسك أو لا تبذل جهداً غير ضروري",
+    "isPublished": true
+  },
+  {
+    "question": "ما هو 'الغترة' في الزي الكويتي التقليدي؟",
+    "answer": "غطاء الرأس الأبيض",
+    "category": "me7gan",
+    "difficulty": "صعب",
+    "hint": "يوضع على الرأس",
+    "explanation": "الغترة هي غطاء الرأس الأبيض التقليدي الذي يرتديه الرجال في الكويت",
+    "isPublished": true
+  }
+]

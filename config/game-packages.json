@@ -1,0 +1,38 @@
+[
+  {
+    "name": "باقة المبتدئين",
+    "description": "مثالية للمبتدئين - لعبة واحدة",
+    "gameCount": 1,
+    "priceInCents": 190,
+    "priceDisplay": "1.900 د.ك",
+    "sortOrder": 1,
+    "isActive": true
+  },
+  {
+    "name": "باقة المحترفين",
+    "description": "للاعبين المتقدمين - 5 ألعاب",
+    "gameCount": 5,
+    "priceInCents": 790,
+    "priceDisplay": "7.900 د.ك",
+    "sortOrder": 2,
+    "isActive": true
+  },
+  {
+    "name": "باقة الخبراء",
+    "description": "للخبراء والمحترفين - 10 ألعاب",
+    "gameCount": 10,
+    "priceInCents": 1490,
+    "priceDisplay": "14.900 د.ك",
+    "sortOrder": 3,
+    "isActive": true
+  },
+  {
+    "name": "باقة الأسرة",
+    "description": "مثالية للعائلات - 20 لعبة",
+    "gameCount": 20,
+    "priceInCents": 2490,
+    "priceDisplay": "24.900 د.ك",
+    "sortOrder": 4,
+    "isActive": true
+  }
+]
