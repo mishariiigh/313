@@ -103,7 +103,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
     if (gameData && categories.length > 0) {
       // Check if game is completed and auto-complete if needed
-      const totalQuestions = categories.length * 6; // 6 questions per category
+      // Limit to 6 categories maximum (since we only display 6 on screen)
+      const maxCategories = Math.min(categories.length, 6);
+      const totalQuestions = maxCategories * 6; // 6 questions per category
       if (gameSession?.usedQuestions?.length >= totalQuestions && !gameSession?.isCompleted) {
         // Auto-complete the game
         apiRequest("POST", `/api/games/${id}/complete`).then(() => {
@@ -270,6 +272,18 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     // Find the question - questions are organized by selected categories in order
     const selectedCategories = gameSession?.selectedCategories || [];
     const categoryIndex = selectedCategories.findIndex((cat: string) => cat === categoryName);
+    
+    // Ensure we only access valid question indices (0-5 per category)
+    if (categoryIndex === -1 || index < 0 || index > 5) {
+      console.error(`Invalid category or question index: ${categoryName}-${index}`);
+      toast({
+        title: "خطأ",
+        description: "لم يتم العثور على السؤال",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     const questionIndex = categoryIndex * 6 + index;
     const question = gameData?.questions?.[questionIndex];
     
@@ -285,10 +299,10 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       setIsTimerActive(true);
       setIsTimeOut(false);
     } else {
-      console.error(`Question not found at index ${questionIndex} for category ${categoryName}`);
+      console.error(`Question not found at index ${questionIndex} for category ${categoryName} (categoryIndex: ${categoryIndex}, localIndex: ${index})`);
       toast({
-        title: "خطأ",
-        description: "لم يتم العثور على السؤال",
+        title: "خطأ", 
+        description: `لا توجد أسئلة كافية في فئة ${categoriesData?.categories?.find((c: any) => c.name === categoryName)?.displayName || categoryName}`,
         variant: "destructive",
       });
     }
