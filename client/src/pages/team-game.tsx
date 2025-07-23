@@ -80,8 +80,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   // Questions are included in the game data for team games
 
   // Create categories array from selected categories in game session
-  const gameSession = gameData?.gameSession;
-  const selectedCategoryNames = gameSession?.selectedCategories || [];
+  const gameSession = gameData?.gameSession || {};
+  const selectedCategoryNames = gameSession?.selectedCategories || gameSession?.categories || [];
   const categories = categoriesData?.categories?.filter((cat: any) => 
     cat.isActive && selectedCategoryNames.includes(cat.name) && cat.name && cat.displayName
   ).map((cat: any) => ({
@@ -101,7 +101,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     if (gameData && categories.length > 0) {
       // Check if game is completed and auto-complete if needed
       const totalQuestions = categories.length * 6; // 6 questions per category
-      if (gameData.gameSession?.usedQuestions?.length >= totalQuestions && !gameData.gameSession?.isCompleted) {
+      if (gameSession?.usedQuestions?.length >= totalQuestions && !gameSession?.isCompleted) {
         // Auto-complete the game
         apiRequest("POST", `/api/games/${id}/complete`).then(() => {
           queryClient.invalidateQueries({ queryKey: [`/api/games/${id}`] });
@@ -230,7 +230,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     );
   }
 
-  if (!gameData?.gameSession) {
+  if (!gameSession || Object.keys(gameSession).length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -264,12 +264,18 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       return;
     }
 
+    // Debug: Log game data structure
+    console.log(`Clicking question: categoryName=${categoryName}, index=${index}, questionKey=${questionKey}`);
+    console.log('Game data structure:', gameData);
+    console.log('Available questions:', gameData?.questions?.length || 0);
+    console.log('Categories:', categories);
+    
     // Find the question - questions are organized by category in groups of 6
-    const categoryIndex = categories.findIndex(cat => cat.name === categoryName);
+    const categoryIndex = categories.findIndex((cat: any) => cat.name === categoryName);
     const questionIndex = categoryIndex * 6 + index;
     const question = gameData?.questions?.[questionIndex];
     
-    console.log(`Clicking question: categoryName=${categoryName}, index=${index}, categoryIndex=${categoryIndex}, questionIndex=${questionIndex}, questionKey=${questionKey}`);
+    console.log(`categoryIndex=${categoryIndex}, questionIndex=${questionIndex}, question found:`, !!question);
     
     if (question) {
       // Store the question key with the question so we can use it later
@@ -282,6 +288,13 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       setTimeLeft(60);
       setIsTimerActive(true);
       setIsTimeOut(false);
+    } else {
+      console.error(`Question not found at index ${questionIndex} for category ${categoryName}`);
+      toast({
+        title: "خطأ",
+        description: "لم يتم العثور على السؤال",
+        variant: "destructive",
+      });
     }
   };
 
@@ -555,7 +568,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     <h2 className="text-lg font-bold">
                       {(() => {
                         const categoryName = (selectedQuestion as any).questionKey?.split('-')[0];
-                        const category = categories?.find(cat => cat.name === categoryName);
+                        const category = categories?.find((cat: any) => cat.name === categoryName);
                         return category?.displayName || categoryName || 'فئة غير معروفة';
                       })()}
                     </h2>
@@ -1052,7 +1065,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
         <div className="max-w-7xl mx-auto">
           {/* Enhanced Category Layout - Matching Provided Image */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 max-w-7xl mx-auto" dir="rtl">
-            {categories.slice(0, 6).map((category, categoryIndex) => (
+            {categories.slice(0, 6).map((category: any, categoryIndex: number) => (
               <div key={`category-enhanced-${categoryIndex}`} className="relative">
                 {/* Category Card with Enhanced Layout */}
                 <div className="rounded-3xl shadow-xl overflow-hidden border-3 p-2" style={{
