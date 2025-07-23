@@ -267,16 +267,11 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       return;
     }
 
-    // Debug: Log game data structure
-    console.log(`Clicking question: categoryName=${categoryName}, index=${index}, questionKey=${questionKey}`);
-    
     // Find the question - questions are organized by selected categories in order
     const selectedCategories = gameSession?.selectedCategories || [];
     const categoryIndex = selectedCategories.findIndex((cat: string) => cat === categoryName);
     const questionIndex = categoryIndex * 6 + index;
     const question = gameData?.questions?.[questionIndex];
-    
-    console.log(`selectedCategories=${JSON.stringify(selectedCategories)}, categoryIndex=${categoryIndex}, questionIndex=${questionIndex}, question found:`, !!question);
     
     if (question) {
       // Store the question key with the question so we can use it later
