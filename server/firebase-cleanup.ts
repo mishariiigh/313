@@ -1,5 +1,5 @@
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
-import { db } from "./config/firebase";
+import { db } from "./firebase";
 import { storage as firebaseStorage } from "./firebase-storage";
 
 export async function cleanupFirebaseData() {

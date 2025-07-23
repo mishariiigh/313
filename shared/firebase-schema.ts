@@ -4,7 +4,6 @@ import { z } from "zod";
 export const userSchema = z.object({
   id: z.string(),
   email: z.string().email(),
-  phoneNumber: z.string().min(8, "رقم الهاتف يجب أن يكون 8 أرقام على الأقل"),
   name: z.string(),
   password: z.string(),
   availableGames: z.number().default(0),

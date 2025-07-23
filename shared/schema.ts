@@ -6,7 +6,6 @@ import { z } from "zod";
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   email: varchar("email", { length: 255 }).notNull().unique(),
-  phoneNumber: varchar("phone_number", { length: 20 }).notNull().unique(),
   password: text("password").notNull(),
   name: varchar("name", { length: 255 }).notNull(),
   availableGames: integer("available_games").default(0).notNull(),
