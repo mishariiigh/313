@@ -189,19 +189,151 @@
     font-family: 'Inter', sans-serif;
   }
   
-  /* Enhanced buttons with golden theme */
+  /* Creative Button Styles */
   .btn-golden {
-    @apply bg-primary text-primary-foreground hover:bg-accent transition-all duration-300;
-    @apply shadow-lg hover:shadow-xl;
-    border: 1px solid hsl(var(--primary) / 0.2);
+    background: linear-gradient(135deg, #DBB132 0%, #E8BD45 50%, #EDD960 100%);
+    border: 2px solid #DCC03E;
+    color: #2D1810;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+    box-shadow: 
+      0 4px 15px rgba(219, 177, 50, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-golden::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+  }
+  
+  .btn-golden:hover::before {
+    left: 100%;
   }
   
   .btn-golden:hover {
-    border-color: hsl(var(--accent) / 0.3);
+    background: linear-gradient(135deg, #E8BD45 0%, #EDD960 50%, #F1E0A2 100%);
+    border-color: #DBB132;
+    transform: translateY(-2px);
+    box-shadow: 
+      0 8px 30px rgba(219, 177, 50, 0.4),
+      0 4px 15px rgba(232, 189, 69, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
   
-  .btn-golden:hover {
-    box-shadow: 0 8px 25px hsl(var(--primary) / 0.3);
+  .btn-golden:active {
+    transform: translateY(0);
+    box-shadow: 
+      0 4px 15px rgba(219, 177, 50, 0.3),
+      inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .btn-emerald {
+    background: linear-gradient(135deg, #10B981 0%, #34D399 50%, #6EE7B7 100%);
+    border: 2px solid #059669;
+    color: white;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 
+      0 4px 15px rgba(16, 185, 129, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .btn-emerald:hover {
+    background: linear-gradient(135deg, #059669 0%, #10B981 50%, #34D399 100%);
+    transform: translateY(-2px);
+    box-shadow: 
+      0 8px 30px rgba(16, 185, 129, 0.4),
+      0 4px 15px rgba(52, 211, 153, 0.3);
+  }
+  
+  .btn-ruby {
+    background: linear-gradient(135deg, #DC2626 0%, #EF4444 50%, #F87171 100%);
+    border: 2px solid #B91C1C;
+    color: white;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 
+      0 4px 15px rgba(220, 38, 38, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .btn-ruby:hover {
+    background: linear-gradient(135deg, #B91C1C 0%, #DC2626 50%, #EF4444 100%);
+    transform: translateY(-2px);
+    box-shadow: 
+      0 8px 30px rgba(220, 38, 38, 0.4),
+      0 4px 15px rgba(239, 68, 68, 0.3);
+  }
+  
+  .btn-sapphire {
+    background: linear-gradient(135deg, #2563EB 0%, #3B82F6 50%, #60A5FA 100%);
+    border: 2px solid #1D4ED8;
+    color: white;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 
+      0 4px 15px rgba(37, 99, 235, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .btn-sapphire:hover {
+    background: linear-gradient(135deg, #1D4ED8 0%, #2563EB 50%, #3B82F6 100%);
+    transform: translateY(-2px);
+    box-shadow: 
+      0 8px 30px rgba(37, 99, 235, 0.4),
+      0 4px 15px rgba(59, 130, 246, 0.3);
+  }
+  
+  .btn-amethyst {
+    background: linear-gradient(135deg, #7C3AED 0%, #8B5CF6 50%, #A78BFA 100%);
+    border: 2px solid #6D28D9;
+    color: white;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 
+      0 4px 15px rgba(124, 58, 237, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .btn-amethyst:hover {
+    background: linear-gradient(135deg, #6D28D9 0%, #7C3AED 50%, #8B5CF6 100%);
+    transform: translateY(-2px);
+    box-shadow: 
+      0 8px 30px rgba(124, 58, 237, 0.4),
+      0 4px 15px rgba(139, 92, 246, 0.3);
+  }
+  
+  .btn-bronze {
+    background: linear-gradient(135deg, #92400E 0%, #B45309 50%, #D97706 100%);
+    border: 2px solid #78350F;
+    color: white;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 
+      0 4px 15px rgba(146, 64, 14, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .btn-bronze:hover {
+    background: linear-gradient(135deg, #78350F 0%, #92400E 50%, #B45309 100%);
+    transform: translateY(-2px);
+    box-shadow: 
+      0 8px 30px rgba(146, 64, 14, 0.4),
+      0 4px 15px rgba(180, 83, 9, 0.3);
   }
   
   /* Islamic-inspired cards */

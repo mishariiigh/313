@@ -213,10 +213,9 @@ export default function AuthPage() {
                   
                   <Button
                     type="button"
-                    variant="outline"
                     onClick={handleGoogleSignIn}
                     disabled={googleLoading}
-                    className="w-full text-lg py-4 arabic-text border-primary/30 hover:bg-primary/10 hover:border-primary"
+                    className="btn-emerald w-full text-lg py-4 arabic-text"
                   >
                     {googleLoading ? (
                       <Loader2 className="h-4 w-4 animate-spin mx-auto" />
