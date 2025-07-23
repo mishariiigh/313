@@ -9,17 +9,17 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "arabic-button text-primary-foreground hover:scale-105 shadow-lg",
+        default: "logo-button text-white hover:scale-105 shadow-lg",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-lg hover:shadow-xl",
         outline:
-          "border-2 border-arabic-sage bg-background hover:bg-arabic-sage hover:text-white shadow-sm hover:shadow-lg",
+          "border-2 border-logo-sage bg-background hover:bg-logo-sage hover:text-white shadow-sm hover:shadow-lg transition-all duration-300",
         secondary:
-          "arabic-accent text-foreground hover:scale-105 shadow-md",
-        ghost: "hover:bg-arabic-cream hover:text-arabic-sage-dark",
-        link: "text-arabic-sage underline-offset-4 hover:underline arabic-text-gradient",
-        elegant: "bg-gradient-to-r from-arabic-sage to-arabic-sage-light text-white hover:from-arabic-sage-dark hover:to-arabic-sage shadow-xl hover:shadow-2xl hover:scale-105",
-        golden: "bg-gradient-to-r from-arabic-gold to-arabic-terracotta text-foreground hover:from-arabic-terracotta hover:to-arabic-gold shadow-lg hover:shadow-xl hover:scale-105",
+          "logo-accent text-foreground hover:scale-105 shadow-md",
+        ghost: "hover:bg-logo-cream hover:text-logo-sage-dark transition-all duration-300",
+        link: "text-logo-sage underline-offset-4 hover:underline logo-text-gradient",
+        elegant: "bg-gradient-to-r from-logo-sage to-logo-sage-light text-white hover:from-logo-sage-dark hover:to-logo-sage shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300",
+        golden: "bg-gradient-to-r from-logo-gold to-logo-bronze text-white hover:from-logo-bronze hover:to-logo-gold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300",
       },
       size: {
         default: "h-10 px-4 py-2",
