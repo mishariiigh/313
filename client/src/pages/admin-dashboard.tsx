@@ -473,14 +473,7 @@ export default function AdminDashboard() {
     }
   };
 
-  // Helper function to check if we can add more questions to a category/difficulty
-  const canAddQuestion = (category: string, difficulty: string) => {
-    if (!category || !difficulty) return false;
-    const currentCount = getQuestionCount(category, difficulty);
-    return currentCount < 2; // Max 2 questions per difficulty per category
-  };
-
-  // Helper function to get category status
+  // Helper function to get category status (no limits)
   const getCategoryStatus = (category: string) => {
     const easyCount = getQuestionCount(category, "سهل");
     const mediumCount = getQuestionCount(category, "متوسط");
@@ -492,7 +485,7 @@ export default function AdminDashboard() {
       medium: mediumCount,
       hard: hardCount,
       total: totalCount,
-      isComplete: totalCount === 6 && easyCount === 2 && mediumCount === 2 && hardCount === 2
+      isComplete: false // No completion limit - always allow more questions
     };
   };
 
@@ -953,10 +946,34 @@ export default function AdminDashboard() {
             {/* Category Overview */}
             <Card className="mb-6">
               <CardHeader>
-                <CardTitle>نظرة عامة على الفئات</CardTitle>
-                <CardDescription>
-                  كل فئة تحتاج 6 أسئلة بالضبط: 2 سهل (200 نقطة) + 2 متوسط (400 نقطة) + 2 صعب (600 نقطة)
-                </CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>نظرة عامة على الفئات</CardTitle>
+                    <CardDescription>
+                      يمكن إضافة عدد غير محدود من الأسئلة لكل فئة
+                    </CardDescription>
+                  </div>
+                  <Button
+                    onClick={async () => {
+                      try {
+                        const response = await apiRequest("POST", "/api/admin/remove-duplicate-categories");
+                        const result = await response.json();
+                        if (result.success) {
+                          toast({ title: `تم حذف ${result.duplicatesRemoved} فئات مكررة بنجاح` });
+                          queryClient.invalidateQueries({ queryKey: ["/api/admin/categories"] });
+                        } else {
+                          toast({ title: "خطأ في إزالة التكرار", description: result.message, variant: "destructive" });
+                        }
+                      } catch (error) {
+                        toast({ title: "خطأ في العملية", variant: "destructive" });
+                      }
+                    }}
+                    variant="outline"
+                    size="sm"
+                  >
+                    إزالة الفئات المكررة
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -966,35 +983,33 @@ export default function AdminDashboard() {
                       <div key={category.id} className="p-4 border rounded-lg">
                         <div className="flex items-center justify-between mb-2">
                           <h3 className="font-medium">{category.displayName}</h3>
-                          <Badge variant={status.isComplete ? "default" : "secondary"}>
-                            {status.total}/6
+                          <Badge variant="default">
+                            {status.total} أسئلة
                           </Badge>
                         </div>
                         <div className="space-y-1 text-sm">
                           <div className="flex justify-between">
                             <span className="text-green-600">سهل (200):</span>
-                            <span className={status.easy === 2 ? "text-green-600" : "text-gray-500"}>
-                              {status.easy}/2
+                            <span className="text-blue-600">
+                              {status.easy} أسئلة
                             </span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-yellow-600">متوسط (400):</span>
-                            <span className={status.medium === 2 ? "text-green-600" : "text-gray-500"}>
-                              {status.medium}/2
+                            <span className="text-blue-600">
+                              {status.medium} أسئلة
                             </span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-red-600">صعب (600):</span>
-                            <span className={status.hard === 2 ? "text-green-600" : "text-gray-500"}>
-                              {status.hard}/2
+                            <span className="text-blue-600">
+                              {status.hard} أسئلة
                             </span>
                           </div>
                         </div>
-                        {status.isComplete && (
-                          <div className="mt-2 text-xs text-green-600 font-medium">
-                            ✓ مكتملة
-                          </div>
-                        )}
+                        <div className="mt-2 text-xs text-blue-600 font-medium">
+                          📝 يمكن إضافة أسئلة بلا حدود
+                        </div>
                       </div>
                     );
                   })}
@@ -1251,7 +1266,7 @@ export default function AdminDashboard() {
                               <div className="flex items-center justify-between w-full">
                                 <span>{cat.displayName}</span>
                                 <span className="text-xs text-gray-500 ml-2">
-                                  ({status.total}/6)
+                                  ({status.total} أسئلة)
                                 </span>
                               </div>
                             </SelectItem>
@@ -1268,13 +1283,13 @@ export default function AdminDashboard() {
                         </div>
                         <div className="grid grid-cols-3 gap-2 text-xs">
                           <div>
-                            <span className="text-green-600">سهل:</span> {getQuestionCount(questionForm.category, "سهل")}/2
+                            <span className="text-green-600">سهل:</span> {getQuestionCount(questionForm.category, "سهل")} أسئلة
                           </div>
                           <div>
-                            <span className="text-yellow-600">متوسط:</span> {getQuestionCount(questionForm.category, "متوسط")}/2
+                            <span className="text-yellow-600">متوسط:</span> {getQuestionCount(questionForm.category, "متوسط")} أسئلة
                           </div>
                           <div>
-                            <span className="text-red-600">صعب:</span> {getQuestionCount(questionForm.category, "صعب")}/2
+                            <span className="text-red-600">صعب:</span> {getQuestionCount(questionForm.category, "صعب")} أسئلة
                           </div>
                         </div>
                       </div>
@@ -1352,24 +1367,7 @@ export default function AdminDashboard() {
                       className="mt-1"
                     />
                   </div>
-                  <div>
-                    <Label>صورة السؤال (اختياري)</Label>
-                    <ImageUpload
-                      value={questionForm.imageUrl}
-                      onChange={(url) => setQuestionForm({ ...questionForm, imageUrl: url })}
-                      size="md"
-                      className="mt-2"
-                    />
-                  </div>
-                  {/* Validation Warning */}
-                  {questionForm.category && questionForm.difficulty && !editingQuestion && 
-                   !canAddQuestion(questionForm.category, questionForm.difficulty) && (
-                    <div className="p-3 bg-red-50 border border-red-200 rounded text-sm text-red-700">
-                      <strong>تحذير:</strong> لقد تم الوصول للحد الأقصى من الأسئلة لهذه الفئة والصعوبة (2/2). 
-                      لا يمكن إضافة المزيد من الأسئلة.
-                    </div>
-                  )}
-                  
+
                   <div className="flex gap-2">
                     <Button
                       onClick={handleQuestionSubmit}
@@ -1378,8 +1376,7 @@ export default function AdminDashboard() {
                         !questionForm.question ||
                         !questionForm.answer ||
                         !questionForm.category ||
-                        !questionForm.hint ||
-                        (!editingQuestion && !canAddQuestion(questionForm.category, questionForm.difficulty))
+                        !questionForm.hint
                       }
                       className="flex-1"
                     >

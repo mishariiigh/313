@@ -903,6 +903,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Register bulk admin routes
   registerBulkAdminRoutes(app);
 
+  // Remove duplicate categories route
+  app.post("/api/admin/remove-duplicate-categories", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    const user = req.user as any;
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "غير مصرح بالوصول" });
+    }
+
+    try {
+      const { removeDuplicateCategories } = await import("./remove-duplicate-categories");
+      const result = await removeDuplicateCategories();
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ message: "خطأ في إزالة التكرار", error: error.message });
+    }
+  });
+
   // Simple add games route for testing (bypasses payment)
   app.post("/api/add-games", async (req, res) => {
     if (!req.isAuthenticated()) {
@@ -1157,14 +1177,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     try {
       const questionData = insertQuestionSchema.parse(req.body);
-      
-      // Check if category/difficulty combination has reached the limit (2 questions max)
-      const existingQuestions = await storage.getQuestions(questionData.category, questionData.difficulty);
-      if (existingQuestions.length >= 2) {
-        return res.status(400).json({ 
-          message: `تم الوصول للحد الأقصى من الأسئلة لهذه الفئة والصعوبة (2/2). لا يمكن إضافة المزيد من الأسئلة.` 
-        });
-      }
       
       // Validate that hint is provided
       if (!questionData.hint || questionData.hint.trim() === '') {
