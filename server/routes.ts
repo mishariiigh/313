@@ -1154,7 +1154,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const questionData = insertQuestionSchema.parse(req.body);
       
-      // No limit on questions - admin can add unlimited questions per category and difficulty
+      // Check if category/difficulty combination has reached the limit (2 questions max)
+      const existingQuestions = await storage.getQuestions(questionData.category, questionData.difficulty);
+      if (existingQuestions.length >= 2) {
+        return res.status(400).json({ 
+          message: `تم الوصول للحد الأقصى من الأسئلة لهذه الفئة والصعوبة (2/2). لا يمكن إضافة المزيد من الأسئلة.` 
+        });
+      }
       
       // Validate that hint is provided
       if (!questionData.hint || questionData.hint.trim() === '') {

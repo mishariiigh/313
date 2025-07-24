@@ -34,11 +34,5 @@
     "displayName": "العلوم",
     "description": "أسئلة علمية",
     "isActive": true
-  },
-  {
-    "name": "me7gan",
-    "displayName": "محجان",
-    "description": "أسئلة متنوعة ومسلية",
-    "isActive": true
   }
 ]

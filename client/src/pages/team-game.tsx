@@ -80,20 +80,17 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   // Questions are included in the game data for team games
 
   // Create categories array from selected categories in game session
-  const gameSession = gameData?.gameSession || {};
-  const selectedCategoryNames = gameSession?.selectedCategories || gameSession?.categories || [];
-  
-  // Maintain the same order as selectedCategories to match question organization
-  const categories = selectedCategoryNames.map((categoryName: string) => {
-    const cat = categoriesData?.categories?.find((c: any) => c.name === categoryName && c.isActive);
-    return cat ? {
-      id: cat.name,
-      name: cat.name,        // Use English name for backend API compatibility
-      displayName: cat.displayName, // Use Arabic name for UI display
-      logoUrl: cat.logoUrl,  // Include the uploaded image URL
-      icon: CATEGORY_ICONS[cat.name] || CATEGORY_ICONS[cat.displayName] || "📝"
-    } : null;
-  }).filter(Boolean);
+  const gameSession = gameData?.gameSession;
+  const selectedCategoryNames = gameSession?.selectedCategories || [];
+  const categories = categoriesData?.categories?.filter((cat: any) => 
+    cat.isActive && selectedCategoryNames.includes(cat.name) && cat.name && cat.displayName
+  ).map((cat: any) => ({
+    id: cat.name,
+    name: cat.name,        // Use English name for backend API compatibility
+    displayName: cat.displayName, // Use Arabic name for UI display
+    logoUrl: cat.logoUrl,  // Include the uploaded image URL
+    icon: CATEGORY_ICONS[cat.name] || CATEGORY_ICONS[cat.displayName] || "📝"
+  })) || [];
 
   useEffect(() => {
     if (!user) {
@@ -103,10 +100,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
     if (gameData && categories.length > 0) {
       // Check if game is completed and auto-complete if needed
-      // Limit to 6 categories maximum (since we only display 6 on screen)
-      const maxCategories = Math.min(categories.length, 6);
-      const totalQuestions = maxCategories * 6; // 6 questions per category
-      if (gameSession?.usedQuestions?.length >= totalQuestions && !gameSession?.isCompleted) {
+      const totalQuestions = categories.length * 6; // 6 questions per category
+      if (gameData.gameSession?.usedQuestions?.length >= totalQuestions && !gameData.gameSession?.isCompleted) {
         // Auto-complete the game
         apiRequest("POST", `/api/games/${id}/complete`).then(() => {
           queryClient.invalidateQueries({ queryKey: [`/api/games/${id}`] });
@@ -235,7 +230,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     );
   }
 
-  if (!gameSession || Object.keys(gameSession).length === 0) {
+  if (!gameData?.gameSession) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -269,23 +264,12 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       return;
     }
 
-    // Find the question - questions are organized by selected categories in order
-    const selectedCategories = gameSession?.selectedCategories || [];
-    const categoryIndex = selectedCategories.findIndex((cat: string) => cat === categoryName);
-    
-    // Ensure we only access valid question indices (0-5 per category)
-    if (categoryIndex === -1 || index < 0 || index > 5) {
-      console.error(`Invalid category or question index: ${categoryName}-${index}`);
-      toast({
-        title: "خطأ",
-        description: "لم يتم العثور على السؤال",
-        variant: "destructive",
-      });
-      return;
-    }
-    
+    // Find the question - questions are organized by category in groups of 6
+    const categoryIndex = categories.findIndex(cat => cat.name === categoryName);
     const questionIndex = categoryIndex * 6 + index;
     const question = gameData?.questions?.[questionIndex];
+    
+    console.log(`Clicking question: categoryName=${categoryName}, index=${index}, categoryIndex=${categoryIndex}, questionIndex=${questionIndex}, questionKey=${questionKey}`);
     
     if (question) {
       // Store the question key with the question so we can use it later
@@ -298,13 +282,6 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       setTimeLeft(60);
       setIsTimerActive(true);
       setIsTimeOut(false);
-    } else {
-      console.error(`Question not found at index ${questionIndex} for category ${categoryName} (categoryIndex: ${categoryIndex}, localIndex: ${index})`);
-      toast({
-        title: "خطأ", 
-        description: `لا توجد أسئلة كافية في فئة ${categoriesData?.categories?.find((c: any) => c.name === categoryName)?.displayName || categoryName}`,
-        variant: "destructive",
-      });
     }
   };
 
@@ -578,7 +555,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     <h2 className="text-lg font-bold">
                       {(() => {
                         const categoryName = (selectedQuestion as any).questionKey?.split('-')[0];
-                        const category = categories?.find((cat: any) => cat.name === categoryName);
+                        const category = categories?.find(cat => cat.name === categoryName);
                         return category?.displayName || categoryName || 'فئة غير معروفة';
                       })()}
                     </h2>
@@ -1075,7 +1052,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
         <div className="max-w-7xl mx-auto">
           {/* Enhanced Category Layout - Matching Provided Image */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 max-w-7xl mx-auto" dir="rtl">
-            {categories.slice(0, 6).map((category: any, categoryIndex: number) => (
+            {categories.slice(0, 6).map((category, categoryIndex) => (
               <div key={`category-enhanced-${categoryIndex}`} className="relative">
                 {/* Category Card with Enhanced Layout */}
                 <div className="rounded-3xl shadow-xl overflow-hidden border-3 p-2" style={{
