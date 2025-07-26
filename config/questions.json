@@ -1,0 +1,344 @@
+[
+  {
+    "question": "من هو مؤسس الدولة السعودية الأولى؟",
+    "answer": "محمد بن سعود",
+    "category": "history",
+    "difficulty": "سهل",
+    "hint": "أسس الدولة السعودية في القرن الثامن عشر",
+    "explanation": "محمد بن سعود هو مؤسس الدولة السعودية الأولى عام 1744",
+    "isPublished": true
+  },
+  {
+    "question": "في أي عام تم توحيد المملكة العربية السعودية؟",
+    "answer": "1932",
+    "category": "history",
+    "difficulty": "متوسط",
+    "hint": "في القرن العشرين",
+    "explanation": "تم توحيد المملكة العربية السعودية على يد الملك عبد العزيز آل سعود عام 1932",
+    "isPublished": true
+  },
+  {
+    "question": "ما هي عاصمة الدولة الأموية؟",
+    "answer": "دمشق",
+    "category": "history",
+    "difficulty": "سهل",
+    "hint": "عاصمة سوريا الحالية",
+    "explanation": "دمشق كانت عاصمة الدولة الأموية من 661 إلى 750 ميلادية",
+    "isPublished": true
+  },
+  {
+    "question": "من هو القائد الذي فتح الأندلس؟",
+    "answer": "طارق بن زياد",
+    "category": "history",
+    "difficulty": "متوسط",
+    "hint": "اسمه مرتبط بجبل في إسبانيا",
+    "explanation": "طارق بن زياد فتح الأندلس عام 711 ميلادية",
+    "isPublished": true
+  },
+  {
+    "question": "في أي معركة انتصر صلاح الدين على الصليبيين؟",
+    "answer": "حطين",
+    "category": "history",
+    "difficulty": "صعب",
+    "hint": "معركة شهيرة في فلسطين",
+    "explanation": "معركة حطين عام 1187 ميلادية كانت نصراً حاسماً لصلاح الدين",
+    "isPublished": true
+  },
+  {
+    "question": "من هو الخليفة الذي أمر بجمع القرآن؟",
+    "answer": "عثمان بن عفان",
+    "category": "history",
+    "difficulty": "صعب",
+    "hint": "ثالث الخلفاء الراشدين",
+    "explanation": "عثمان بن عفان أمر بجمع القرآن في مصحف واحد",
+    "isPublished": true
+  },
+  {
+    "question": "من هو أول خليفة راشدي؟",
+    "answer": "أبو بكر الصديق",
+    "category": "history",
+    "difficulty": "سهل",
+    "hint": "صاحب الرسول في الهجرة",
+    "explanation": "أبو بكر الصديق أول الخلفاء الراشدين وصاحب الرسول",
+    "isPublished": true
+  },
+  {
+    "question": "في أي عام فتح المسلمون مكة؟",
+    "answer": "8 هجرية",
+    "category": "history",
+    "difficulty": "متوسط",
+    "hint": "بعد 8 سنوات من الهجرة",
+    "explanation": "فتح مكة تم في السنة الثامنة للهجرة الموافق 630 ميلادية",
+    "isPublished": true
+  },
+  {
+    "question": "ما هي أكبر دولة في العالم من حيث المساحة؟",
+    "answer": "روسيا",
+    "category": "geography",
+    "difficulty": "سهل",
+    "hint": "تقع في أوروبا وآسيا",
+    "explanation": "روسيا هي أكبر دولة في العالم بمساحة 17.1 مليون كيلومتر مربع",
+    "isPublished": true
+  },
+  {
+    "question": "ما هو أطول نهر في العالم؟",
+    "answer": "النيل",
+    "category": "geography",
+    "difficulty": "سهل",
+    "hint": "يمر عبر مصر والسودان",
+    "explanation": "نهر النيل هو أطول نهر في العالم بطول 6650 كيلومتر",
+    "isPublished": true
+  },
+  {
+    "question": "ما هي أعمق نقطة في المحيطات؟",
+    "answer": "خندق ماريانا",
+    "category": "geography",
+    "difficulty": "متوسط",
+    "hint": "في المحيط الهادئ",
+    "explanation": "خندق ماريانا أعمق نقطة في المحيطات بعمق 11 كيلومتر",
+    "isPublished": true
+  },
+  {
+    "question": "ما هي عاصمة اليابان؟",
+    "answer": "طوكيو",
+    "category": "geography",
+    "difficulty": "سهل",
+    "hint": "أكبر مدينة في اليابان",
+    "explanation": "طوكيو عاصمة اليابان وأكبر مدنها",
+    "isPublished": true
+  },
+  {
+    "question": "في أي قارة تقع الأرجنتين؟",
+    "answer": "أمريكا الجنوبية",
+    "category": "geography",
+    "difficulty": "متوسط",
+    "hint": "ثاني أكبر دولة في القارة",
+    "explanation": "الأرجنتين تقع في أمريكا الجنوبية",
+    "isPublished": true
+  },
+  {
+    "question": "ما هي أكبر صحراء في العالم؟",
+    "answer": "أنتاركتيكا",
+    "category": "geography",
+    "difficulty": "صعب",
+    "hint": "صحراء باردة وليست حارة",
+    "explanation": "أنتاركتيكا أكبر صحراء في العالم رغم كونها قطبية",
+    "isPublished": true
+  },
+  {
+    "question": "من هو اللاعب الذي فاز بأكثر كرات ذهبية؟",
+    "answer": "ليونيل ميسي",
+    "category": "sports",
+    "difficulty": "سهل",
+    "hint": "لاعب أرجنتيني",
+    "explanation": "ميسي فاز بثماني كرات ذهبية حتى 2023",
+    "isPublished": true
+  },
+  {
+    "question": "في أي عام أقيمت أول بطولة كأس العالم؟",
+    "answer": "1930",
+    "category": "sports",
+    "difficulty": "متوسط",
+    "hint": "في أمريكا الجنوبية",
+    "explanation": "أول كأس عالم أقيمت في الأوروغواي عام 1930",
+    "isPublished": true
+  },
+  {
+    "question": "ما هي المسافة الرسمية لسباق الماراثون؟",
+    "answer": "42.195 كيلومتر",
+    "category": "sports",
+    "difficulty": "صعب",
+    "hint": "أكثر من 40 كيلومتر",
+    "explanation": "المسافة الرسمية للماراثون هي 42.195 كيلومتر",
+    "isPublished": true
+  },
+  {
+    "question": "كم عدد اللاعبين في فريق كرة السلة؟",
+    "answer": "5 لاعبين",
+    "category": "sports",
+    "difficulty": "سهل",
+    "hint": "نصف عدد لاعبي كرة القدم",
+    "explanation": "فريق كرة السلة يتكون من 5 لاعبين في الملعب",
+    "isPublished": true
+  },
+  {
+    "question": "من هو أسرع عداء في التاريخ؟",
+    "answer": "أوسين بولت",
+    "category": "sports",
+    "difficulty": "متوسط",
+    "hint": "من جامايكا",
+    "explanation": "أوسين بولت صاحب الرقم القياسي في 100 متر و200 متر",
+    "isPublished": true
+  },
+  {
+    "question": "كم عدد الحلقات في الشعار الأولمبي؟",
+    "answer": "5 حلقات",
+    "category": "sports",
+    "difficulty": "سهل",
+    "hint": "تمثل القارات",
+    "explanation": "الشعار الأولمبي يحتوي على 5 حلقات ملونة",
+    "isPublished": true
+  },
+  {
+    "question": "من مخترع الهاتف؟",
+    "answer": "ألكسندر جراهام بيل",
+    "category": "science",
+    "difficulty": "سهل",
+    "hint": "عالم أمريكي اسكتلندي",
+    "explanation": "ألكسندر جراهام بيل اخترع الهاتف عام 1876",
+    "isPublished": true
+  },
+  {
+    "question": "ما هو العنصر الكيميائي الأكثر وفرة في الكون؟",
+    "answer": "الهيدروجين",
+    "category": "science",
+    "difficulty": "متوسط",
+    "hint": "أخف العناصر",
+    "explanation": "الهيدروجين يشكل حوالي 75% من الكون",
+    "isPublished": true
+  },
+  {
+    "question": "كم عدد الكواكب في المجموعة الشمسية؟",
+    "answer": "8 كواكب",
+    "category": "science",
+    "difficulty": "سهل",
+    "hint": "بعد إعادة تصنيف بلوتو",
+    "explanation": "المجموعة الشمسية تحتوي على 8 كواكب بعد إعادة تصنيف بلوتو",
+    "isPublished": true
+  },
+  {
+    "question": "ما هي سرعة الضوء؟",
+    "answer": "300,000 كيلومتر في الثانية",
+    "category": "science",
+    "difficulty": "صعب",
+    "hint": "تقريباً ثلاثمائة ألف",
+    "explanation": "سرعة الضوء في الفراغ هي 299,792 كيلومتر في الثانية",
+    "isPublished": true
+  },
+  {
+    "question": "من مكتشف البنسلين؟",
+    "answer": "ألكسندر فلمنج",
+    "category": "science",
+    "difficulty": "متوسط",
+    "hint": "عالم اسكتلندي",
+    "explanation": "ألكسندر فلمنج اكتشف البنسلين عام 1928",
+    "isPublished": true
+  },
+  {
+    "question": "ما هو أكبر عضو في جسم الإنسان؟",
+    "answer": "الجلد",
+    "category": "science",
+    "difficulty": "متوسط",
+    "hint": "يغطي الجسم بالكامل",
+    "explanation": "الجلد هو أكبر عضو في جسم الإنسان",
+    "isPublished": true
+  },
+  {
+    "question": "كم عدد أركان الإسلام؟",
+    "answer": "خمسة أركان",
+    "category": "religion",
+    "difficulty": "سهل",
+    "hint": "عدد أصابع اليد",
+    "explanation": "أركان الإسلام خمسة: الشهادتان والصلاة والزكاة والصوم والحج",
+    "isPublished": true
+  },
+  {
+    "question": "كم عدد سور القرآن الكريم؟",
+    "answer": "114 سورة",
+    "category": "religion",
+    "difficulty": "سهل",
+    "hint": "أكثر من مائة",
+    "explanation": "القرآن الكريم يحتوي على 114 سورة",
+    "isPublished": true
+  },
+  {
+    "question": "ما هي أطول سورة في القرآن؟",
+    "answer": "البقرة",
+    "category": "religion",
+    "difficulty": "سهل",
+    "hint": "في الجزء الأول والثاني",
+    "explanation": "سورة البقرة أطول سورة في القرآن وتحتوي على 286 آية",
+    "isPublished": true
+  },
+  {
+    "question": "في أي شهر فرض الصيام؟",
+    "answer": "شعبان",
+    "category": "religion",
+    "difficulty": "متوسط",
+    "hint": "قبل رمضان",
+    "explanation": "فرض الصيام في شهر شعبان من السنة الثانية للهجرة",
+    "isPublished": true
+  },
+  {
+    "question": "كم عدد الأنبياء المذكورين في القرآن؟",
+    "answer": "25 نبياً",
+    "category": "religion",
+    "difficulty": "صعب",
+    "hint": "ربع المائة",
+    "explanation": "ذكر في القرآن الكريم 25 نبياً ورسولاً",
+    "isPublished": true
+  },
+  {
+    "question": "ما هي القبلة الأولى للمسلمين؟",
+    "answer": "بيت المقدس",
+    "category": "religion",
+    "difficulty": "متوسط",
+    "hint": "في فلسطين",
+    "explanation": "بيت المقدس كانت القبلة الأولى قبل تحويلها إلى الكعبة",
+    "isPublished": true
+  },
+  {
+    "question": "من أول رائد فضاء عربي؟",
+    "answer": "الأمير سلطان بن سلمان",
+    "category": "me7gan",
+    "difficulty": "متوسط",
+    "hint": "من العائلة المالكة السعودية",
+    "explanation": "الأمير سلطان بن سلمان أول رائد فضاء عربي عام 1985",
+    "isPublished": true
+  },
+  {
+    "question": "ما هي أكبر دولة عربية من حيث المساحة؟",
+    "answer": "الجزائر",
+    "category": "me7gan",
+    "difficulty": "سهل",
+    "hint": "في شمال أفريقيا",
+    "explanation": "الجزائر أكبر دولة عربية وأفريقية من حيث المساحة",
+    "isPublished": true
+  },
+  {
+    "question": "كم عدد الدول العربية؟",
+    "answer": "22 دولة",
+    "category": "me7gan",
+    "difficulty": "سهل",
+    "hint": "أكثر من عشرين",
+    "explanation": "عدد الدول الأعضاء في جامعة الدول العربية 22 دولة",
+    "isPublished": true
+  },
+  {
+    "question": "ما هي أقدم جامعة في العالم؟",
+    "answer": "جامعة القرويين",
+    "category": "me7gan",
+    "difficulty": "صعب",
+    "hint": "في المغرب",
+    "explanation": "جامعة القرويين في فاس تأسست عام 859 ميلادية",
+    "isPublished": true
+  },
+  {
+    "question": "من هو مؤلف ألف ليلة وليلة؟",
+    "answer": "مؤلف مجهول",
+    "category": "me7gan",
+    "difficulty": "صعب",
+    "hint": "مجموعة من المؤلفين",
+    "explanation": "ألف ليلة وليلة مجموعة قصص شعبية بلا مؤلف محدد",
+    "isPublished": true
+  },
+  {
+    "question": "ما هي عملة دولة الكويت؟",
+    "answer": "الدينار الكويتي",
+    "category": "me7gan",
+    "difficulty": "سهل",
+    "hint": "أغلى عملة في العالم",
+    "explanation": "الدينار الكويتي هو العملة الرسمية لدولة الكويت",
+    "isPublished": true
+  }
+]

@@ -48,11 +48,6 @@ export default function AdminDashboard() {
   const [bulkQuestionMode, setBulkQuestionMode] = useState(false);
   const [bulkQuestions, setBulkQuestions] = useState([
     { question: "", answer: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" },
-    { question: "", answer: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" },
-    { question: "", answer: "", difficulty: "متوسط", hint: "", explanation: "", imageUrl: "" },
-    { question: "", answer: "", difficulty: "متوسط", hint: "", explanation: "", imageUrl: "" },
-    { question: "", answer: "", difficulty: "صعب", hint: "", explanation: "", imageUrl: "" },
-    { question: "", answer: "", difficulty: "صعب", hint: "", explanation: "", imageUrl: "" },
   ]);
   const [categoryForm, setCategoryForm] = useState({
     name: "",
@@ -155,14 +150,9 @@ export default function AdminDashboard() {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/questions"] });
       setBulkQuestions([
         { question: "", answer: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" },
-        { question: "", answer: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" },
-        { question: "", answer: "", difficulty: "متوسط", hint: "", explanation: "", imageUrl: "" },
-        { question: "", answer: "", difficulty: "متوسط", hint: "", explanation: "", imageUrl: "" },
-        { question: "", answer: "", difficulty: "صعب", hint: "", explanation: "", imageUrl: "" },
-        { question: "", answer: "", difficulty: "صعب", hint: "", explanation: "", imageUrl: "" },
       ]);
       setBulkQuestionMode(false);
-      toast({ title: "تم إنشاء 6 أسئلة بنجاح" });
+      toast({ title: `تم إنشاء ${questionsWithCategory.length} أسئلة بنجاح` });
     },
     onError: (error: any) => {
       toast({ title: "خطأ في إنشاء الأسئلة", description: error.message, variant: "destructive" });
@@ -910,7 +900,7 @@ export default function AdminDashboard() {
               <CardHeader>
                 <CardTitle>نظرة عامة على الفئات</CardTitle>
                 <CardDescription>
-                  كل فئة تحتاج 6 أسئلة بالضبط: 2 سهل (200 نقطة) + 2 متوسط (400 نقطة) + 2 صعب (600 نقطة)
+                  عدد الأسئلة حسب الفئة والصعوبة
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -921,33 +911,33 @@ export default function AdminDashboard() {
                       <div key={category.id} className="p-4 border rounded-lg">
                         <div className="flex items-center justify-between mb-2">
                           <h3 className="font-medium">{category.displayName}</h3>
-                          <Badge variant={status.isComplete ? "default" : "secondary"}>
-                            {status.total}/6
+                          <Badge variant={status.total > 0 ? "default" : "secondary"}>
+                            {status.total} أسئلة
                           </Badge>
                         </div>
                         <div className="space-y-1 text-sm">
                           <div className="flex justify-between">
                             <span className="text-green-600">سهل (200):</span>
-                            <span className={status.easy === 2 ? "text-green-600" : "text-gray-500"}>
-                              {status.easy}/2
+                            <span className={status.easy > 0 ? "text-green-600" : "text-gray-500"}>
+                              {status.easy}
                             </span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-yellow-600">متوسط (400):</span>
-                            <span className={status.medium === 2 ? "text-green-600" : "text-gray-500"}>
-                              {status.medium}/2
+                            <span className={status.medium > 0 ? "text-green-600" : "text-gray-500"}>
+                              {status.medium}
                             </span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-red-600">صعب (600):</span>
-                            <span className={status.hard === 2 ? "text-green-600" : "text-gray-500"}>
-                              {status.hard}/2
+                            <span className={status.hard > 0 ? "text-green-600" : "text-gray-500"}>
+                              {status.hard}
                             </span>
                           </div>
                         </div>
-                        {status.isComplete && (
+                        {status.total > 0 && (
                           <div className="mt-2 text-xs text-green-600 font-medium">
-                            ✓ مكتملة
+                            ✓ جاهزة للعب
                           </div>
                         )}
                       </div>
@@ -990,10 +980,10 @@ export default function AdminDashboard() {
               <Card>
                 <CardHeader>
                   <CardTitle>
-                    {editingQuestion ? "تعديل السؤال" : bulkQuestionMode ? "إضافة 6 أسئلة دفعة واحدة" : "إضافة سؤال جديد"}
+                    {editingQuestion ? "تعديل السؤال" : bulkQuestionMode ? "إضافة أسئلة دفعة واحدة" : "إضافة سؤال جديد"}
                   </CardTitle>
                   <CardDescription>
-                    {editingQuestion ? "تعديل بيانات السؤال المحدد" : bulkQuestionMode ? "أضف 6 أسئلة كاملة للفئة: 2 سهل (200 نقطة) + 2 متوسط (400 نقطة) + 2 صعب (600 نقطة)" : "أضف سؤالاً جديداً - كل فئة تحتاج 6 أسئلة: 2 سهل (200 نقطة) + 2 متوسط (400 نقطة) + 2 صعب (600 نقطة)"}
+                    {editingQuestion ? "تعديل بيانات السؤال المحدد" : bulkQuestionMode ? "أضف أسئلة متعددة للفئة دفعة واحدة" : "أضف سؤالاً جديداً للفئة المحددة"}
                   </CardDescription>
                   <div className="flex gap-2 mt-2">
                     <Button 
@@ -1008,7 +998,7 @@ export default function AdminDashboard() {
                       size="sm"
                       onClick={() => setBulkQuestionMode(true)}
                     >
-                      6 أسئلة معاً
+                      أسئلة متعددة
                     </Button>
                   </div>
                 </CardHeader>
@@ -1018,7 +1008,7 @@ export default function AdminDashboard() {
                     <>
                       {/* Category Selection for Bulk */}
                       <div>
-                        <Label htmlFor="bulkCategory">الفئة للأسئلة الستة</Label>
+                        <Label htmlFor="bulkCategory">الفئة للأسئلة</Label>
                         <Select value={questionForm.category} onValueChange={(value) => setQuestionForm({ ...questionForm, category: value })}>
                           <SelectTrigger>
                             <SelectValue placeholder="اختر الفئة" />
@@ -1041,7 +1031,19 @@ export default function AdminDashboard() {
                               <Badge variant={question.difficulty === "سهل" ? "secondary" : question.difficulty === "متوسط" ? "default" : "destructive"}>
                                 {question.difficulty} - {question.difficulty === "سهل" ? "200" : question.difficulty === "متوسط" ? "400" : "600"} نقطة
                               </Badge>
-                              <span className="text-sm text-gray-600">السؤال {index + 1}/6</span>
+                              <span className="text-sm text-gray-600">السؤال {index + 1}</span>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                  const updated = bulkQuestions.filter((_, i) => i !== index);
+                                  setBulkQuestions(updated);
+                                }}
+                                className="text-red-600 hover:text-red-800"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
                             </div>
                             
                             <div className="grid gap-3">
@@ -1103,6 +1105,43 @@ export default function AdminDashboard() {
                         ))}
                       </div>
                       
+                      {/* Add More Questions Button */}
+                      <div className="flex gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => {
+                            setBulkQuestions([...bulkQuestions, { question: "", answer: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" }]);
+                          }}
+                          className="flex-1"
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          إضافة سؤال سهل
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => {
+                            setBulkQuestions([...bulkQuestions, { question: "", answer: "", difficulty: "متوسط", hint: "", explanation: "", imageUrl: "" }]);
+                          }}
+                          className="flex-1"
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          إضافة سؤال متوسط
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => {
+                            setBulkQuestions([...bulkQuestions, { question: "", answer: "", difficulty: "صعب", hint: "", explanation: "", imageUrl: "" }]);
+                          }}
+                          className="flex-1"
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          إضافة سؤال صعب
+                        </Button>
+                      </div>
+                      
                       <Button
                         onClick={() => {
                           if (!questionForm.category) {
@@ -1119,7 +1158,7 @@ export default function AdminDashboard() {
                         disabled={createBulkQuestionsMutation.isPending}
                         className="w-full"
                       >
-                        {createBulkQuestionsMutation.isPending ? "جاري الإضافة..." : "إضافة 6 أسئلة"}
+                        {createBulkQuestionsMutation.isPending ? "جاري الإضافة..." : `إضافة ${bulkQuestions.length} أسئلة`}
                       </Button>
                     </>
                   )}
