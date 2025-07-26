@@ -304,13 +304,13 @@ export default function Dashboard() {
                 <Play className="text-luxury-green-dark h-12 w-12" />
               </div>
               <h3 className="text-2xl font-bold text-luxury-green-dark mb-4">متابعة اللعبة</h3>
-              <p className="text-muted-foreground mb-8 text-lg">لديك لعبة نشطة، تابع من حيث توقفت</p>
+              <p className="text-muted-foreground mb-8 text-lg">استكمل آخر لعبة بدأتها من حيث توقفت</p>
               <button 
                 className="luxury-button w-full text-lg py-4 glow question-card-flip"
                 onClick={() => setLocation(`/game/${activeGameData.activeSession.id}`)}
               >
                 <Play className="ml-2 h-6 w-6" />
-                متابعة اللعبة
+                متابعة آخر لعبة
               </button>
               <p className="text-sm text-muted-foreground mt-4">
                 نوع اللعبة: {activeGameData.activeSession.gameType === "team" ? "فريقين" : "فردية"}

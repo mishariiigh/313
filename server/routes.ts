@@ -520,7 +520,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const user = req.user as any;
       const gameSessions = await storage.getUserGameSessions(user.id);
-      const activeSession = gameSessions.find(session => !session.isCompleted);
+      
+      // Get all active (non-completed) sessions
+      const activeSessions = gameSessions.filter(session => !session.isCompleted);
+      
+      // Return the most recently created active session (last in array)
+      const activeSession = activeSessions.length > 0 ? activeSessions[activeSessions.length - 1] : null;
+      
       res.json({ activeSession: activeSession || null });
     } catch (error: any) {
       console.error("Active games error:", error);
