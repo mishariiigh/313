@@ -43,6 +43,7 @@ export default function Dashboard() {
   });
 
   const handleStartGame = () => {
+    console.log("Start New Game clicked");
     if (user?.availableGames <= 0) {
       toast({
         title: "لا توجد ألعاب متاحة",
@@ -85,6 +86,24 @@ export default function Dashboard() {
 
   const handleLogout = async () => {
     await logout();
+  };
+
+  const handleContinueGame = async () => {
+    console.log("Continue Game clicked - Active Session ID:", activeGameData?.activeSession?.id);
+    
+    // Force refresh the active games data before continuing
+    await queryClient.invalidateQueries({ queryKey: ["/api/games/active"] });
+    await queryClient.refetchQueries({ queryKey: ["/api/games/active"] });
+    
+    // Get the refreshed data
+    const refreshedData = queryClient.getQueryData(["/api/games/active"]) as any;
+    console.log("Refreshed active session:", refreshedData?.activeSession?.id);
+    
+    if (refreshedData?.activeSession?.id) {
+      setLocation(`/game/${refreshedData.activeSession.id}`);
+    } else if (activeGameData?.activeSession?.id) {
+      setLocation(`/game/${activeGameData.activeSession.id}`);
+    }
   };
 
   // Redirect if not logged in
@@ -307,7 +326,7 @@ export default function Dashboard() {
               <p className="text-muted-foreground mb-8 text-lg">استكمل آخر لعبة بدأتها من حيث توقفت</p>
               <button 
                 className="luxury-button w-full text-lg py-4 glow question-card-flip"
-                onClick={() => setLocation(`/game/${activeGameData.activeSession.id}`)}
+                onClick={handleContinueGame}
               >
                 <Play className="ml-2 h-6 w-6" />
                 متابعة آخر لعبة

@@ -521,11 +521,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = req.user as any;
       const gameSessions = await storage.getUserGameSessions(user.id);
       
+      console.log(`Debug: User ${user.id} has ${gameSessions.length} total game sessions`);
+      
       // Get all active (non-completed) sessions
       const activeSessions = gameSessions.filter(session => !session.isCompleted);
+      console.log(`Debug: Found ${activeSessions.length} active sessions:`, activeSessions.map(s => ({ id: s.id, createdAt: s.createdAt })));
       
-      // Return the most recently created active session (last in array)
-      const activeSession = activeSessions.length > 0 ? activeSessions[activeSessions.length - 1] : null;
+      // Return the most recently created active session (first in array since ordered by desc(createdAt))
+      const activeSession = activeSessions.length > 0 ? activeSessions[0] : null;
+      console.log(`Debug: Returning active session:`, activeSession ? { id: activeSession.id, createdAt: activeSession.createdAt } : null);
       
       res.json({ activeSession: activeSession || null });
     } catch (error: any) {
