@@ -2,11 +2,13 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { firebaseAutoSync } from "./firebase-auto-sync";
-import { config as appConfig } from "@shared/config";
 
-// Load environment variables
+// Load environment variables FIRST
 import { config } from "dotenv";
 config();
+
+// Then import config after env vars are loaded
+import { config as appConfig } from "@shared/config";
 
 // Validate configuration
 console.log("🔧 Validating environment configuration...");
