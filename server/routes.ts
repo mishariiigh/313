@@ -4,7 +4,9 @@ import session from "express-session";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
-import { storage } from "./firebase-storage";
+// Switch to temp storage until Firebase is properly configured
+// import { storage } from "./firebase-storage";
+import { storage } from "./temp-storage";
 import { insertUserSchema, insertQuestionSchema, insertGameSessionSchema, insertCategorySchema, insertCouponSchema, insertGamePackageSchema } from "@shared/firebase-schema";
 import { z } from "zod";
 import Stripe from "stripe";
@@ -1248,6 +1250,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ message: "تم إلغاء نشر جميع الأسئلة بنجاح" });
     } catch (error) {
       res.status(500).json({ message: "خطأ في إلغاء نشر الأسئلة" });
+    }
+  });
+
+  // Seed questions from config
+  app.post("/api/admin/questions/seed", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    const user = req.user as any;
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "غير مصرح بالوصول" });
+    }
+
+    try {
+      const { loadQuestions } = await import('@shared/config');
+      const configQuestions = loadQuestions();
+      let created = 0;
+      let skipped = 0;
+      
+      console.log(`Loading ${configQuestions.length} questions from config...`);
+      
+      for (const question of configQuestions) {
+        try {
+          // Check if question already exists
+          const existingQuestions = await storage.getQuestionsByCategory(question.category);
+          const exists = existingQuestions.some(q => q.question === question.question);
+          
+          if (!exists) {
+            await storage.createQuestion({
+              ...question,
+              isPublished: true
+            });
+            created++;
+            console.log(`Created question: ${question.question.substring(0, 50)}...`);
+          } else {
+            skipped++;
+          }
+        } catch (error: any) {
+          console.log('Error creating question:', error.message);
+        }
+      }
+      
+      res.json({ 
+        message: `تم إضافة ${created} سؤال جديد وتخطي ${skipped} سؤال موجود مسبقاً`,
+        totalInConfig: configQuestions.length,
+        created,
+        skipped
+      });
+    } catch (error: any) {
+      console.error('Error seeding questions:', error);
+      res.status(500).json({ message: "خطأ في تحميل الأسئلة: " + error.message });
     }
   });
 
