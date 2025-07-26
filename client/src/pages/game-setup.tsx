@@ -37,7 +37,7 @@ export default function GameSetupPage() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   // Fetch categories from admin management
-  const { data: categoriesData, isLoading: categoriesLoading } = useQuery({
+  const { data: categoriesData, isLoading: categoriesLoading } = useQuery<{ categories: Category[] }>({
     queryKey: ["/api/categories"],
     enabled: !!user,
   });
