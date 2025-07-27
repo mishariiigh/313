@@ -219,7 +219,7 @@ export default function AuthPage() {
                       <div className="luxury-spinner mx-auto" />
                     ) : (
                       <>
-                        <FaGoogle className="h-5 w-5 text-red-500" />
+                        <FaGoogle className="h-5 w-5 text-blue-500" />
                         تسجيل الدخول بجوجل
                       </>
                     )}

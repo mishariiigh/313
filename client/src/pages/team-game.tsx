@@ -348,7 +348,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   if (isGameCompleted) {
     const winner = getWinner();
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-red-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
         <div className="max-w-2xl mx-auto p-8">
           <div className="luxury-card p-12 text-center">
             <div className="text-6xl mb-6">🎉</div>
@@ -358,10 +358,10 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             
             {winner && (
               <div className="mb-8">
-                <div className="text-2xl font-bold text-red-600 mb-4">
+                <div className="text-2xl font-bold text-blue-600 mb-4">
                   الفريق الفائز:
                 </div>
-                <div className="bg-gradient-to-r from-red-400 to-red-500 text-white p-6 rounded-xl text-3xl font-bold mb-4">
+                <div className="bg-gradient-to-r from-blue-400 to-blue-500 text-white p-6 rounded-xl text-3xl font-bold mb-4">
                   {winner.team}
                 </div>
                 <div className="text-xl text-gray-800">
@@ -376,7 +376,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 {gameSession.teams.map((team: string, index: number) => (
                   <div key={index} className="flex justify-between items-center">
                     <span className="font-semibold">{team}</span>
-                    <span className="text-red-600 font-bold text-lg">
+                    <span className="text-blue-600 font-bold text-lg">
                       {gameSession.teamScores[index] || 0} نقطة
                     </span>
                   </div>
@@ -386,7 +386,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             
             <Button
               onClick={() => setLocation("/dashboard")}
-              className="bg-red-500 hover:bg-red-600 text-white text-lg py-4 px-8"
+              className="bg-blue-500 hover:bg-blue-600 text-white text-lg py-4 px-8"
             >
               العودة للوحة التحكم
             </Button>
@@ -479,7 +479,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   isTimerPaused
                     ? 'bg-yellow-500 text-white border-yellow-600'
                     : timeLeft <= 10 
-                    ? 'bg-red-600 text-white border-red-700 animate-pulse' 
+                    ? 'bg-blue-600 text-white border-blue-700 animate-pulse' 
                     : 'bg-white text-gray-800 border-gray-300'
                 }`}>
                   {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
@@ -492,7 +492,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             
             {isTimeOut && (
               <div className="flex items-center gap-4">
-                <div className="flex items-center justify-center w-16 h-16 rounded-full text-2xl font-bold bg-red-800 text-white border-4 border-red-900">
+                <div className="flex items-center justify-center w-16 h-16 rounded-full text-2xl font-bold bg-blue-800 text-white border-4 border-blue-900">
                   0:00
                 </div>
                 <span className="text-white font-bold animate-pulse">انتهى الوقت!</span>

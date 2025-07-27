@@ -354,7 +354,7 @@ export default function CheckoutPage() {
                       onClick={removeCoupon}
                       variant="ghost"
                       size="sm"
-                      className="text-red-600 hover:text-red-700"
+                      className="text-blue-600 hover:text-blue-700"
                     >
                       <XCircle className="h-4 w-4" />
                     </Button>
@@ -362,7 +362,7 @@ export default function CheckoutPage() {
                 )}
                 
                 {couponError && (
-                  <p className="text-red-500 text-sm mt-2">{couponError}</p>
+                  <p className="text-blue-500 text-sm mt-2">{couponError}</p>
                 )}
               </div>
             </div>

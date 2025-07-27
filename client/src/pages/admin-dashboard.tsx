@@ -646,7 +646,7 @@ export default function AdminDashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">غير مصرح</h1>
+          <h1 className="text-2xl font-bold text-blue-600 mb-4">غير مصرح</h1>
           <p className="text-gray-600">ليس لديك صلاحيات الوصول لهذه الصفحة</p>
         </div>
       </div>
@@ -654,7 +654,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-red-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <div className="flex items-center space-x-reverse space-x-4 mb-4">
