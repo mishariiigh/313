@@ -127,13 +127,13 @@ export default function Dashboard() {
       {/* Creative Header */}
       <header className="relative overflow-hidden">
         {/* Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-50 via-blue-100 to-blue-50 opacity-80"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-yellow-100 via-yellow-50 to-yellow-100"></div>
         
         {/* Decorative Elements */}
         <div className="absolute top-0 left-0 w-full h-full">
-          <div className="absolute top-4 left-16 w-32 h-32 bg-blue-200 rounded-full opacity-20 animate-pulse"></div>
-          <div className="absolute top-12 right-24 w-24 h-24 bg-blue-300 rounded-full opacity-15 animate-bounce"></div>
-          <div className="absolute bottom-8 left-1/3 w-20 h-20 bg-blue-200 rounded-full opacity-10"></div>
+          <div className="absolute top-4 left-16 w-32 h-32 bg-yellow-300 rounded-full opacity-30 animate-pulse"></div>
+          <div className="absolute top-12 right-24 w-24 h-24 bg-yellow-400 rounded-full opacity-25 animate-bounce"></div>
+          <div className="absolute bottom-8 left-1/3 w-20 h-20 bg-yellow-200 rounded-full opacity-20"></div>
         </div>
 
         <div className="relative z-10 luxury-container">
@@ -144,9 +144,9 @@ export default function Dashboard() {
               
               {/* User Info */}
               <div className="flex items-center space-x-2 space-x-reverse">
-                <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-                <p className="text-blue-600 font-medium">مرحباً، {user?.name}</p>
-                <Trophy className="h-4 w-4 text-blue-500" />
+                <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
+                <p className="text-yellow-700 font-medium">مرحباً، {user?.name}</p>
+                <Trophy className="h-4 w-4 text-yellow-600" />
               </div>
             </div>
             
@@ -154,10 +154,10 @@ export default function Dashboard() {
             <div className="flex items-center space-x-reverse space-x-3">
               {user?.isAdmin && (
                 <button
-                  className="group relative px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  className="group relative px-6 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                   onClick={() => setLocation("/admin-dashboard")}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-yellow-600 to-yellow-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="relative flex items-center">
                     <Settings className="h-5 w-5 ml-2" />
                     الإدارة
@@ -178,7 +178,7 @@ export default function Dashboard() {
         </div>
         
         {/* Bottom Border */}
-        <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-red-300 via-red-500 to-red-300"></div>
+        <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-300"></div>
       </header>
 
       {/* Main Content */}
@@ -197,30 +197,30 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           
           {/* Available Games Card */}
-          <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-red-50 to-red-100 border-2 border-red-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+          <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-yellow-50 to-yellow-100 border-2 border-yellow-300 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
             {/* Decorative Background */}
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute top-4 right-4 w-20 h-20 bg-red-300 rounded-full animate-pulse"></div>
-              <div className="absolute bottom-4 left-4 w-16 h-16 bg-red-400 rounded-full animate-bounce"></div>
+            <div className="absolute inset-0 opacity-20">
+              <div className="absolute top-4 right-4 w-20 h-20 bg-yellow-300 rounded-full animate-pulse"></div>
+              <div className="absolute bottom-4 left-4 w-16 h-16 bg-yellow-400 rounded-full animate-bounce"></div>
             </div>
             
             <div className="relative z-10 p-8">
               <div className="flex items-center justify-between mb-6">
-                <div className="w-14 h-14 bg-gradient-to-br from-red-400 to-red-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <Gamepad2 className="text-white h-7 w-7" />
+                <div className="w-14 h-14 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Gamepad2 className="text-black h-7 w-7" />
                 </div>
                 <div className="text-right">
-                  <div className="text-3xl font-bold text-red-700 mb-1">{user?.availableGames || 0}</div>
-                  <div className="text-sm text-red-500 font-medium">ألعاب متاحة</div>
+                  <div className="text-3xl font-bold text-yellow-800 mb-1">{user?.availableGames || 0}</div>
+                  <div className="text-sm text-yellow-600 font-medium">ألعاب متاحة</div>
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-red-800 mb-2">الألعاب المتاحة</h3>
-              <p className="text-red-600 text-sm">جاهز للعب والاستمتاع</p>
+              <h3 className="text-xl font-bold text-yellow-900 mb-2">الألعاب المتاحة</h3>
+              <p className="text-yellow-700 text-sm">جاهز للعب والاستمتاع</p>
               
               {/* Progress Bar */}
-              <div className="mt-4 bg-red-200 rounded-full h-2">
+              <div className="mt-4 bg-yellow-200 rounded-full h-2">
                 <div 
-                  className="bg-gradient-to-r from-red-400 to-red-600 h-2 rounded-full transition-all duration-500"
+                  className="bg-gradient-to-r from-yellow-400 to-yellow-600 h-2 rounded-full transition-all duration-500"
                   style={{ width: `${Math.min((user?.availableGames || 0) * 10, 100)}%` }}
                 ></div>
               </div>
