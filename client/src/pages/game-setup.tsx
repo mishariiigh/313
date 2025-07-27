@@ -168,7 +168,13 @@ export default function GameSetupPage() {
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-4">
             <Logo size="medium" />
-            <button className="p-2 ml-4 bg-white rounded-lg hover:bg-gray-100 transition-colors" onClick={handleBack}>
+            <button className="p-2 ml-4 rounded-lg transition-colors" style={{
+              background: '#1e1e1e',
+              color: '#f5f5f5'
+            }} 
+            onMouseEnter={(e) => e.target.style.background = '#333333'}
+            onMouseLeave={(e) => e.target.style.background = '#1e1e1e'}
+            onClick={handleBack}>
               <ArrowRight className="h-5 w-5 text-red-600" />
             </button>
             <div>

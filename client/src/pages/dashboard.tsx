@@ -142,7 +142,9 @@ export default function Dashboard() {
               {/* Enhanced Logo */}
               <div className="relative">
                 <Logo size="medium" className="transform hover:scale-105 transition-all duration-300" />
-                <div className="absolute -top-1 -right-1 w-6 h-6 bg-white rounded-full flex items-center justify-center animate-pulse">
+                <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center animate-pulse" style={{
+                  background: '#e50914'
+                }}>
                   <Star className="text-red-600 h-3 w-3" />
                 </div>
               </div>

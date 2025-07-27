@@ -371,7 +371,10 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
               </div>
             )}
             
-            <div className="bg-gray-50 p-6 rounded-xl mb-8">
+            <div className="p-6 rounded-xl mb-8" style={{
+              background: '#1e1e1e',
+              border: '2px solid #990000'
+            }}>
               <h3 className="text-xl font-bold text-gray-800 mb-4">النتائج النهائية:</h3>
               <div className="space-y-3">
                 {gameSession.teams.map((team: string, index: number) => (
@@ -401,7 +404,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   if (selectedQuestion) {
     return (
       <div className="h-screen question-slide-in flex flex-col" dir="rtl" style={{
-        background: 'linear-gradient(135deg, hsl(0, 0%, 100%) 0%, hsl(0, 0%, 98%) 100%)'
+        background: 'linear-gradient(135deg, #1e1e1e 0%, #000000 100%)'
       }}>
         {/* Top Bar (Header) */}
         <div className="text-white p-3 flex-shrink-0" style={{
@@ -416,9 +419,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 variant="outline"
                 className="px-4 py-2 rounded-full border-2 hover:scale-105 transition-transform duration-200"
                 style={{
-                  background: 'hsla(0, 0%, 100%, 0.25)',
-                  color: 'white',
-                  borderColor: 'hsla(0, 0%, 100%, 0.4)'
+                  background: 'rgba(30, 30, 30, 0.8)',
+                  color: '#f5f5f5',
+                  borderColor: 'rgba(229, 9, 20, 0.4)'
                 }}
               >
                 <ArrowLeft className="ml-2 h-4 w-4" />
@@ -435,9 +438,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 variant="outline"
                 className="px-4 py-2 rounded-full border-2 hover:scale-105 transition-transform duration-200"
                 style={{
-                  background: 'hsla(0, 0%, 100%, 0.25)',
-                  color: 'white',
-                  borderColor: 'hsla(0, 0%, 100%, 0.4)'
+                  background: 'rgba(30, 30, 30, 0.8)',
+                  color: '#f5f5f5',
+                  borderColor: 'rgba(229, 9, 20, 0.4)'
                 }}
               >
                 إنهاء اللعبة
@@ -479,7 +482,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     ? 'bg-yellow-500 text-white border-yellow-600'
                     : timeLeft <= 10 
                     ? 'bg-red-600 text-white border-red-700 animate-pulse' 
-                    : 'bg-white text-gray-800 border-gray-300'
+                    : 'bg-gaming-darkgrey text-gaming-offwhite border-gaming-mutedred'
                 }`}>
                   {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
                 </div>
@@ -625,7 +628,10 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 {/* Current Team Display */}
                 <div className="text-center mb-4">
                   <h3 className="text-lg font-bold mb-2">🎯 دور الفريق الحالي</h3>
-                  <div className="bg-white bg-opacity-20 rounded-2xl p-3 shadow-lg border border-white border-opacity-30">
+                  <div className="rounded-2xl p-3 shadow-lg border border-opacity-30" style={{
+                    background: 'rgba(30, 30, 30, 0.6)',
+                    borderColor: 'rgba(229, 9, 20, 0.3)'
+                  }}>
                     <div className="text-xl font-bold">{gameSession.teams[gameSession.currentTurn]}</div>
                   </div>
                 </div>
@@ -637,9 +643,13 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     {gameSession.teams.map((team: string, index: number) => (
                       <div 
                         key={index} 
-                        className={`bg-white bg-opacity-20 rounded-2xl p-2 flex justify-between items-center shadow-lg border border-white border-opacity-30 ${
-                          index === gameSession.currentTurn ? 'ring-2 ring-white bg-opacity-30' : ''
+                        className={`rounded-2xl p-2 flex justify-between items-center shadow-lg border border-opacity-30 ${
+                          index === gameSession.currentTurn ? 'ring-2 ring-white' : ''
                         }`}
+                        style={{
+                          background: index === gameSession.currentTurn ? 'rgba(30, 30, 30, 0.8)' : 'rgba(30, 30, 30, 0.6)',
+                          borderColor: 'rgba(229, 9, 20, 0.3)'
+                        }}
                       >
                         <span className="font-bold text-sm">{team}</span>
                         <span className="text-md font-bold">{gameSession.teamScores[index] || 0}</span>
@@ -674,7 +684,13 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                             handleUseHint();
                           }
                         }}
-                        className={`w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-3 text-md font-bold rounded-2xl transition-all duration-300 shadow-lg border border-white border-opacity-30 ${currentTeamHintUsed ? 'opacity-50 cursor-not-allowed' : isHintUsed ? 'opacity-75' : ''}`}
+                        className={`w-full text-white py-3 text-md font-bold rounded-2xl transition-all duration-300 shadow-lg border border-opacity-30 ${currentTeamHintUsed ? 'opacity-50 cursor-not-allowed' : isHintUsed ? 'opacity-75' : ''}`}
+                        style={{
+                          background: 'rgba(30, 30, 30, 0.6)',
+                          borderColor: 'rgba(229, 9, 20, 0.3)'
+                        }}
+                        onMouseEnter={(e) => e.target.style.background = 'rgba(30, 30, 30, 0.8)'}
+                        onMouseLeave={(e) => e.target.style.background = 'rgba(30, 30, 30, 0.6)'}
                         disabled={useHintMutation.isPending || currentTeamHintUsed}
                       >
                         <HelpCircle className="ml-2 h-5 w-5" />
@@ -691,7 +707,13 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 <div className="space-y-3">
                   <Button
                     onClick={() => handleSkipQuestion()}
-                    className="w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-3 text-md font-bold rounded-2xl transition-all duration-300 shadow-lg border border-white border-opacity-30"
+                    className="w-full text-white py-3 text-md font-bold rounded-2xl transition-all duration-300 shadow-lg border border-opacity-30"
+                    style={{
+                      background: 'rgba(30, 30, 30, 0.6)',
+                      borderColor: 'rgba(229, 9, 20, 0.3)'
+                    }}
+                    onMouseEnter={(e) => e.target.style.background = 'rgba(30, 30, 30, 0.8)'}
+                    onMouseLeave={(e) => e.target.style.background = 'rgba(30, 30, 30, 0.6)'}
                     disabled={skipQuestionMutation.isPending}
                   >
                     تخطي السؤال
@@ -738,11 +760,19 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             
             {/* Modal Content - Full Size Image */}
             <div className="relative max-w-[90vw] max-h-[90vh] p-4">
-              <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden">
+              <div className="relative rounded-3xl shadow-2xl overflow-hidden" style={{
+                background: '#1e1e1e'
+              }}>
                 {/* Close Button */}
                 <button
                   onClick={() => setImagePopupOpen(false)}
-                  className="absolute top-4 right-4 z-10 bg-white bg-opacity-90 hover:bg-opacity-100 text-gray-800 rounded-full p-2 shadow-lg transition-all duration-200"
+                  className="absolute top-4 right-4 z-10 rounded-full p-2 shadow-lg transition-all duration-200"
+                  style={{
+                    background: 'rgba(30, 30, 30, 0.9)',
+                    color: '#f5f5f5'
+                  }}
+                  onMouseEnter={(e) => e.target.style.background = 'rgba(30, 30, 30, 1)'}
+                  onMouseLeave={(e) => e.target.style.background = 'rgba(30, 30, 30, 0.9)'}
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -794,8 +824,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     onClick={() => setShowAnswer(false)}
                     className="absolute top-2 left-2 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
                     style={{
-                      background: 'hsla(0, 0%, 100%, 0.2)',
-                      border: '2px solid hsla(0, 0%, 100%, 0.3)'
+                      background: 'rgba(30, 30, 30, 0.6)',
+                      border: '2px solid rgba(229, 9, 20, 0.3)'
                     }}
                   >
                     <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -880,7 +910,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           <div className="flex items-center justify-between text-white">
                             <div className="flex items-center">
                               <div className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold mr-1 group-hover:scale-110 transition-transform" style={{
-                                background: 'hsla(0, 0%, 100%, 0.2)'
+                                background: 'rgba(30, 30, 30, 0.8)'
                               }}>
                                 🏆
                               </div>
@@ -899,8 +929,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
                 {/* Control Buttons */}
                 <div className="p-2 space-y-1 flex-shrink-0" style={{
-                  background: 'linear-gradient(135deg, hsl(0, 0%, 96%) 0%, hsl(0, 0%, 93%) 100%)',
-                  borderTop: '2px solid hsl(0, 0%, 85%)'
+                  background: 'linear-gradient(135deg, #1e1e1e 0%, #000000 100%)',
+                  borderTop: '2px solid #990000'
                 }}>
                   <button
                     onClick={() => {
@@ -909,8 +939,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     }}
                     className="w-full p-1.5 rounded-xl transition-all duration-300 hover:scale-105 transform font-bold text-white shadow-lg"
                     style={{
-                      background: 'linear-gradient(135deg, hsl(0, 79%, 50%) 0%, hsl(0, 79%, 40%) 100%)',
-                      border: '2px solid hsl(0, 79%, 45%)'
+                      background: 'linear-gradient(135deg, #e50914 0%, #990000 100%)',
+                      border: '2px solid #e50914'
                     }}
                     disabled={skipQuestionMutation.isPending}
                   >
@@ -924,9 +954,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     onClick={() => setShowAnswer(false)}
                     className="w-full p-1 rounded-xl transition-all duration-300 hover:scale-105 transform font-bold border-2"
                     style={{
-                      background: 'hsl(0, 0%, 95%)',
-                      color: 'hsl(0, 0%, 30%)',
-                      borderColor: 'hsl(0, 0%, 75%)'
+                      background: '#333333',
+                      color: '#f5f5f5',
+                      borderColor: '#990000'
                     }}
                   >
                     <div className="flex items-center justify-center">
