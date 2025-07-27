@@ -9,10 +9,11 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Brain, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { FaGoogle } from "react-icons/fa";
 import { signInWithGoogle, handleGoogleRedirect } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
+import { Logo } from "@/components/Logo";
 
 const loginSchema = z.object({
   email: z.string().email("البريد الإلكتروني غير صحيح"),
@@ -148,11 +149,9 @@ export default function AuthPage() {
       <div className="max-w-md w-full space-y-8">
         {/* Logo and Header */}
         <div className="text-center">
-          <div className="mx-auto h-20 w-20 luxury-button rounded-full flex items-center justify-center mb-6 floating glow">
-            <Brain className="text-white h-10 w-10" />
-          </div>
-          <h1 className="text-4xl font-bold text-gradient mb-4">313</h1>
-          <p className="text-muted-foreground text-lg">اختبر معلوماتك مع الأصدقاء والعائلة</p>
+          <Logo size="large" className="mx-auto mb-6" />
+          <h1 className="text-4xl font-bold text-red-600 mb-4">313</h1>
+          <p className="text-gray-600 text-lg">اختبر معلوماتك مع الأصدقاء والعائلة</p>
         </div>
 
         {/* Auth Form */}
@@ -171,9 +170,9 @@ export default function AuthPage() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-luxury-green-dark font-semibold">البريد الإلكتروني</FormLabel>
+                        <FormLabel className="text-red-700 font-semibold">البريد الإلكتروني</FormLabel>
                         <FormControl>
-                          <Input placeholder="أدخل بريدك الإلكتروني" {...field} className="luxury-input" />
+                          <Input placeholder="أدخل بريدك الإلكتروني" {...field} className="border-gray-300 focus:border-red-500 focus:ring-red-500" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -184,17 +183,17 @@ export default function AuthPage() {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-luxury-green-dark font-semibold">كلمة المرور</FormLabel>
+                        <FormLabel className="text-red-700 font-semibold">كلمة المرور</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="أدخل كلمة المرور" {...field} className="luxury-input" />
+                          <Input type="password" placeholder="أدخل كلمة المرور" {...field} className="border-gray-300 focus:border-red-500 focus:ring-red-500" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <button type="submit" className="luxury-button w-full text-lg py-4" disabled={isLoading}>
+                  <button type="submit" className="bg-red-600 hover:bg-red-700 text-white font-bold w-full text-lg py-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl" disabled={isLoading}>
                     {isLoading ? (
-                      <div className="luxury-spinner mx-auto" />
+                      <Loader2 className="mx-auto h-5 w-5 animate-spin" />
                     ) : (
                       "تسجيل الدخول"
                     )}
@@ -213,13 +212,13 @@ export default function AuthPage() {
                     type="button"
                     onClick={handleGoogleSignIn}
                     disabled={googleLoading}
-                    className="luxury-button-outline w-full text-lg py-4 flex items-center justify-center gap-3"
+                    className="border-2 border-red-600 hover:bg-red-600 hover:text-white text-red-600 font-bold w-full text-lg py-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-3"
                   >
                     {googleLoading ? (
-                      <div className="luxury-spinner mx-auto" />
+                      <Loader2 className="mx-auto h-5 w-5 animate-spin" />
                     ) : (
                       <>
-                        <FaGoogle className="h-5 w-5 text-red-500" />
+                        <FaGoogle className="h-5 w-5" />
                         تسجيل الدخول بجوجل
                       </>
                     )}

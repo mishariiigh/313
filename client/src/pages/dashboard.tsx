@@ -7,7 +7,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Brain, Gamepad2, Trophy, Star, Play, ShoppingCart, Home, Settings, LogOut, Plus } from "lucide-react";
+import { Gamepad2, Trophy, Star, Play, ShoppingCart, Home, Settings, LogOut, Plus } from "lucide-react";
+import { Logo } from "@/components/Logo";
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
@@ -140,9 +141,7 @@ export default function Dashboard() {
             <div className="flex items-center space-x-reverse space-x-6">
               {/* Enhanced Logo */}
               <div className="relative">
-                <div className="h-16 w-16 bg-gradient-to-br from-red-400 to-red-600 rounded-2xl flex items-center justify-center shadow-xl transform hover:scale-105 transition-all duration-300">
-                  <Brain className="text-white h-8 w-8" />
-                </div>
+                <Logo size="medium" className="transform hover:scale-105 transition-all duration-300" />
                 <div className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center animate-pulse">
                   <Star className="text-white h-3 w-3" />
                 </div>
