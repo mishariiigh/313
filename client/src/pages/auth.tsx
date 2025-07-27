@@ -150,12 +150,12 @@ export default function AuthPage() {
         {/* Logo and Header */}
         <div className="text-center">
           <Logo size="large" className="mx-auto mb-6" />
-          <h1 className="text-4xl font-bold text-red-600 mb-4">313</h1>
-          <p className="text-gray-600 text-lg">اختبر معلوماتك مع الأصدقاء والعائلة</p>
+          <h1 className="text-4xl font-bold text-gaming-red mb-4">313</h1>
+          <p className="text-gray-400 text-lg">اختبر معلوماتك مع الأصدقاء والعائلة</p>
         </div>
 
         {/* Auth Form */}
-        <div className="luxury-card p-8">
+        <div className="bg-gaming-darkgrey border-2 border-gaming-mutedred rounded-2xl p-8 shadow-xl">
           <Tabs defaultValue="login" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-6">
               <TabsTrigger value="login" className="text-lg">تسجيل الدخول</TabsTrigger>
@@ -170,9 +170,9 @@ export default function AuthPage() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-red-700 font-semibold">البريد الإلكتروني</FormLabel>
+                        <FormLabel className="text-gaming-offwhite font-semibold">البريد الإلكتروني</FormLabel>
                         <FormControl>
-                          <Input placeholder="أدخل بريدك الإلكتروني" {...field} className="border-gray-300 focus:border-red-500 focus:ring-red-500" />
+                          <Input placeholder="أدخل بريدك الإلكتروني" {...field} className="bg-gaming-black border-gaming-mutedred text-gaming-offwhite placeholder-gray-500 focus:border-gaming-red focus:ring-gaming-red" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -183,15 +183,15 @@ export default function AuthPage() {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-red-700 font-semibold">كلمة المرور</FormLabel>
+                        <FormLabel className="text-gaming-offwhite font-semibold">كلمة المرور</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="أدخل كلمة المرور" {...field} className="border-gray-300 focus:border-red-500 focus:ring-red-500" />
+                          <Input type="password" placeholder="أدخل كلمة المرور" {...field} className="bg-gaming-black border-gaming-mutedred text-gaming-offwhite placeholder-gray-500 focus:border-gaming-red focus:ring-gaming-red" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <button type="submit" className="bg-red-600 hover:bg-red-700 text-white font-bold w-full text-lg py-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl" disabled={isLoading}>
+                  <button type="submit" className="bg-gaming-red hover:bg-gaming-mutedred text-gaming-offwhite font-bold w-full text-lg py-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl" disabled={isLoading}>
                     {isLoading ? (
                       <Loader2 className="mx-auto h-5 w-5 animate-spin" />
                     ) : (
@@ -212,7 +212,7 @@ export default function AuthPage() {
                     type="button"
                     onClick={handleGoogleSignIn}
                     disabled={googleLoading}
-                    className="border-2 border-red-600 hover:bg-red-600 hover:text-white text-red-600 font-bold w-full text-lg py-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-3"
+                    className="border-2 border-gaming-red hover:bg-gaming-red hover:text-gaming-offwhite text-gaming-red font-bold w-full text-lg py-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-3"
                   >
                     {googleLoading ? (
                       <Loader2 className="mx-auto h-5 w-5 animate-spin" />

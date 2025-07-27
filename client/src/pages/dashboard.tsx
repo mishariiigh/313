@@ -127,13 +127,13 @@ export default function Dashboard() {
       {/* Creative Header */}
       <header className="relative overflow-hidden">
         {/* Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-r from-red-600 via-red-700 to-red-600"></div>
+        <div className="absolute inset-0 bg-gaming-darkgrey border-b-2 border-gaming-mutedred"></div>
         
         {/* Decorative Elements */}
         <div className="absolute top-0 left-0 w-full h-full">
-          <div className="absolute top-4 left-16 w-32 h-32 bg-white rounded-full opacity-20 animate-pulse"></div>
-          <div className="absolute top-12 right-24 w-24 h-24 bg-white rounded-full opacity-15 animate-bounce"></div>
-          <div className="absolute bottom-8 left-1/3 w-20 h-20 bg-white rounded-full opacity-10"></div>
+          <div className="absolute top-4 left-16 w-32 h-32 bg-gaming-red rounded-full opacity-20 animate-pulse"></div>
+          <div className="absolute top-12 right-24 w-24 h-24 bg-gaming-red rounded-full opacity-15 animate-bounce"></div>
+          <div className="absolute bottom-8 left-1/3 w-20 h-20 bg-gaming-red rounded-full opacity-10"></div>
         </div>
 
         <div className="relative z-10 luxury-container">
@@ -149,13 +149,13 @@ export default function Dashboard() {
               
               {/* Enhanced Title */}
               <div className="space-y-1">
-                <h1 className="text-3xl font-bold text-white">
+                <h1 className="text-3xl font-bold text-gaming-offwhite">
                   313
                 </h1>
                 <div className="flex items-center space-x-2 space-x-reverse">
-                  <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                  <p className="text-white font-medium">مرحباً، {user?.name}</p>
-                  <Trophy className="h-4 w-4 text-white" />
+                  <div className="w-2 h-2 bg-gaming-red rounded-full animate-pulse"></div>
+                  <p className="text-gaming-offwhite font-medium">مرحباً، {user?.name}</p>
+                  <Trophy className="h-4 w-4 text-gaming-red" />
                 </div>
               </div>
             </div>
@@ -164,10 +164,9 @@ export default function Dashboard() {
             <div className="flex items-center space-x-reverse space-x-3">
               {user?.isAdmin && (
                 <button
-                  className="group relative px-6 py-3 bg-white text-red-600 rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  className="group relative px-6 py-3 bg-gaming-red text-gaming-offwhite rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border border-gaming-mutedred hover:bg-gaming-mutedred"
                   onClick={() => setLocation("/admin-dashboard")}
                 >
-                  <div className="absolute inset-0 bg-white rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="relative flex items-center">
                     <Settings className="h-5 w-5 ml-2" />
                     الإدارة
@@ -175,7 +174,7 @@ export default function Dashboard() {
                 </button>
               )}
               <button
-                className="group relative px-6 py-3 bg-white border-2 border-white text-red-600 rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:bg-gray-100"
+                className="group relative px-6 py-3 bg-transparent border-2 border-gaming-red text-gaming-red rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:bg-gaming-red hover:text-gaming-offwhite"
                 onClick={handleLogout}
               >
                 <div className="flex items-center">
@@ -188,16 +187,16 @@ export default function Dashboard() {
         </div>
         
         {/* Bottom Border */}
-        <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-white via-red-100 to-white opacity-50"></div>
+        <div className="absolute bottom-0 left-0 w-full h-1 bg-gaming-mutedred"></div>
       </header>
 
       {/* Main Content */}
       <main className="luxury-container py-12">
         {/* Hero Section */}
-        <div className="hero-section rounded-2xl mb-12 relative">
+        <div className="rounded-2xl mb-12 relative bg-gaming-darkgrey border-2 border-gaming-mutedred p-12">
           <div className="relative z-10 text-center">
-            <h2 className="luxury-section-header">اكتشف عالم المعرفة العربية</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <h2 className="text-4xl font-bold text-gaming-offwhite mb-4">اكتشف عالم المعرفة العربية</h2>
+            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
               تحدى نفسك مع مجموعة متنوعة من الأسئلة الثقافية والعلمية في اللغة العربية
             </p>
           </div>
@@ -207,30 +206,30 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           
           {/* Available Games Card */}
-          <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-red-50 to-red-100 border-2 border-red-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+          <div className="group relative overflow-hidden rounded-2xl bg-gaming-darkgrey border-2 border-gaming-mutedred shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
             {/* Decorative Background */}
             <div className="absolute inset-0 opacity-10">
-              <div className="absolute top-4 right-4 w-20 h-20 bg-red-300 rounded-full animate-pulse"></div>
-              <div className="absolute bottom-4 left-4 w-16 h-16 bg-red-400 rounded-full animate-bounce"></div>
+              <div className="absolute top-4 right-4 w-20 h-20 bg-gaming-red rounded-full animate-pulse"></div>
+              <div className="absolute bottom-4 left-4 w-16 h-16 bg-gaming-red rounded-full animate-bounce"></div>
             </div>
             
             <div className="relative z-10 p-8">
               <div className="flex items-center justify-between mb-6">
-                <div className="w-14 h-14 bg-gradient-to-br from-red-400 to-red-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <Gamepad2 className="text-white h-7 w-7" />
+                <div className="w-14 h-14 bg-gradient-to-br from-gaming-red to-gaming-mutedred rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Gamepad2 className="text-gaming-offwhite h-7 w-7" />
                 </div>
                 <div className="text-right">
-                  <div className="text-3xl font-bold text-red-700 mb-1">{user?.availableGames || 0}</div>
-                  <div className="text-sm text-red-500 font-medium">ألعاب متاحة</div>
+                  <div className="text-3xl font-bold text-gaming-offwhite mb-1">{user?.availableGames || 0}</div>
+                  <div className="text-sm text-gray-400 font-medium">ألعاب متاحة</div>
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-red-800 mb-2">الألعاب المتاحة</h3>
-              <p className="text-red-600 text-sm">جاهز للعب والاستمتاع</p>
+              <h3 className="text-xl font-bold text-gaming-offwhite mb-2">الألعاب المتاحة</h3>
+              <p className="text-gray-400 text-sm">جاهز للعب والاستمتاع</p>
               
               {/* Progress Bar */}
-              <div className="mt-4 bg-red-200 rounded-full h-2">
+              <div className="mt-4 bg-gaming-mutedred/30 rounded-full h-2">
                 <div 
-                  className="bg-gradient-to-r from-red-400 to-red-600 h-2 rounded-full transition-all duration-500"
+                  className="bg-gradient-to-r from-gaming-red to-gaming-mutedred h-2 rounded-full transition-all duration-500"
                   style={{ width: `${Math.min((user?.availableGames || 0) * 10, 100)}%` }}
                 ></div>
               </div>
@@ -238,50 +237,50 @@ export default function Dashboard() {
           </div>
 
           {/* Completed Games Card */}
-          <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-50 to-orange-100 border-2 border-orange-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+          <div className="group relative overflow-hidden rounded-2xl bg-gaming-darkgrey border-2 border-gaming-mutedred shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
             {/* Decorative Background */}
             <div className="absolute inset-0 opacity-10">
-              <div className="absolute top-6 left-6 w-24 h-24 bg-orange-300 rounded-full animate-pulse"></div>
-              <div className="absolute bottom-2 right-2 w-12 h-12 bg-orange-400 rounded-full animate-bounce"></div>
+              <div className="absolute top-6 left-6 w-24 h-24 bg-gaming-success rounded-full animate-pulse"></div>
+              <div className="absolute bottom-2 right-2 w-12 h-12 bg-gaming-success rounded-full animate-bounce"></div>
             </div>
             
             <div className="relative z-10 p-8">
               <div className="flex items-center justify-between mb-6">
-                <div className="w-14 h-14 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <Trophy className="text-white h-7 w-7" />
+                <div className="w-14 h-14 bg-gradient-to-br from-gaming-success to-emerald-700 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Trophy className="text-gaming-offwhite h-7 w-7" />
                 </div>
                 <div className="text-right">
-                  <div className="text-3xl font-bold text-orange-700 mb-1">{historyData?.gameSessions?.filter((session: any) => session.isCompleted).length || 0}</div>
-                  <div className="text-sm text-orange-500 font-medium">ألعاب مكتملة</div>
+                  <div className="text-3xl font-bold text-gaming-offwhite mb-1">{historyData?.gameSessions?.filter((session: any) => session.isCompleted).length || 0}</div>
+                  <div className="text-sm text-gray-400 font-medium">ألعاب مكتملة</div>
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-orange-800 mb-2">الألعاب المكتملة</h3>
-              <p className="text-orange-600 text-sm">إنجازات محققة بنجاح</p>
+              <h3 className="text-xl font-bold text-gaming-offwhite mb-2">الألعاب المكتملة</h3>
+              <p className="text-gray-400 text-sm">إنجازات محققة بنجاح</p>
               
               {/* Achievement Stars */}
               <div className="mt-4 flex items-center space-x-1 space-x-reverse">
                 {[...Array(Math.min(historyData?.gameSessions?.filter((session: any) => session.isCompleted).length || 0, 5))].map((_, i) => (
-                  <Star key={i} className="h-4 w-4 text-orange-400 fill-current animate-pulse" style={{ animationDelay: `${i * 0.1}s` }} />
+                  <Star key={i} className="h-4 w-4 text-gaming-success fill-current animate-pulse" style={{ animationDelay: `${i * 0.1}s` }} />
                 ))}
               </div>
             </div>
           </div>
 
           {/* Total Score Card */}
-          <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-yellow-50 to-yellow-100 border-2 border-yellow-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+          <div className="group relative overflow-hidden rounded-2xl bg-gaming-darkgrey border-2 border-gaming-mutedred shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
             {/* Decorative Background */}
             <div className="absolute inset-0 opacity-10">
-              <div className="absolute top-2 right-8 w-18 h-18 bg-yellow-300 rounded-full animate-pulse"></div>
-              <div className="absolute bottom-6 left-2 w-14 h-14 bg-yellow-400 rounded-full animate-bounce"></div>
+              <div className="absolute top-2 right-8 w-18 h-18 bg-gaming-red rounded-full animate-pulse"></div>
+              <div className="absolute bottom-6 left-2 w-14 h-14 bg-gaming-red rounded-full animate-bounce"></div>
             </div>
             
             <div className="relative z-10 p-8">
               <div className="flex items-center justify-between mb-6">
-                <div className="w-14 h-14 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <Star className="text-white h-7 w-7" />
+                <div className="w-14 h-14 bg-gradient-to-br from-gaming-red to-gaming-mutedred rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Star className="text-gaming-offwhite h-7 w-7" />
                 </div>
                 <div className="text-right">
-                  <div className="text-3xl font-bold text-yellow-700 mb-1">
+                  <div className="text-3xl font-bold text-gaming-offwhite mb-1">
                     {historyData?.gameSessions?.reduce((total: number, session: any) => {
                       if (session.gameType === "team") {
                         return total + (session.team1Score || 0) + (session.team2Score || 0);
@@ -289,16 +288,16 @@ export default function Dashboard() {
                       return total + (session.score || 0);
                     }, 0) || 0}
                   </div>
-                  <div className="text-sm text-yellow-500 font-medium">نقطة إجمالية</div>
+                  <div className="text-sm text-gray-400 font-medium">نقطة إجمالية</div>
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-yellow-800 mb-2">النقاط الإجمالية</h3>
-              <p className="text-yellow-600 text-sm">مجموع نقاط جميع الألعاب</p>
+              <h3 className="text-xl font-bold text-gaming-offwhite mb-2">النقاط الإجمالية</h3>
+              <p className="text-gray-400 text-sm">مجموع نقاط جميع الألعاب</p>
               
               {/* Score Animation */}
               <div className="mt-4 flex items-center space-x-2 space-x-reverse">
-                <div className="w-6 h-6 bg-yellow-400 rounded-full animate-ping"></div>
-                <div className="text-yellow-600 text-sm font-medium">
+                <div className="w-6 h-6 bg-gaming-red rounded-full animate-ping"></div>
+                <div className="text-gray-400 text-sm font-medium">
                   معدل النقاط: {historyData?.gameSessions?.length > 0 ? 
                     Math.round((historyData?.gameSessions?.reduce((total: number, session: any) => {
                       if (session.gameType === "team") {
@@ -317,112 +316,112 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Continue Game Card (only show if active game exists and is not completed) */}
           {activeGameData?.activeSession && !activeGameData.activeSession.isCompleted && (
-            <div className="luxury-card p-10 text-center hint-reveal border-2 border-luxury-gold">
-              <div className="w-24 h-24 bg-luxury-gold rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-luxury floating question-category-pulse">
-                <Play className="text-luxury-green-dark h-12 w-12" />
+            <div className="bg-gaming-darkgrey p-10 text-center rounded-2xl border-2 border-gaming-mutedred shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="w-24 h-24 bg-gaming-red rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+                <Play className="text-gaming-offwhite h-12 w-12" />
               </div>
-              <h3 className="text-2xl font-bold text-luxury-green-dark mb-4">متابعة اللعبة</h3>
-              <p className="text-muted-foreground mb-8 text-lg">استكمل آخر لعبة بدأتها من حيث توقفت</p>
+              <h3 className="text-2xl font-bold text-gaming-offwhite mb-4">متابعة اللعبة</h3>
+              <p className="text-gray-400 mb-8 text-lg">استكمل آخر لعبة بدأتها من حيث توقفت</p>
               <button 
-                className="luxury-button w-full text-lg py-4 glow question-card-flip"
+                className="bg-gaming-red hover:bg-gaming-mutedred text-gaming-offwhite font-bold w-full text-lg py-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
                 onClick={handleContinueGame}
               >
-                <Play className="ml-2 h-6 w-6" />
+                <Play className="ml-2 h-6 w-6 inline" />
                 متابعة آخر لعبة
               </button>
-              <p className="text-sm text-muted-foreground mt-4">
+              <p className="text-sm text-gray-400 mt-4">
                 نوع اللعبة: {activeGameData.activeSession.gameType === "team" ? "فريقين" : "فردية"}
               </p>
             </div>
           )}
 
           {/* Start New Game Card */}
-          <div className="luxury-card p-10 text-center hint-reveal">
-            <div className="w-24 h-24 bg-luxury-green rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-luxury floating question-category-pulse">
-              <Play className="text-luxury-cream h-12 w-12" />
+          <div className="bg-gaming-darkgrey p-10 text-center rounded-2xl border-2 border-gaming-mutedred shadow-lg hover:shadow-xl transition-all duration-300">
+            <div className="w-24 h-24 bg-gaming-red rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <Play className="text-gaming-offwhite h-12 w-12" />
             </div>
-            <h3 className="text-2xl font-bold text-luxury-green-dark mb-4">بدء لعبة جديدة</h3>
-            <p className="text-muted-foreground mb-8 text-lg">ابدأ جلسة جديدة بـ 36 سؤالاً متنوعاً عبر 6 فئات مختلفة</p>
+            <h3 className="text-2xl font-bold text-gaming-offwhite mb-4">بدء لعبة جديدة</h3>
+            <p className="text-gray-400 mb-8 text-lg">ابدأ جلسة جديدة بـ 36 سؤالاً متنوعاً عبر 6 فئات مختلفة</p>
             <button 
-              className="luxury-button w-full text-lg py-4 glow question-card-flip"
+              className="bg-gaming-red hover:bg-gaming-mutedred text-gaming-offwhite font-bold w-full text-lg py-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={handleStartGame}
               disabled={user?.availableGames <= 0}
             >
-              <Gamepad2 className="ml-2 h-6 w-6" />
+              <Gamepad2 className="ml-2 h-6 w-6 inline" />
               بدء اللعبة الآن
             </button>
-            <p className="text-sm text-muted-foreground mt-4">
+            <p className="text-sm text-gray-400 mt-4">
               {user?.availableGames || 0} ألعاب متاحة
             </p>
           </div>
 
           {/* Purchase Games Card */}
-          <div className="luxury-card p-10 text-center answer-reveal">
-            <div className="w-24 h-24 bg-luxury-gold rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-luxury floating question-category-pulse">
-              <ShoppingCart className="text-luxury-green-dark h-12 w-12" />
+          <div className="bg-gaming-darkgrey p-10 text-center rounded-2xl border-2 border-gaming-mutedred shadow-lg hover:shadow-xl transition-all duration-300">
+            <div className="w-24 h-24 bg-gaming-red rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <ShoppingCart className="text-gaming-offwhite h-12 w-12" />
             </div>
-            <h3 className="text-2xl font-bold text-luxury-green-dark mb-4">شراء ألعاب إضافية</h3>
-            <p className="text-muted-foreground mb-8 text-lg">احصل على المزيد من الألعاب لتستمتع مع أصدقائك</p>
+            <h3 className="text-2xl font-bold text-gaming-offwhite mb-4">شراء ألعاب إضافية</h3>
+            <p className="text-gray-400 mb-8 text-lg">احصل على المزيد من الألعاب لتستمتع مع أصدقائك</p>
             
             {/* Pricing Options */}
             <div className="space-y-4 mb-8">
-              <div className="luxury-card p-4 border-2 border-luxury-green-light">
+              <div className="bg-gaming-black p-4 border-2 border-gaming-mutedred rounded-lg">
                 <div className="flex items-center justify-between">
                   <div className="text-right">
-                    <span className="font-semibold text-luxury-green-dark">لعبة واحدة</span>
-                    <span className="text-sm text-muted-foreground block">36 سؤالاً</span>
+                    <span className="font-semibold text-gaming-offwhite">لعبة واحدة</span>
+                    <span className="text-sm text-gray-400 block">36 سؤالاً</span>
                   </div>
-                  <span className="font-bold text-luxury-green text-xl">1.900 د.ك</span>
+                  <span className="font-bold text-gaming-red text-xl">1.900 د.ك</span>
                 </div>
               </div>
-              <div className="luxury-card p-4 border-2 border-luxury-green bg-luxury-green-light">
+              <div className="bg-gaming-mutedred p-4 border-2 border-gaming-red rounded-lg">
                 <div className="flex items-center justify-between">
                   <div className="text-right">
-                    <span className="font-semibold text-luxury-green-dark">5 ألعاب</span>
-                    <span className="text-sm text-luxury-green-dark font-medium block">وفر 10%</span>
+                    <span className="font-semibold text-gaming-offwhite">5 ألعاب</span>
+                    <span className="text-sm text-gaming-offwhite font-medium block">وفر 10%</span>
                   </div>
-                  <span className="font-bold text-luxury-green-dark text-xl">7.900 د.ك</span>
+                  <span className="font-bold text-gaming-offwhite text-xl">7.900 د.ك</span>
                 </div>
               </div>
             </div>
 
             <div className="space-y-3">
               <button 
-                className="luxury-button-secondary w-full text-lg py-4 question-card-flip"
+                className="bg-gaming-red hover:bg-gaming-mutedred text-gaming-offwhite font-bold w-full text-lg py-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
                 onClick={handlePurchaseGames}
               >
-                <ShoppingCart className="ml-2 h-6 w-6" />
+                <ShoppingCart className="ml-2 h-6 w-6 inline" />
                 شراء الآن
               </button>
               
-              <div className="text-center text-sm text-muted-foreground">أو</div>
+              <div className="text-center text-sm text-gray-400">أو</div>
               
               <div className="grid grid-cols-2 gap-3">
                 <button 
-                  className="luxury-button py-3 text-sm question-card-flip"
+                  className="bg-transparent border-2 border-gaming-red text-gaming-red hover:bg-gaming-red hover:text-gaming-offwhite font-bold py-3 text-sm rounded-lg transition-all duration-200"
                   onClick={() => handleAddGames(1)}
                   disabled={addGamesMutation.isPending}
                 >
                   {addGamesMutation.isPending ? (
-                    <div className="luxury-spinner mx-auto scale-75" />
+                    <div className="animate-spin h-4 w-4 border-2 border-gaming-red border-t-transparent rounded-full mx-auto" />
                   ) : (
                     <>
-                      <Plus className="ml-1 h-4 w-4" />
+                      <Plus className="ml-1 h-4 w-4 inline" />
                       إضافة لعبة
                     </>
                   )}
                 </button>
                 
                 <button 
-                  className="luxury-button py-3 text-sm question-card-flip"
+                  className="bg-transparent border-2 border-gaming-red text-gaming-red hover:bg-gaming-red hover:text-gaming-offwhite font-bold py-3 text-sm rounded-lg transition-all duration-200"
                   onClick={() => handleAddGames(5)}
                   disabled={addGamesMutation.isPending}
                 >
                   {addGamesMutation.isPending ? (
-                    <div className="luxury-spinner mx-auto scale-75" />
+                    <div className="animate-spin h-4 w-4 border-2 border-gaming-red border-t-transparent rounded-full mx-auto" />
                   ) : (
                     <>
-                      <Plus className="ml-1 h-4 w-4" />
+                      <Plus className="ml-1 h-4 w-4 inline" />
                       إضافة 5 ألعاب
                     </>
                   )}

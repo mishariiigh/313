@@ -945,13 +945,13 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   // Game board view - Jeopardy style layout
   return (
     <div className="min-h-screen flex flex-col page-transition" style={{
-      background: 'linear-gradient(135deg, hsl(0, 0%, 98%) 0%, hsl(0, 0%, 95%) 100%)'
+      background: 'linear-gradient(180deg, #000000 0%, #7b0000 100%)'
     }}>
       {/* Header - Top navigation with scores */}
       <header className="p-4" style={{
-        background: 'linear-gradient(135deg, hsl(0, 79%, 50%) 0%, hsl(0, 79%, 45%) 100%)',
-        borderBottom: '3px solid hsl(0, 79%, 40%)',
-        boxShadow: '0 4px 20px hsla(0, 79%, 50%, 0.3)'
+        background: '#1e1e1e',
+        borderBottom: '2px solid #990000',
+        boxShadow: '0 4px 20px rgba(229, 9, 20, 0.3)'
       }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -962,19 +962,19 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
               onClick={() => setLocation("/dashboard")}
               className="border-2 hover:scale-105 transition-transform duration-200"
               style={{
-                background: 'hsla(0, 0%, 100%, 0.9)',
-                color: 'hsl(0, 79%, 25%)',
-                borderColor: 'hsl(0, 79%, 65%)'
+                background: '#e50914',
+                color: '#f5f5f5',
+                borderColor: '#990000'
               }}
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div className="flex items-center gap-3">
-              <p className="text-sm font-medium text-white">
+              <p className="text-sm font-medium text-gaming-offwhite">
                 دور: <span className="font-bold px-3 py-1 rounded-full" style={{
-                  background: 'white',
-                  color: 'hsl(0, 79%, 50%)',
-                  border: '2px solid white'
+                  background: '#e50914',
+                  color: '#f5f5f5',
+                  border: '2px solid #990000'
                 }}>
                   {gameSession.teams[gameSession.currentTurn]}
                 </span>
@@ -986,9 +986,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 disabled={switchTeamTurnMutation.isPending}
                 className="border-2 hover:scale-105 transition-transform duration-200"
                 style={{
-                  background: 'white',
-                  color: 'hsl(0, 79%, 50%)',
-                  borderColor: 'white'
+                  background: 'transparent',
+                  color: '#e50914',
+                  borderColor: '#e50914'
                 }}
                 title="تبديل الدور"
               >
@@ -1001,10 +1001,10 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
           <div className="flex gap-4">
             {gameSession.teams.map((team: string, index: number) => (
               <div key={index} className="rounded-lg p-3 text-center min-w-[140px] border-2" style={{
-                background: 'white',
-                borderColor: 'white',
-                color: 'hsl(0, 79%, 50%)',
-                boxShadow: '0 4px 12px hsla(0, 0%, 0%, 0.1)'
+                background: '#1e1e1e',
+                borderColor: '#990000',
+                color: '#f5f5f5',
+                boxShadow: '0 4px 12px rgba(229, 9, 20, 0.3)'
               }}>
                 <div className="text-sm font-semibold">{team}</div>
                 <div className="flex items-center justify-center gap-2 mt-1">
@@ -1015,15 +1015,15 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     disabled={adjustScoreMutation.isPending}
                     className="border hover:scale-110 transition-transform duration-200 p-1 h-6 w-6"
                     style={{
-                      background: 'white',
-                      color: 'hsl(0, 79%, 50%)',
-                      borderColor: 'hsl(0, 79%, 50%)'
+                      background: 'transparent',
+                      color: '#e50914',
+                      borderColor: '#e50914'
                     }}
                     title="تقليل النقاط"
                   >
                     <Minus className="h-3 w-3" />
                   </Button>
-                  <div className="text-xl font-bold min-w-[40px]" style={{ color: 'hsl(0, 79%, 50%)' }}>
+                  <div className="text-xl font-bold min-w-[40px]" style={{ color: '#f5f5f5' }}>
                     {gameSession.teamScores[index] || 0}
                   </div>
                   <Button
@@ -1033,9 +1033,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     disabled={adjustScoreMutation.isPending}
                     className="border hover:scale-110 transition-transform duration-200 p-1 h-6 w-6"
                     style={{
-                      background: 'white',
-                      color: 'hsl(0, 79%, 50%)',
-                      borderColor: 'hsl(0, 79%, 50%)'
+                      background: 'transparent',
+                      color: '#e50914',
+                      borderColor: '#e50914'
                     }}
                     title="زيادة النقاط"
                   >
@@ -1057,9 +1057,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
               <div key={`category-enhanced-${categoryIndex}`} className="relative">
                 {/* Category Card with Enhanced Layout */}
                 <div className="rounded-3xl shadow-xl overflow-hidden border-3 p-2" style={{
-                  background: 'hsla(0, 0%, 100%, 0.95)',
-                  borderColor: 'hsl(0, 79%, 85%)',
-                  boxShadow: '0 8px 32px hsla(0, 79%, 70%, 0.2)'
+                  background: '#1e1e1e',
+                  borderColor: '#990000',
+                  boxShadow: '0 8px 32px rgba(229, 9, 20, 0.3)'
                 }}>
                   
                   <div className="flex items-center justify-center gap-2">
