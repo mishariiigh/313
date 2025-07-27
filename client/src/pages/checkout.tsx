@@ -13,7 +13,6 @@ import { Input } from "@/components/ui/input";
 import { ArrowRight, CreditCard, Loader2, Tag, CheckCircle, XCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import type { GamePackage } from "@shared/schema";
-import { Logo } from "@/components/logo";
 
 // Make sure to call `loadStripe` outside of a component's render to avoid
 // recreating the `Stripe` object on every render.
@@ -244,12 +243,9 @@ export default function CheckoutPage() {
             <button className="luxury-button-secondary p-2 ml-4" onClick={handleBack}>
               <ArrowRight className="h-5 w-5" />
             </button>
-            <div className="flex items-center space-x-reverse space-x-4">
-              <Logo size="sm" showText={false} />
-              <div>
-                <h1 className="text-xl font-bold text-luxury-green-dark">شراء ألعاب إضافية</h1>
-                <p className="text-muted-foreground">اختر الباقة المناسبة لك</p>
-              </div>
+            <div>
+              <h1 className="text-xl font-bold text-luxury-green-dark">شراء ألعاب إضافية - 313</h1>
+              <p className="text-muted-foreground">اختر الباقة المناسبة لك</p>
             </div>
           </div>
         </div>
@@ -358,7 +354,7 @@ export default function CheckoutPage() {
                       onClick={removeCoupon}
                       variant="ghost"
                       size="sm"
-                      className="text-blue-600 hover:text-blue-700"
+                      className="text-red-600 hover:text-red-700"
                     >
                       <XCircle className="h-4 w-4" />
                     </Button>
@@ -366,7 +362,7 @@ export default function CheckoutPage() {
                 )}
                 
                 {couponError && (
-                  <p className="text-blue-500 text-sm mt-2">{couponError}</p>
+                  <p className="text-red-500 text-sm mt-2">{couponError}</p>
                 )}
               </div>
             </div>

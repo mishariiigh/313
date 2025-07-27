@@ -18,7 +18,6 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Shield, Users, HelpCircle, Gamepad2, DollarSign, Plus, Edit, Trash2, LogOut } from "lucide-react";
 import { getCategoryColor, getDifficultyColor } from "@/lib/game";
-import { Logo } from "@/components/logo";
 
 const questionSchema = z.object({
   question: z.string().min(10, "السؤال يجب أن يكون 10 أحرف على الأقل"),
@@ -208,7 +207,9 @@ export default function AdminPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-reverse space-x-4">
-              <Logo size="sm" />
+              <div className="h-10 w-10 bg-red-600 rounded-full flex items-center justify-center">
+                <Shield className="text-white h-5 w-5" />
+              </div>
               <div>
                 <h1 className="text-xl font-bold text-neutral-800">لوحة التحكم الإدارية</h1>
                 <p className="text-sm text-neutral-600">إدارة الأسئلة والمحتوى</p>
@@ -423,8 +424,8 @@ export default function AdminPage() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center">
-                <div className="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center">
-                  <DollarSign className="text-blue-500 h-6 w-6" />
+                <div className="w-12 h-12 bg-red-500/10 rounded-lg flex items-center justify-center">
+                  <DollarSign className="text-red-500 h-6 w-6" />
                 </div>
                 <div className="mr-4">
                   <p className="text-sm text-neutral-600">الإيرادات الشهرية</p>

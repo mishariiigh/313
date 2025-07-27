@@ -15,7 +15,6 @@ import { useAuthRedirect } from "@/lib/auth";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { useLocation } from "wouter";
 import type { Question, Category, Coupon, GamePackage } from "@shared/schema";
-import { Logo } from "@/components/logo";
 
 export default function AdminDashboard() {
   const { user, isLoading } = useAuthRedirect();
@@ -647,7 +646,7 @@ export default function AdminDashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-blue-600 mb-4">غير مصرح</h1>
+          <h1 className="text-2xl font-bold text-red-600 mb-4">غير مصرح</h1>
           <p className="text-gray-600">ليس لديك صلاحيات الوصول لهذه الصفحة</p>
         </div>
       </div>
@@ -655,23 +654,20 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-red-50 p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-reverse space-x-4">
-              <Logo size="md" />
-              <Button
-                variant="outline"
-                onClick={() => setLocation("/dashboard")}
-                className="flex items-center space-x-reverse space-x-2"
-              >
-                <ArrowRight className="h-4 w-4" />
-                العودة للوحة الرئيسية
-              </Button>
-            </div>
+          <div className="flex items-center space-x-reverse space-x-4 mb-4">
+            <Button
+              variant="outline"
+              onClick={() => setLocation("/dashboard")}
+              className="flex items-center space-x-reverse space-x-2"
+            >
+              <ArrowRight className="h-4 w-4" />
+              العودة للوحة الرئيسية
+            </Button>
           </div>
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">لوحة تحكم المدير</h1>
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">لوحة تحكم المدير - 313</h1>
           <p className="text-gray-600">إدارة الأسئلة والفئات والكوبونات</p>
         </div>
 

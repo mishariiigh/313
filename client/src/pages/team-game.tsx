@@ -7,7 +7,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, RotateCcw, Users, Trophy, HelpCircle, Eye, Shuffle, Plus, Minus, Pause, Play } from "lucide-react";
 import { Question } from "@/../../shared/schema";
-import { Logo } from "@/components/logo";
 
 // Default category icons for common categories
 const CATEGORY_ICONS: { [key: string]: string } = {
@@ -349,7 +348,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   if (isGameCompleted) {
     const winner = getWinner();
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-red-50">
         <div className="max-w-2xl mx-auto p-8">
           <div className="luxury-card p-12 text-center">
             <div className="text-6xl mb-6">🎉</div>
@@ -359,10 +358,10 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             
             {winner && (
               <div className="mb-8">
-                <div className="text-2xl font-bold text-blue-600 mb-4">
+                <div className="text-2xl font-bold text-red-600 mb-4">
                   الفريق الفائز:
                 </div>
-                <div className="bg-gradient-to-r from-blue-400 to-blue-500 text-white p-6 rounded-xl text-3xl font-bold mb-4">
+                <div className="bg-gradient-to-r from-red-400 to-red-500 text-white p-6 rounded-xl text-3xl font-bold mb-4">
                   {winner.team}
                 </div>
                 <div className="text-xl text-gray-800">
@@ -377,7 +376,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 {gameSession.teams.map((team: string, index: number) => (
                   <div key={index} className="flex justify-between items-center">
                     <span className="font-semibold">{team}</span>
-                    <span className="text-blue-600 font-bold text-lg">
+                    <span className="text-red-600 font-bold text-lg">
                       {gameSession.teamScores[index] || 0} نقطة
                     </span>
                   </div>
@@ -387,7 +386,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             
             <Button
               onClick={() => setLocation("/dashboard")}
-              className="bg-blue-500 hover:bg-blue-600 text-white text-lg py-4 px-8"
+              className="bg-red-500 hover:bg-red-600 text-white text-lg py-4 px-8"
             >
               العودة للوحة التحكم
             </Button>
@@ -401,12 +400,12 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   if (selectedQuestion) {
     return (
       <div className="h-screen question-slide-in flex flex-col" dir="rtl" style={{
-        background: 'linear-gradient(135deg, hsl(45, 30%, 97%) 0%, hsl(45, 25%, 94%) 100%)'
+        background: 'linear-gradient(135deg, hsl(355, 30%, 97%) 0%, hsl(355, 25%, 94%) 100%)'
       }}>
         {/* Top Bar (Header) */}
-        <div className="text-black p-3 flex-shrink-0" style={{
-          background: 'linear-gradient(135deg, hsl(45, 90%, 60%) 0%, hsl(42, 85%, 50%) 100%)',
-          boxShadow: '0 4px 20px hsla(45, 90%, 70%, 0.3)'
+        <div className="text-white p-3 flex-shrink-0" style={{
+          background: 'linear-gradient(135deg, hsl(355, 75%, 60%) 0%, hsl(355, 85%, 50%) 100%)',
+          boxShadow: '0 4px 20px hsla(355, 50%, 70%, 0.3)'
         }}>
           <div className="flex items-center justify-between max-w-7xl mx-auto">
             {/* Left Side - Navigation Controls */}
@@ -416,9 +415,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 variant="outline"
                 className="px-4 py-2 rounded-full border-2 hover:scale-105 transition-transform duration-200"
                 style={{
-                  background: 'hsla(0, 0%, 0%, 0.1)',
-                  color: 'black',
-                  borderColor: 'hsla(0, 0%, 0%, 0.3)'
+                  background: 'hsla(0, 0%, 100%, 0.25)',
+                  color: 'white',
+                  borderColor: 'hsla(0, 0%, 100%, 0.4)'
                 }}
               >
                 <ArrowLeft className="ml-2 h-4 w-4" />
@@ -435,9 +434,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 variant="outline"
                 className="px-4 py-2 rounded-full border-2 hover:scale-105 transition-transform duration-200"
                 style={{
-                  background: 'hsla(0, 0%, 0%, 0.1)',
-                  color: 'black',
-                  borderColor: 'hsla(0, 0%, 0%, 0.3)'
+                  background: 'hsla(0, 0%, 100%, 0.25)',
+                  color: 'white',
+                  borderColor: 'hsla(0, 0%, 100%, 0.4)'
                 }}
               >
                 إنهاء اللعبة
@@ -452,7 +451,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             </div>
 
             {/* Right Side - Game Logo/Branding */}
-            <Logo size="sm" showText={false} />
+            <div className="text-xl font-bold">
+              ٣١٣
+            </div>
           </div>
         </div>
 
@@ -478,7 +479,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   isTimerPaused
                     ? 'bg-yellow-500 text-white border-yellow-600'
                     : timeLeft <= 10 
-                    ? 'bg-blue-600 text-white border-blue-700 animate-pulse' 
+                    ? 'bg-red-600 text-white border-red-700 animate-pulse' 
                     : 'bg-white text-gray-800 border-gray-300'
                 }`}>
                   {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
@@ -491,7 +492,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             
             {isTimeOut && (
               <div className="flex items-center gap-4">
-                <div className="flex items-center justify-center w-16 h-16 rounded-full text-2xl font-bold bg-blue-800 text-white border-4 border-blue-900">
+                <div className="flex items-center justify-center w-16 h-16 rounded-full text-2xl font-bold bg-red-800 text-white border-4 border-red-900">
                   0:00
                 </div>
                 <span className="text-white font-bold animate-pulse">انتهى الوقت!</span>
@@ -945,13 +946,13 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   // Game board view - Jeopardy style layout
   return (
     <div className="min-h-screen flex flex-col page-transition" style={{
-      background: 'linear-gradient(135deg, hsl(45, 30%, 97%) 0%, hsl(45, 25%, 94%) 100%)'
+      background: 'linear-gradient(135deg, hsl(355, 30%, 97%) 0%, hsl(355, 25%, 94%) 100%)'
     }}>
       {/* Header - Top navigation with scores */}
       <header className="p-4" style={{
-        background: 'linear-gradient(135deg, hsl(45, 90%, 85%) 0%, hsl(42, 85%, 75%) 100%)',
-        borderBottom: '3px solid hsl(45, 80%, 70%)',
-        boxShadow: '0 4px 20px hsla(45, 90%, 70%, 0.3)'
+        background: 'linear-gradient(135deg, hsl(355, 60%, 90%) 0%, hsl(355, 50%, 85%) 100%)',
+        borderBottom: '3px solid hsl(355, 40%, 80%)',
+        boxShadow: '0 4px 20px hsla(355, 50%, 70%, 0.2)'
       }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -961,18 +962,18 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
               className="border-2 hover:scale-105 transition-transform duration-200"
               style={{
                 background: 'hsla(0, 0%, 100%, 0.9)',
-                color: 'hsl(42, 85%, 25%)',
-                borderColor: 'hsl(45, 90%, 55%)'
+                color: 'hsl(345, 35%, 25%)',
+                borderColor: 'hsl(355, 75%, 65%)'
               }}
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div className="flex items-center gap-3">
-              <p className="text-sm font-medium" style={{ color: 'hsl(42, 85%, 25%)' }}>
+              <p className="text-sm font-medium" style={{ color: 'hsl(345, 35%, 25%)' }}>
                 دور: <span className="font-bold px-3 py-1 rounded-full" style={{
                   background: 'hsla(0, 0%, 100%, 0.8)',
-                  color: 'hsl(45, 90%, 35%)',
-                  border: '2px solid hsl(45, 90%, 55%)'
+                  color: 'hsl(355, 85%, 55%)',
+                  border: '2px solid hsl(355, 75%, 65%)'
                 }}>
                   {gameSession.teams[gameSession.currentTurn]}
                 </span>
@@ -985,8 +986,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 className="border-2 hover:scale-105 transition-transform duration-200"
                 style={{
                   background: 'hsla(0, 0%, 100%, 0.9)',
-                  color: 'hsl(42, 85%, 25%)',
-                  borderColor: 'hsl(45, 90%, 55%)'
+                  color: 'hsl(345, 35%, 25%)',
+                  borderColor: 'hsl(355, 75%, 65%)'
                 }}
                 title="تبديل الدور"
               >
@@ -1000,9 +1001,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             {gameSession.teams.map((team: string, index: number) => (
               <div key={index} className="rounded-lg p-3 text-center min-w-[140px] border-2" style={{
                 background: 'hsla(0, 0%, 100%, 0.85)',
-                borderColor: 'hsl(45, 90%, 55%)',
-                color: 'hsl(42, 85%, 25%)',
-                boxShadow: '0 4px 12px hsla(45, 90%, 70%, 0.2)'
+                borderColor: 'hsl(355, 75%, 65%)',
+                color: 'hsl(345, 35%, 25%)',
+                boxShadow: '0 4px 12px hsla(355, 50%, 70%, 0.2)'
               }}>
                 <div className="text-sm font-semibold">{team}</div>
                 <div className="flex items-center justify-center gap-2 mt-1">
@@ -1014,14 +1015,14 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     className="border hover:scale-110 transition-transform duration-200 p-1 h-6 w-6"
                     style={{
                       background: 'hsla(0, 0%, 100%, 0.9)',
-                      color: 'hsl(45, 90%, 45%)',
-                      borderColor: 'hsl(45, 85%, 65%)'
+                      color: 'hsl(355, 85%, 55%)',
+                      borderColor: 'hsl(355, 65%, 75%)'
                     }}
                     title="تقليل النقاط"
                   >
                     <Minus className="h-3 w-3" />
                   </Button>
-                  <div className="text-xl font-bold min-w-[40px]" style={{ color: 'hsl(45, 90%, 45%)' }}>
+                  <div className="text-xl font-bold min-w-[40px]" style={{ color: 'hsl(355, 85%, 55%)' }}>
                     {gameSession.teamScores[index] || 0}
                   </div>
                   <Button
@@ -1032,8 +1033,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     className="border hover:scale-110 transition-transform duration-200 p-1 h-6 w-6"
                     style={{
                       background: 'hsla(0, 0%, 100%, 0.9)',
-                      color: 'hsl(45, 90%, 45%)',
-                      borderColor: 'hsl(45, 85%, 65%)'
+                      color: 'hsl(355, 85%, 55%)',
+                      borderColor: 'hsl(355, 65%, 75%)'
                     }}
                     title="زيادة النقاط"
                   >
@@ -1056,8 +1057,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 {/* Category Card with Enhanced Layout */}
                 <div className="rounded-3xl shadow-xl overflow-hidden border-3 p-2" style={{
                   background: 'hsla(0, 0%, 100%, 0.95)',
-                  borderColor: 'hsl(45, 80%, 75%)',
-                  boxShadow: '0 8px 32px hsla(45, 90%, 70%, 0.2)'
+                  borderColor: 'hsl(355, 40%, 85%)',
+                  boxShadow: '0 8px 32px hsla(355, 50%, 70%, 0.2)'
                 }}>
                   
                   <div className="flex items-center justify-center gap-2">
@@ -1076,9 +1077,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           background: 'hsl(0, 0%, 70%)',
                           color: 'hsl(0, 0%, 50%)'
                         } : {
-                          background: 'linear-gradient(135deg, hsl(45, 80%, 88%) 0%, hsl(45, 70%, 85%) 100%)',
-                          color: 'hsl(42, 85%, 35%)',
-                          border: '2px solid hsl(45, 90%, 70%)'
+                          background: 'linear-gradient(135deg, hsl(355, 50%, 88%) 0%, hsl(355, 40%, 85%) 100%)',
+                          color: 'hsl(355, 85%, 55%)',
+                          border: '2px solid hsl(355, 60%, 80%)'
                         }}
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-0`) ? "✓" : "200"}
@@ -1097,9 +1098,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           background: 'hsl(0, 0%, 70%)',
                           color: 'hsl(0, 0%, 50%)'
                         } : {
-                          background: 'linear-gradient(135deg, hsl(45, 80%, 88%) 0%, hsl(45, 70%, 85%) 100%)',
-                          color: 'hsl(42, 85%, 35%)',
-                          border: '2px solid hsl(45, 90%, 70%)'
+                          background: 'linear-gradient(135deg, hsl(355, 50%, 88%) 0%, hsl(355, 40%, 85%) 100%)',
+                          color: 'hsl(355, 85%, 55%)',
+                          border: '2px solid hsl(355, 60%, 80%)'
                         }}
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-2`) ? "✓" : "400"}
@@ -1118,9 +1119,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           background: 'hsl(0, 0%, 70%)',
                           color: 'hsl(0, 0%, 50%)'
                         } : {
-                          background: 'linear-gradient(135deg, hsl(45, 80%, 88%) 0%, hsl(45, 70%, 85%) 100%)',
-                          color: 'hsl(42, 85%, 35%)',
-                          border: '2px solid hsl(45, 90%, 70%)'
+                          background: 'linear-gradient(135deg, hsl(355, 50%, 88%) 0%, hsl(355, 40%, 85%) 100%)',
+                          color: 'hsl(355, 85%, 55%)',
+                          border: '2px solid hsl(355, 60%, 80%)'
                         }}
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-4`) ? "✓" : "600"}
@@ -1155,7 +1156,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       
                       {/* Category Name - Full width bottom bar */}
                       <div className="w-40 text-white py-3 px-3 rounded-b-3xl text-center" style={{
-                        background: 'linear-gradient(135deg, hsl(45, 90%, 55%) 0%, hsl(42, 85%, 45%) 100%)'
+                        background: 'linear-gradient(135deg, hsl(355, 75%, 60%) 0%, hsl(355, 85%, 50%) 100%)'
                       }}>
                         <div className="font-bold text-sm leading-tight">
                           {category.displayName || category.name}
@@ -1178,9 +1179,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           background: 'hsl(0, 0%, 70%)',
                           color: 'hsl(0, 0%, 50%)'
                         } : {
-                          background: 'linear-gradient(135deg, hsl(45, 80%, 88%) 0%, hsl(45, 70%, 85%) 100%)',
-                          color: 'hsl(42, 85%, 35%)',
-                          border: '2px solid hsl(45, 90%, 70%)'
+                          background: 'linear-gradient(135deg, hsl(355, 50%, 88%) 0%, hsl(355, 40%, 85%) 100%)',
+                          color: 'hsl(355, 85%, 55%)',
+                          border: '2px solid hsl(355, 60%, 80%)'
                         }}
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-1`) ? "✓" : "200"}
@@ -1199,9 +1200,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           background: 'hsl(0, 0%, 70%)',
                           color: 'hsl(0, 0%, 50%)'
                         } : {
-                          background: 'linear-gradient(135deg, hsl(45, 80%, 88%) 0%, hsl(45, 70%, 85%) 100%)',
-                          color: 'hsl(42, 85%, 35%)',
-                          border: '2px solid hsl(45, 90%, 70%)'
+                          background: 'linear-gradient(135deg, hsl(355, 50%, 88%) 0%, hsl(355, 40%, 85%) 100%)',
+                          color: 'hsl(355, 85%, 55%)',
+                          border: '2px solid hsl(355, 60%, 80%)'
                         }}
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-3`) ? "✓" : "400"}
@@ -1220,9 +1221,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           background: 'hsl(0, 0%, 70%)',
                           color: 'hsl(0, 0%, 50%)'
                         } : {
-                          background: 'linear-gradient(135deg, hsl(45, 80%, 88%) 0%, hsl(45, 70%, 85%) 100%)',
-                          color: 'hsl(42, 85%, 35%)',
-                          border: '2px solid hsl(45, 90%, 70%)'
+                          background: 'linear-gradient(135deg, hsl(355, 50%, 88%) 0%, hsl(355, 40%, 85%) 100%)',
+                          color: 'hsl(355, 85%, 55%)',
+                          border: '2px solid hsl(355, 60%, 80%)'
                         }}
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-5`) ? "✓" : "600"}
