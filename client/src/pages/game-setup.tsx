@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowRight, Play, Users, Edit2, Check, X, BookOpen } from "lucide-react";
 import { Category } from "@/../../shared/schema";
+import { Logo } from "@/components/logo";
 
 // Default category icons for common categories
 const CATEGORY_ICONS: { [key: string]: string } = {
@@ -165,9 +166,12 @@ export default function GameSetupPage() {
             <button className="luxury-button-secondary p-2 ml-4" onClick={handleBack}>
               <ArrowRight className="h-5 w-5 text-luxury-green-dark" />
             </button>
-            <div>
-              <h1 className="text-xl font-bold text-luxury-green-dark">إعداد لعبة جديدة - 313</h1>
-              <p className="text-muted-foreground">أدخل أسماء الفريقين</p>
+            <div className="flex items-center space-x-reverse space-x-4">
+              <Logo size="sm" showText={false} />
+              <div>
+                <h1 className="text-xl font-bold text-luxury-green-dark">إعداد لعبة جديدة</h1>
+                <p className="text-muted-foreground">أدخل أسماء الفريقين</p>
+              </div>
             </div>
           </div>
         </div>

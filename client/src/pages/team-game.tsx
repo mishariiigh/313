@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, RotateCcw, Users, Trophy, HelpCircle, Eye, Shuffle, Plus, Minus, Pause, Play } from "lucide-react";
 import { Question } from "@/../../shared/schema";
+import { Logo } from "@/components/logo";
 
 // Default category icons for common categories
 const CATEGORY_ICONS: { [key: string]: string } = {
@@ -451,9 +452,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             </div>
 
             {/* Right Side - Game Logo/Branding */}
-            <div className="text-xl font-bold">
-              ٣١٣
-            </div>
+            <Logo size="sm" showText={false} />
           </div>
         </div>
 

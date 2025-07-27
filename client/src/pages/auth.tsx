@@ -13,6 +13,7 @@ import { Brain, Loader2 } from "lucide-react";
 import { FaGoogle } from "react-icons/fa";
 import { signInWithGoogle, handleGoogleRedirect } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
+import { Logo } from "@/components/logo";
 
 const loginSchema = z.object({
   email: z.string().email("البريد الإلكتروني غير صحيح"),
@@ -148,8 +149,8 @@ export default function AuthPage() {
       <div className="max-w-md w-full space-y-8">
         {/* Logo and Header */}
         <div className="text-center">
-          <div className="mx-auto h-20 w-20 luxury-button rounded-full flex items-center justify-center mb-6 floating glow">
-            <Brain className="text-white h-10 w-10" />
+          <div className="flex justify-center mb-6">
+            <Logo size="xl" showText={false} />
           </div>
           <h1 className="text-4xl font-bold text-gradient mb-4">313</h1>
           <p className="text-muted-foreground text-lg">اختبر معلوماتك مع الأصدقاء والعائلة</p>
