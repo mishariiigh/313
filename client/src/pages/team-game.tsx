@@ -508,9 +508,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             <div className="flex-1" style={{ flex: '0 0 80%' }}>
               {/* Question with Triangle Border Design */}
               <div className="relative rounded-3xl p-6 h-full shadow-2xl overflow-hidden" style={{
-                background: 'hsla(0, 0%, 100%, 0.95)',
-                border: '3px solid hsl(0, 79%, 50%)',
-                boxShadow: '0 8px 32px hsla(0, 79%, 50%, 0.25)'
+                background: '#1e1e1e',
+                border: '3px solid #e50914',
+                boxShadow: '0 8px 32px rgba(229, 9, 20, 0.25)'
               }}>
                 {/* Decorative Triangle Border Effect */}
                 <div className="absolute inset-0 rounded-3xl pointer-events-none" style={{
@@ -519,8 +519,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       0deg,
                       transparent 0px,
                       transparent 8px,
-                      hsl(0, 79%, 50%) 8px,
-                      hsl(0, 79%, 50%) 10px,
+                      #e50914 8px,
+                      #e50914 10px,
                       transparent 10px,
                       transparent 18px
                     ),
@@ -528,8 +528,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       90deg,
                       transparent 0px,
                       transparent 8px,
-                      hsl(0, 79%, 50%) 8px,
-                      hsl(0, 79%, 50%) 10px,
+                      #e50914 8px,
+                      #e50914 10px,
                       transparent 10px,
                       transparent 18px
                     )
@@ -544,12 +544,12 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 
                 {/* Inner Content Container */}
                 <div className="relative rounded-2xl p-4 h-full flex flex-col justify-between border-2 overflow-hidden" style={{
-                  background: 'hsla(0, 0%, 100%, 1)',
-                  borderColor: 'hsl(0, 79%, 85%)'
+                  background: '#000000',
+                  borderColor: '#990000'
                 }}>
                   {/* Category Header */}
                   <div className="text-white rounded-2xl px-4 py-2 mb-4 text-center shadow-lg" style={{
-                    background: 'linear-gradient(135deg, hsl(0, 79%, 50%) 0%, hsl(0, 79%, 40%) 100%)'
+                    background: 'linear-gradient(135deg, #e50914 0%, #990000 100%)'
                   }}>
                     <h2 className="text-lg font-bold">
                       {(() => {
@@ -562,7 +562,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
                   {/* Question Title - Arabic, centered, bold */}
                   <div className="text-center mb-3">
-                    <h1 className="text-2xl font-bold text-gray-800 leading-relaxed" style={{
+                    <h1 className="text-2xl font-bold leading-relaxed" style={{
+                      color: '#f5f5f5',
                       fontFamily: 'Cairo, Arial, sans-serif',
                       textShadow: '0 2px 4px rgba(0,0,0,0.1)'
                     }}>
@@ -574,8 +575,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   {selectedQuestion.imageUrl && (
                     <div className="flex justify-center mb-3 flex-1 min-h-0">
                       <div className="rounded-3xl p-2 shadow-xl border-2 max-w-full cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:scale-105 overflow-hidden" style={{
-                        background: 'linear-gradient(135deg, hsl(355, 25%, 96%) 0%, hsl(355, 20%, 93%) 100%)',
-                        borderColor: 'hsl(355, 40%, 85%)'
+                        background: 'linear-gradient(135deg, #333333 0%, #1e1e1e 100%)',
+                        borderColor: '#990000'
                       }}>
                         <img 
                           src={selectedQuestion.imageUrl} 
@@ -603,8 +604,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       onClick={() => setShowAnswer(true)}
                       className="text-white px-6 py-3 text-lg font-bold rounded-3xl transition-all duration-300 shadow-xl transform hover:scale-105"
                       style={{
-                        background: 'linear-gradient(135deg, hsl(0, 79%, 50%) 0%, hsl(0, 79%, 40%) 100%)',
-                        boxShadow: '0 8px 24px hsla(0, 79%, 50%, 0.4)'
+                        background: 'linear-gradient(135deg, #e50914 0%, #990000 100%)',
+                        boxShadow: '0 8px 24px rgba(229, 9, 20, 0.4)'
                       }}
                     >
                       🔍 إظهار الإجابة
@@ -617,9 +618,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             {/* Side Panel (Right Side) - Red Buttons */}
             <div className="w-64">
               <div className="text-white rounded-3xl shadow-2xl p-4 h-full border-2" style={{
-                background: 'linear-gradient(135deg, hsl(0, 79%, 50%) 0%, hsl(0, 79%, 40%) 100%)',
-                borderColor: 'hsl(0, 79%, 45%)',
-                boxShadow: '0 8px 32px hsla(0, 79%, 50%, 0.3)'
+                background: 'linear-gradient(135deg, #e50914 0%, #990000 100%)',
+                borderColor: '#e50914',
+                boxShadow: '0 8px 32px rgba(229, 9, 20, 0.3)'
               }}>
                 {/* Current Team Display */}
                 <div className="text-center mb-4">
@@ -704,22 +705,22 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
         {/* Hint Section - Full Width Below Main Content */}
         {showHint && selectedQuestion.hint && (
           <div className="p-3 flex-shrink-0" style={{
-            background: 'linear-gradient(135deg, hsl(355, 25%, 95%) 0%, hsl(355, 20%, 92%) 100%)'
+            background: 'linear-gradient(135deg, #1e1e1e 0%, #000000 100%)'
           }}>
             <div className="max-w-7xl mx-auto">
               <div className="rounded-2xl p-4 hint-reveal border-3" style={{
-                background: 'hsl(200, 80%, 95%)',
-                borderColor: 'hsl(200, 70%, 60%)',
+                background: '#333333',
+                borderColor: '#e50914',
                 borderStyle: 'dashed'
               }}>
                 <div className="text-white rounded-xl px-4 py-2 inline-block mb-3 shadow-lg" style={{
-                  background: 'linear-gradient(135deg, hsl(200, 75%, 60%) 0%, hsl(200, 85%, 50%) 100%)'
+                  background: 'linear-gradient(135deg, #e50914 0%, #990000 100%)'
                 }}>
                   <h3 className="font-bold text-md">💡 تلميح</h3>
                 </div>
                 <p className="text-md font-medium leading-relaxed" style={{
                   fontFamily: 'Cairo, Arial, sans-serif',
-                  color: 'hsl(200, 80%, 25%)'
+                  color: '#f5f5f5'
                 }}>{selectedQuestion.hint}</p>
               </div>
             </div>
@@ -771,7 +772,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
               className="absolute inset-0 backdrop-blur-md"
               onClick={() => setShowAnswer(false)}
               style={{
-                background: 'linear-gradient(135deg, hsla(0, 0%, 15%, 0.8) 0%, hsla(0, 0%, 20%, 0.9) 100%)'
+                background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(123, 0, 0, 0.8) 100%)'
               }}
             />
             
@@ -779,14 +780,14 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 <div className="relative max-w-2xl w-full h-[85vh] flex flex-col" dir="rtl">
               {/* Main Card Container */}
               <div className="relative rounded-3xl shadow-2xl overflow-hidden transform scale-100 animate-in duration-300 h-full flex flex-col" style={{
-                background: 'linear-gradient(135deg, hsl(0, 0%, 98%) 0%, hsl(0, 0%, 95%) 100%)',
-                border: '4px solid hsl(0, 79%, 50%)',
-                boxShadow: '0 25px 50px hsla(0, 79%, 30%, 0.4), 0 0 0 1px hsla(0, 79%, 60%, 0.2)'
+                background: '#1e1e1e',
+                border: '4px solid #e50914',
+                boxShadow: '0 25px 50px rgba(229, 9, 20, 0.4), 0 0 0 1px rgba(229, 9, 20, 0.2)'
               }}>
                 
                 {/* Top Header with Close Button */}
                 <div className="relative p-2 text-center flex-shrink-0" style={{
-                  background: 'linear-gradient(135deg, hsl(0, 79%, 50%) 0%, hsl(0, 79%, 40%) 50%, hsl(0, 79%, 50%) 100%)'
+                  background: 'linear-gradient(135deg, #e50914 0%, #990000 50%, #e50914 100%)'
                 }}>
                   {/* Close Button */}
                   <button
@@ -812,21 +813,21 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 {/* Answer Display Section */}
                 <div className="p-3 text-center flex-shrink-0">
                   <div className="mb-3 p-3 rounded-2xl" style={{
-                    background: 'linear-gradient(135deg, hsl(200, 90%, 97%) 0%, hsl(200, 85%, 94%) 100%)',
-                    border: '3px solid hsl(200, 70%, 80%)',
-                    boxShadow: 'inset 0 2px 8px hsla(200, 50%, 70%, 0.2)'
+                    background: 'linear-gradient(135deg, #000000 0%, #1e1e1e 100%)',
+                    border: '3px solid #990000',
+                    boxShadow: 'inset 0 2px 8px rgba(229, 9, 20, 0.2)'
                   }}>
                     <div className="flex items-center justify-center mb-2">
                       <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-sm font-bold mr-2" style={{
-                        background: 'linear-gradient(135deg, hsl(200, 75%, 55%) 0%, hsl(200, 80%, 45%) 100%)'
+                        background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
                       }}>
                         ✓
                       </div>
-                      <span className="text-sm font-bold" style={{ color: 'hsl(200, 70%, 35%)' }}>الجواب</span>
+                      <span className="text-sm font-bold" style={{ color: '#f5f5f5' }}>الجواب</span>
                     </div>
                     <p className="text-xl font-bold leading-relaxed" style={{
                       fontFamily: 'Cairo, Arial, sans-serif',
-                      color: 'hsl(200, 80%, 25%)'
+                      color: '#f5f5f5'
                     }}>
                       {selectedQuestion.answer}
                     </p>
@@ -834,16 +835,16 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   
                   {selectedQuestion.explanation && (
                     <div className="mb-2 p-2 rounded-xl" style={{
-                      background: 'linear-gradient(135deg, hsl(45, 90%, 97%) 0%, hsl(45, 85%, 94%) 100%)',
-                      border: '2px solid hsl(45, 70%, 80%)'
+                      background: 'linear-gradient(135deg, #333333 0%, #1e1e1e 100%)',
+                      border: '2px solid #990000'
                     }}>
                       <div className="flex items-center mb-1">
                         <div className="text-sm mr-1">💡</div>
-                        <span className="text-sm font-bold" style={{ color: 'hsl(45, 80%, 35%)' }}>توضيح</span>
+                        <span className="text-sm font-bold" style={{ color: '#f5f5f5' }}>توضيح</span>
                       </div>
                       <p className="text-sm leading-relaxed" style={{
                         fontFamily: 'Cairo, Arial, sans-serif',
-                        color: 'hsl(45, 70%, 30%)'
+                        color: '#f5f5f5'
                       }}>
                         {selectedQuestion.explanation}
                       </p>
@@ -870,9 +871,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           }}
                           className="p-1.5 rounded-xl transition-all duration-300 hover:scale-105 transform shadow-lg group"
                           style={{
-                            background: 'linear-gradient(135deg, hsl(140, 75%, 55%) 0%, hsl(140, 80%, 45%) 100%)',
-                            border: '2px solid hsl(140, 70%, 40%)',
-                            boxShadow: '0 4px 16px hsla(140, 60%, 40%, 0.3)'
+                            background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                            border: '2px solid #10b981',
+                            boxShadow: '0 4px 16px rgba(16, 185, 129, 0.3)'
                           }}
                           disabled={markTeamCorrectMutation.isPending}
                         >
@@ -1075,12 +1076,12 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                             : "shadow-lg hover:shadow-xl transform hover:scale-105"
                         }`}
                         style={gameSession.usedQuestions?.includes(`${category.name}-0`) ? {
-                          background: 'hsl(0, 0%, 70%)',
-                          color: 'hsl(0, 0%, 50%)'
+                          background: '#333333',
+                          color: '#666666'
                         } : {
-                          background: 'linear-gradient(135deg, hsl(0, 79%, 88%) 0%, hsl(0, 79%, 85%) 100%)',
-                          color: 'hsl(0, 79%, 45%)',
-                          border: '2px solid hsl(0, 79%, 80%)'
+                          background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                          color: '#f5f5f5',
+                          border: '2px solid #10b981'
                         }}
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-0`) ? "✓" : "200"}
@@ -1096,12 +1097,12 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                             : "shadow-lg hover:shadow-xl transform hover:scale-105"
                         }`}
                         style={gameSession.usedQuestions?.includes(`${category.name}-2`) ? {
-                          background: 'hsl(0, 0%, 70%)',
-                          color: 'hsl(0, 0%, 50%)'
+                          background: '#333333',
+                          color: '#666666'
                         } : {
-                          background: 'linear-gradient(135deg, hsl(0, 79%, 88%) 0%, hsl(0, 79%, 85%) 100%)',
-                          color: 'hsl(0, 79%, 45%)',
-                          border: '2px solid hsl(0, 79%, 80%)'
+                          background: 'linear-gradient(135deg, #e50914 0%, #990000 100%)',
+                          color: '#f5f5f5',
+                          border: '2px solid #e50914'
                         }}
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-2`) ? "✓" : "400"}
@@ -1117,12 +1118,12 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                             : "shadow-lg hover:shadow-xl transform hover:scale-105"
                         }`}
                         style={gameSession.usedQuestions?.includes(`${category.name}-4`) ? {
-                          background: 'hsl(0, 0%, 70%)',
-                          color: 'hsl(0, 0%, 50%)'
+                          background: '#333333',
+                          color: '#666666'
                         } : {
-                          background: 'linear-gradient(135deg, hsl(0, 79%, 88%) 0%, hsl(0, 79%, 85%) 100%)',
-                          color: 'hsl(0, 79%, 45%)',
-                          border: '2px solid hsl(0, 79%, 80%)'
+                          background: 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)',
+                          color: '#f5f5f5',
+                          border: '2px solid #dc2626'
                         }}
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-4`) ? "✓" : "600"}
@@ -1147,7 +1148,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                             }}
                           />
                         ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-blue-300 to-blue-500 flex items-center justify-center">
+                          <div className="w-full h-full bg-gradient-to-br from-gaming-darkgrey to-gaming-black flex items-center justify-center">
                             <div className="text-4xl text-white">
                               {CATEGORY_ICONS[category.name] || CATEGORY_ICONS[category.displayName] || "📚"}
                             </div>
@@ -1157,7 +1158,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       
                       {/* Category Name - Full width bottom bar */}
                       <div className="w-40 text-white py-3 px-3 rounded-b-3xl text-center" style={{
-                        background: 'linear-gradient(135deg, hsl(0, 79%, 50%) 0%, hsl(0, 79%, 40%) 100%)'
+                        background: 'linear-gradient(135deg, #e50914 0%, #990000 100%)'
                       }}>
                         <div className="font-bold text-sm leading-tight">
                           {category.displayName || category.name}
@@ -1177,12 +1178,12 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                             : "shadow-lg hover:shadow-xl transform hover:scale-105"
                         }`}
                         style={gameSession.usedQuestions?.includes(`${category.name}-1`) ? {
-                          background: 'hsl(0, 0%, 70%)',
-                          color: 'hsl(0, 0%, 50%)'
+                          background: '#333333',
+                          color: '#666666'
                         } : {
-                          background: 'linear-gradient(135deg, hsl(0, 79%, 88%) 0%, hsl(0, 79%, 85%) 100%)',
-                          color: 'hsl(0, 79%, 45%)',
-                          border: '2px solid hsl(0, 79%, 80%)'
+                          background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                          color: '#f5f5f5',
+                          border: '2px solid #10b981'
                         }}
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-1`) ? "✓" : "200"}
@@ -1198,12 +1199,12 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                             : "shadow-lg hover:shadow-xl transform hover:scale-105"
                         }`}
                         style={gameSession.usedQuestions?.includes(`${category.name}-3`) ? {
-                          background: 'hsl(0, 0%, 70%)',
-                          color: 'hsl(0, 0%, 50%)'
+                          background: '#333333',
+                          color: '#666666'
                         } : {
-                          background: 'linear-gradient(135deg, hsl(0, 79%, 88%) 0%, hsl(0, 79%, 85%) 100%)',
-                          color: 'hsl(0, 79%, 45%)',
-                          border: '2px solid hsl(0, 79%, 80%)'
+                          background: 'linear-gradient(135deg, #e50914 0%, #990000 100%)',
+                          color: '#f5f5f5',
+                          border: '2px solid #e50914'
                         }}
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-3`) ? "✓" : "400"}
@@ -1219,12 +1220,12 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                             : "shadow-lg hover:shadow-xl transform hover:scale-105"
                         }`}
                         style={gameSession.usedQuestions?.includes(`${category.name}-5`) ? {
-                          background: 'hsl(0, 0%, 70%)',
-                          color: 'hsl(0, 0%, 50%)'
+                          background: '#333333',
+                          color: '#666666'
                         } : {
-                          background: 'linear-gradient(135deg, hsl(0, 79%, 88%) 0%, hsl(0, 79%, 85%) 100%)',
-                          color: 'hsl(0, 79%, 45%)',
-                          border: '2px solid hsl(0, 79%, 80%)'
+                          background: 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)',
+                          color: '#f5f5f5',
+                          border: '2px solid #dc2626'
                         }}
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-5`) ? "✓" : "600"}
