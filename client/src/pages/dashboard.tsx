@@ -127,13 +127,13 @@ export default function Dashboard() {
       {/* Creative Header */}
       <header className="relative overflow-hidden">
         {/* Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-r from-red-50 via-red-100 to-red-50 opacity-80"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-red-600 via-red-700 to-red-600"></div>
         
         {/* Decorative Elements */}
         <div className="absolute top-0 left-0 w-full h-full">
-          <div className="absolute top-4 left-16 w-32 h-32 bg-red-200 rounded-full opacity-20 animate-pulse"></div>
-          <div className="absolute top-12 right-24 w-24 h-24 bg-red-300 rounded-full opacity-15 animate-bounce"></div>
-          <div className="absolute bottom-8 left-1/3 w-20 h-20 bg-red-200 rounded-full opacity-10"></div>
+          <div className="absolute top-4 left-16 w-32 h-32 bg-white rounded-full opacity-20 animate-pulse"></div>
+          <div className="absolute top-12 right-24 w-24 h-24 bg-white rounded-full opacity-15 animate-bounce"></div>
+          <div className="absolute bottom-8 left-1/3 w-20 h-20 bg-white rounded-full opacity-10"></div>
         </div>
 
         <div className="relative z-10 luxury-container">
@@ -142,20 +142,20 @@ export default function Dashboard() {
               {/* Enhanced Logo */}
               <div className="relative">
                 <Logo size="medium" className="transform hover:scale-105 transition-all duration-300" />
-                <div className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center animate-pulse">
-                  <Star className="text-white h-3 w-3" />
+                <div className="absolute -top-1 -right-1 w-6 h-6 bg-white rounded-full flex items-center justify-center animate-pulse">
+                  <Star className="text-red-600 h-3 w-3" />
                 </div>
               </div>
               
               {/* Enhanced Title */}
               <div className="space-y-1">
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-red-600 via-red-700 to-red-800 bg-clip-text text-transparent">
+                <h1 className="text-3xl font-bold text-white">
                   313
                 </h1>
                 <div className="flex items-center space-x-2 space-x-reverse">
-                  <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
-                  <p className="text-red-600 font-medium">مرحباً، {user?.name}</p>
-                  <Trophy className="h-4 w-4 text-red-500" />
+                  <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                  <p className="text-white font-medium">مرحباً، {user?.name}</p>
+                  <Trophy className="h-4 w-4 text-white" />
                 </div>
               </div>
             </div>
@@ -164,10 +164,10 @@ export default function Dashboard() {
             <div className="flex items-center space-x-reverse space-x-3">
               {user?.isAdmin && (
                 <button
-                  className="group relative px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  className="group relative px-6 py-3 bg-white text-red-600 rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                   onClick={() => setLocation("/admin-dashboard")}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-red-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-white rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="relative flex items-center">
                     <Settings className="h-5 w-5 ml-2" />
                     الإدارة
@@ -175,7 +175,7 @@ export default function Dashboard() {
                 </button>
               )}
               <button
-                className="group relative px-6 py-3 bg-white border-2 border-red-300 text-red-600 rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:bg-red-50"
+                className="group relative px-6 py-3 bg-white border-2 border-white text-red-600 rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:bg-gray-100"
                 onClick={handleLogout}
               >
                 <div className="flex items-center">
@@ -188,7 +188,7 @@ export default function Dashboard() {
         </div>
         
         {/* Bottom Border */}
-        <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-red-300 via-red-500 to-red-300"></div>
+        <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-white via-red-100 to-white opacity-50"></div>
       </header>
 
       {/* Main Content */}

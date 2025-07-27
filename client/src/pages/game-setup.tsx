@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowRight, Play, Users, Edit2, Check, X, BookOpen } from "lucide-react";
 import { Category } from "@/../../shared/schema";
+import { Logo } from "@/components/Logo";
 
 // Default category icons for common categories
 const CATEGORY_ICONS: { [key: string]: string } = {
@@ -159,15 +160,20 @@ export default function GameSetupPage() {
   return (
     <div className="min-h-screen page-transition">
       {/* Header */}
-      <header className="luxury-card mx-4 mt-4 p-6 mb-6 board-transition">
+      <header className="p-6 mb-6" style={{
+        background: 'linear-gradient(135deg, hsl(0, 79%, 50%) 0%, hsl(0, 79%, 45%) 100%)',
+        borderBottom: '3px solid hsl(0, 79%, 40%)',
+        boxShadow: '0 4px 20px hsla(0, 79%, 50%, 0.3)'
+      }}>
         <div className="max-w-4xl mx-auto">
-          <div className="flex items-center">
-            <button className="luxury-button-secondary p-2 ml-4" onClick={handleBack}>
-              <ArrowRight className="h-5 w-5 text-luxury-green-dark" />
+          <div className="flex items-center gap-4">
+            <Logo size="medium" />
+            <button className="p-2 ml-4 bg-white rounded-lg hover:bg-gray-100 transition-colors" onClick={handleBack}>
+              <ArrowRight className="h-5 w-5 text-red-600" />
             </button>
             <div>
-              <h1 className="text-xl font-bold text-luxury-green-dark">إعداد لعبة جديدة - 313</h1>
-              <p className="text-muted-foreground">أدخل أسماء الفريقين</p>
+              <h1 className="text-xl font-bold text-white">إعداد لعبة جديدة - 313</h1>
+              <p className="text-gray-100">أدخل أسماء الفريقين</p>
             </div>
           </div>
         </div>

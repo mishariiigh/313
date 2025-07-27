@@ -945,16 +945,18 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   // Game board view - Jeopardy style layout
   return (
     <div className="min-h-screen flex flex-col page-transition" style={{
-      background: 'linear-gradient(135deg, hsl(0, 0%, 97%) 0%, hsl(0, 0%, 94%) 100%)'
+      background: 'linear-gradient(135deg, hsl(0, 0%, 98%) 0%, hsl(0, 0%, 95%) 100%)'
     }}>
       {/* Header - Top navigation with scores */}
       <header className="p-4" style={{
-        background: 'linear-gradient(135deg, hsl(0, 79%, 90%) 0%, hsl(0, 79%, 85%) 100%)',
-        borderBottom: '3px solid hsl(0, 79%, 80%)',
-        boxShadow: '0 4px 20px hsla(0, 79%, 70%, 0.2)'
+        background: 'linear-gradient(135deg, hsl(0, 79%, 50%) 0%, hsl(0, 79%, 45%) 100%)',
+        borderBottom: '3px solid hsl(0, 79%, 40%)',
+        boxShadow: '0 4px 20px hsla(0, 79%, 50%, 0.3)'
       }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
+            {/* Add Logo */}
+            <Logo size="medium" className="mr-4" />
             <Button
               variant="outline"
               onClick={() => setLocation("/dashboard")}
@@ -968,11 +970,11 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div className="flex items-center gap-3">
-              <p className="text-sm font-medium" style={{ color: 'hsl(0, 79%, 25%)' }}>
+              <p className="text-sm font-medium text-white">
                 دور: <span className="font-bold px-3 py-1 rounded-full" style={{
-                  background: 'hsla(0, 0%, 100%, 0.8)',
+                  background: 'white',
                   color: 'hsl(0, 79%, 50%)',
-                  border: '2px solid hsl(0, 79%, 65%)'
+                  border: '2px solid white'
                 }}>
                   {gameSession.teams[gameSession.currentTurn]}
                 </span>
@@ -984,9 +986,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 disabled={switchTeamTurnMutation.isPending}
                 className="border-2 hover:scale-105 transition-transform duration-200"
                 style={{
-                  background: 'hsla(0, 0%, 100%, 0.9)',
-                  color: 'hsl(0, 79%, 25%)',
-                  borderColor: 'hsl(0, 79%, 65%)'
+                  background: 'white',
+                  color: 'hsl(0, 79%, 50%)',
+                  borderColor: 'white'
                 }}
                 title="تبديل الدور"
               >
@@ -999,10 +1001,10 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
           <div className="flex gap-4">
             {gameSession.teams.map((team: string, index: number) => (
               <div key={index} className="rounded-lg p-3 text-center min-w-[140px] border-2" style={{
-                background: 'hsla(0, 0%, 100%, 0.85)',
-                borderColor: 'hsl(0, 79%, 65%)',
-                color: 'hsl(0, 79%, 25%)',
-                boxShadow: '0 4px 12px hsla(0, 79%, 70%, 0.2)'
+                background: 'white',
+                borderColor: 'white',
+                color: 'hsl(0, 79%, 50%)',
+                boxShadow: '0 4px 12px hsla(0, 0%, 0%, 0.1)'
               }}>
                 <div className="text-sm font-semibold">{team}</div>
                 <div className="flex items-center justify-center gap-2 mt-1">
@@ -1013,9 +1015,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     disabled={adjustScoreMutation.isPending}
                     className="border hover:scale-110 transition-transform duration-200 p-1 h-6 w-6"
                     style={{
-                      background: 'hsla(0, 0%, 100%, 0.9)',
+                      background: 'white',
                       color: 'hsl(0, 79%, 50%)',
-                      borderColor: 'hsl(0, 79%, 75%)'
+                      borderColor: 'hsl(0, 79%, 50%)'
                     }}
                     title="تقليل النقاط"
                   >
@@ -1031,9 +1033,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     disabled={adjustScoreMutation.isPending}
                     className="border hover:scale-110 transition-transform duration-200 p-1 h-6 w-6"
                     style={{
-                      background: 'hsla(0, 0%, 100%, 0.9)',
+                      background: 'white',
                       color: 'hsl(0, 79%, 50%)',
-                      borderColor: 'hsl(0, 79%, 75%)'
+                      borderColor: 'hsl(0, 79%, 50%)'
                     }}
                     title="زيادة النقاط"
                   >
