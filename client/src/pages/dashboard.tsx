@@ -189,9 +189,8 @@ export default function Dashboard() {
         {/* Bottom Border */}
         <div className="absolute bottom-0 left-0 w-full h-1 bg-gaming-mutedred"></div>
       </header>
-
       {/* Main Content */}
-      <main className="luxury-container py-12">
+      <main className="luxury-container py-12 text-[#474242]">
         {/* Hero Section */}
         <div className="rounded-2xl mb-12 relative bg-gaming-darkgrey border-2 border-gaming-mutedred p-12">
           <div className="relative z-10 text-center">
