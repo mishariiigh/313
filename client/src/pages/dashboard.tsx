@@ -18,12 +18,12 @@ export default function Dashboard() {
   const { data: historyData } = useQuery({
     queryKey: ["/api/games/history"],
     enabled: !!user,
-  });
+  }) as { data: { gameSessions?: any[] } | undefined };
 
   const { data: activeGameData } = useQuery({
     queryKey: ["/api/games/active"],
     enabled: !!user,
-  });
+  }) as { data: { activeSession?: any } | undefined };
 
   const startGameMutation = useMutation({
     mutationFn: async () => {
@@ -45,7 +45,7 @@ export default function Dashboard() {
 
   const handleStartGame = () => {
     console.log("Start New Game clicked");
-    if (user?.availableGames <= 0) {
+    if ((user?.availableGames || 0) <= 0) {
       toast({
         title: "لا توجد ألعاب متاحة",
         description: "يرجى شراء ألعاب إضافية للمتابعة",
@@ -97,7 +97,7 @@ export default function Dashboard() {
     await queryClient.refetchQueries({ queryKey: ["/api/games/active"] });
     
     // Get the refreshed data
-    const refreshedData = queryClient.getQueryData(["/api/games/active"]) as any;
+    const refreshedData = queryClient.getQueryData(["/api/games/active"]) as { activeSession?: any } | undefined;
     console.log("Refreshed active session:", refreshedData?.activeSession?.id);
     
     if (refreshedData?.activeSession?.id) {
@@ -299,13 +299,13 @@ export default function Dashboard() {
               <div className="mt-4 flex items-center space-x-2 space-x-reverse">
                 <div className="w-6 h-6 bg-gaming-red rounded-full animate-ping"></div>
                 <div className="text-gray-400 text-sm font-medium">
-                  معدل النقاط: {historyData?.gameSessions?.length > 0 ? 
+                  معدل النقاط: {(historyData?.gameSessions?.length || 0) > 0 ? 
                     Math.round((historyData?.gameSessions?.reduce((total: number, session: any) => {
                       if (session.gameType === "team") {
                         return total + (session.team1Score || 0) + (session.team2Score || 0);
                       }
                       return total + (session.score || 0);
-                    }, 0) || 0) / historyData.gameSessions.length) : 0
+                    }, 0) || 0) / (historyData?.gameSessions?.length || 1)) : 0
                   }
                 </div>
               </div>
@@ -346,7 +346,7 @@ export default function Dashboard() {
             <button 
               className="bg-gaming-red hover:bg-gaming-mutedred text-gaming-offwhite font-bold w-full text-lg py-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={handleStartGame}
-              disabled={user?.availableGames <= 0}
+              disabled={(user?.availableGames || 0) <= 0}
             >
               <Gamepad2 className="ml-2 h-6 w-6 inline" />
               بدء اللعبة الآن
