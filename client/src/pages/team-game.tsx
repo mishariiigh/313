@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useLocation } from "wouter";
+import { useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, RotateCcw, Users, Trophy, HelpCircle, Eye, Shuffle, Plus, Minus, Pause, Play } from "lucide-react";
+import { ArrowLeft, HelpCircle, Shuffle, Plus, Minus, Pause, Play } from "lucide-react";
 import { Question } from "@/../../shared/schema";
 import { Logo } from "@/components/Logo";
 
-// Default category icons for common categories
 const CATEGORY_ICONS: { [key: string]: string } = {
   "التاريخ": "📚",
   "الجغرافيا": "🌍", 
@@ -37,7 +36,6 @@ interface TeamGamePageProps {
   };
 }
 
-// Helper function to get points based on difficulty
 const getPointsForDifficulty = (difficulty: string): number => {
   switch (difficulty) {
     case 'سهل':
@@ -66,21 +64,16 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   const [isTimeOut, setIsTimeOut] = useState(false);
   const [imagePopupOpen, setImagePopupOpen] = useState(false);
 
-  // Get game session data
   const { data: gameData, isLoading } = useQuery({
     queryKey: [`/api/games/${id}`],
     enabled: !!id,
   });
 
-  // Fetch categories
   const { data: categoriesData } = useQuery({
     queryKey: ['/api/categories'],
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  // Questions are included in the game data for team games
-
-  // Create categories array from selected categories in game session
   const gameSession = gameData?.gameSession;
   const selectedCategoryNames = gameSession?.selectedCategories || [];
   const categories = categoriesData?.categories?.filter((cat: any) => 
@@ -100,10 +93,10 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     }
 
     if (gameData && categories.length > 0) {
-      // Check if game is completed and auto-complete if needed
+
       const totalQuestions = categories.length * 6; // 6 questions per category
       if (gameData.gameSession?.usedQuestions?.length >= totalQuestions && !gameData.gameSession?.isCompleted) {
-        // Auto-complete the game
+
         apiRequest("POST", `/api/games/${id}/complete`).then(() => {
           queryClient.invalidateQueries({ queryKey: [`/api/games/${id}`] });
         });
@@ -111,7 +104,6 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     }
   }, [user, gameData, setLocation, id]);
 
-  // Timer effect
   useEffect(() => {
     let interval: NodeJS.Timeout;
     
@@ -133,7 +125,6 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     };
   }, [isTimerActive, isTimerPaused, timeLeft, isTimeOut]);
 
-  // Toast effect for time out
   useEffect(() => {
     if (isTimeOut) {
       toast({
@@ -144,7 +135,6 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     }
   }, [isTimeOut, toast]);
 
-  // Mark team as correct
   const markTeamCorrectMutation = useMutation({
     mutationFn: async (data: { teamIndex: number; questionKey: string }) => {
       const response = await apiRequest("POST", `/api/games/${id}/team-correct`, data);
@@ -162,7 +152,6 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     },
   });
 
-  // Skip question (no team got it right)
   const skipQuestionMutation = useMutation({
     mutationFn: async (data: { questionKey: string }) => {
       const response = await apiRequest("POST", `/api/games/${id}/skip-question`, data);
@@ -180,7 +169,6 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     },
   });
 
-  // Use hint for a question
   const useHintMutation = useMutation({
     mutationFn: async (data: { questionKey: string; teamIndex: number }) => {
       const response = await apiRequest("POST", `/api/games/${id}/use-hint`, data);
@@ -199,7 +187,6 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     },
   });
 
-  // Switch team turn
   const switchTeamTurnMutation = useMutation({
     mutationFn: async () => {
       const response = await apiRequest("POST", `/api/games/${id}/switch-turn`);
@@ -210,7 +197,6 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     },
   });
 
-  // Adjust team score
   const adjustScoreMutation = useMutation({
     mutationFn: async (data: { teamIndex: number; scoreChange: number }) => {
       const response = await apiRequest("POST", `/api/games/${id}/adjust-score`, data);
@@ -220,8 +206,6 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       queryClient.invalidateQueries({ queryKey: [`/api/games/${id}`] });
     },
   });
-
-
 
   if (isLoading) {
     return (
@@ -242,11 +226,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     );
   }
 
-  // Check if game is completed
   const totalQuestions = categories.length * 6; // 6 questions per category
   const isGameCompleted = gameSession.usedQuestions?.length >= totalQuestions;
-  
-  // Calculate winner
+
   const getWinner = () => {
     if (!gameSession.teamScores || gameSession.teamScores.length < 2) return null;
     const maxScore = Math.max(...gameSession.teamScores);
@@ -259,27 +241,24 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   };
 
   const handleQuestionClick = (categoryName: string, index: number) => {
-    // Check if question is already used
+
     const questionKey = `${categoryName}-${index}`;
     if (gameSession.usedQuestions?.includes(questionKey)) {
       return;
     }
 
-    // Find the question - questions are organized by category in groups of 6
     const categoryIndex = categories.findIndex(cat => cat.name === categoryName);
     const questionIndex = categoryIndex * 6 + index;
     const question = gameData?.questions?.[questionIndex];
-    
-    console.log(`Clicking question: categoryName=${categoryName}, index=${index}, categoryIndex=${categoryIndex}, questionIndex=${questionIndex}, questionKey=${questionKey}`);
-    
+
     if (question) {
-      // Store the question key with the question so we can use it later
+
       setSelectedQuestion({...question, questionKey});
-      // Check if hint was already used for this question
+
       const isHintUsed = gameSession.usedHints?.includes(questionKey);
       setShowHint(isHintUsed);
       setShowAnswer(false);
-      // Start the timer
+
       setTimeLeft(60);
       setIsTimerActive(true);
       setIsTimeOut(false);
@@ -298,11 +277,10 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
   const handleTeamCorrect = (teamIndex: number) => {
     if (!selectedQuestion) return;
-    
-    // Use the stored question key directly
-    const questionKey = (selectedQuestion as any).questionKey;
+
+    const questionKey = selectedQuestion.questionKey;
     if (questionKey) {
-      console.log(`Team ${teamIndex} answered ${questionKey} correctly`);
+
       markTeamCorrectMutation.mutate({ teamIndex, questionKey });
     } else {
       console.error(`No question key stored for selected question`);
@@ -311,11 +289,10 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
   const handleSkipQuestion = () => {
     if (!selectedQuestion) return;
-    
-    // Use the stored question key directly
-    const questionKey = (selectedQuestion as any).questionKey;
+
+    const questionKey = selectedQuestion.questionKey;
     if (questionKey) {
-      console.log(`Skipping question ${questionKey}`);
+
       skipQuestionMutation.mutate({ questionKey });
     } else {
       console.error(`No question key stored for selected question`);
@@ -324,11 +301,10 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
   const handleUseHint = () => {
     if (!selectedQuestion) return;
-    
-    // Use the stored question key directly
-    const questionKey = (selectedQuestion as any).questionKey;
+
+    const questionKey = selectedQuestion.questionKey;
     if (questionKey) {
-      console.log(`Using hint for question ${questionKey}`);
+
       useHintMutation.mutate({ 
         questionKey, 
         teamIndex: gameSession.currentTurn 
@@ -340,12 +316,10 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
   const getCurrentQuestionKey = () => {
     if (!selectedQuestion) return null;
-    
-    // Use the stored question key directly
-    return (selectedQuestion as any).questionKey || null;
+
+    return selectedQuestion.questionKey || null;
   };
 
-  // Game completion screen
   if (isGameCompleted) {
     const winner = getWinner();
     return (
@@ -400,15 +374,14 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     );
   }
 
-  // Question view - New Layout Structure
   if (selectedQuestion) {
     return (
       <div className="h-screen question-slide-in flex flex-col" dir="rtl" style={{
-        background: 'linear-gradient(135deg, #1e1e1e 0%, #000000 100%)'
+        background: 'linear-gradient(to bottom, (0, 0, 0) 0%, #f8f8f2 100%)'
       }}>
         {/* Top Bar (Header) */}
         <div className="text-white p-3 flex-shrink-0" style={{
-          background: 'linear-gradient(135deg, hsl(0, 79%, 50%) 0%, hsl(0, 79%, 40%) 100%)',
+          background: 'linear-gradient(135deg, #1e1e1e 0%, #1e1e1e) 100%)',
           boxShadow: '0 4px 20px hsla(0, 79%, 50%, 0.3)'
         }}>
           <div className="flex items-center justify-between max-w-7xl mx-auto">
@@ -455,14 +428,14 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             </div>
 
             {/* Right Side - Game Logo/Branding */}
-            <Logo size="small" className="filter brightness-0 invert" />
+            <Logo size="medium" className="black" />
           </div>
         </div>
 
         {/* Timer Section - Centrally Placed */}
         <div className="py-3 flex-shrink-0" style={{
-          background: 'linear-gradient(135deg, hsl(0, 0%, 20%) 0%, hsl(0, 0%, 15%) 100%)',
-          borderTop: '2px solid hsl(0, 0%, 25%)'
+          background: 'linear-gradient(135deg, hsl(0, 0.80%, 25.30%) 0%, hsl(0, 0.80%, 25.30%) 100%)',
+          borderTop: '2px solid hsl(0, 72.00%, 19.60%)'
         }}>
           <div className="flex justify-center items-center">
             {(isTimerActive || isTimerPaused) && !isTimeOut && (
@@ -511,43 +484,15 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             <div className="flex-1" style={{ flex: '0 0 80%' }}>
               {/* Question with Triangle Border Design */}
               <div className="relative rounded-3xl p-6 h-full shadow-2xl overflow-hidden" style={{
-                background: '#1e1e1e',
-                border: '3px solid #e50914',
+                background: '#f2ede3',
+                border: '3px solidrgb(201, 183, 184)',
                 boxShadow: '0 8px 32px rgba(229, 9, 20, 0.25)'
               }}>
-                {/* Decorative Triangle Border Effect */}
-                <div className="absolute inset-0 rounded-3xl pointer-events-none" style={{
-                  background: `
-                    repeating-linear-gradient(
-                      0deg,
-                      transparent 0px,
-                      transparent 8px,
-                      #e50914 8px,
-                      #e50914 10px,
-                      transparent 10px,
-                      transparent 18px
-                    ),
-                    repeating-linear-gradient(
-                      90deg,
-                      transparent 0px,
-                      transparent 8px,
-                      #e50914 8px,
-                      #e50914 10px,
-                      transparent 10px,
-                      transparent 18px
-                    )
-                  `,
-                  mask: 'linear-gradient(white 0 0) content-box, linear-gradient(white 0 0)',
-                  maskComposite: 'xor',
-                  WebkitMask: 'linear-gradient(white 0 0) content-box, linear-gradient(white 0 0)',
-                  WebkitMaskComposite: 'xor',
-                  padding: '3px',
-                  borderRadius: '24px'
-                }} />
+                
                 
                 {/* Inner Content Container */}
                 <div className="relative rounded-2xl p-4 h-full flex flex-col justify-between border-2 overflow-hidden" style={{
-                  background: '#000000',
+                  background: '#1a1a1a',
                   borderColor: '#990000'
                 }}>
                   {/* Category Header */}
@@ -556,7 +501,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   }}>
                     <h2 className="text-lg font-bold">
                       {(() => {
-                        const categoryName = (selectedQuestion as any).questionKey?.split('-')[0];
+                        const categoryName = selectedQuestion.questionKey?.split('-')[0];
                         const category = categories?.find(cat => cat.name === categoryName);
                         return category?.displayName || categoryName || 'فئة غير معروفة';
                       })()}
@@ -568,7 +513,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     <h1 className="text-2xl font-bold leading-relaxed" style={{
                       color: '#f5f5f5',
                       fontFamily: 'Cairo, Arial, sans-serif',
-                      textShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                      textShadow: '0 2px 4px rgba(188, 166, 166, 0.1)'
                     }}>
                       {selectedQuestion.question}
                     </h1>
@@ -576,25 +521,24 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   
                   {/* Question Image - Below question text */}
                   {selectedQuestion.imageUrl && (
-                    <div className="flex justify-center mb-3 flex-1 min-h-0">
-                      <div className="rounded-3xl p-2 shadow-xl border-2 max-w-full cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:scale-105 overflow-hidden" style={{
-                        background: 'linear-gradient(135deg, #333333 0%, #1e1e1e 100%)',
-                        borderColor: '#990000'
-                      }}>
-                        <img 
-                          src={selectedQuestion.imageUrl} 
-                          alt="صورة السؤال" 
-                          className="w-full h-auto rounded-2xl shadow-lg"
-                          style={{
-                            maxWidth: '100%',
-                            maxHeight: '450px',
-                            objectFit: 'contain'
-                          }}
-                          onClick={() => setImagePopupOpen(true)}
-                        />
-                      </div>
-                    </div>
-                  )}
+  <div className="flex justify-center mb-1 flex-1 min-h-0">
+    <div
+      className="rounded-3xl p-2 shadow-xl border-2 max-w-full w-full max-h-[450px] overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+      style={{
+        background: 'linear-gradient(135deg, #333333 0%, #1e1e1e 100%)',
+        borderColor: '#990000'
+      }}
+      onClick={() => setImagePopupOpen(true)}
+    >
+      <img
+        src={selectedQuestion.imageUrl}
+        alt="صورة السؤال"
+        className="w-full h-full object-contain rounded-2xl shadow-lg"
+      />
+    </div>
+  </div>
+)}
+
 
                   {/* Spacer if no image to center question */}
                   {!selectedQuestion.imageUrl && (
@@ -621,9 +565,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             {/* Side Panel (Right Side) - Red Buttons */}
             <div className="w-64">
               <div className="text-white rounded-3xl shadow-2xl p-4 h-full border-2" style={{
-                background: 'linear-gradient(135deg, #e50914 0%, #990000 100%)',
-                borderColor: '#e50914',
-                boxShadow: '0 8px 32px rgba(229, 9, 20, 0.3)'
+              background: 'linear-gradient(135deg,rgb(23, 23, 23) 0%,rgb(22, 22, 22) 100%,rgb(30, 29, 29))',
+              borderColor: '#FFFFE4',
+              boxShadow: '0 0 24px rgba(239, 239, 239, 0.4), 0 8px 40px rgba(225, 211, 220, 0.2)'
               }}>
                 {/* Current Team Display */}
                 <div className="text-center mb-4">
@@ -658,7 +602,6 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   </div>
                 </div>
                 
-
 
                 {/* Hint Option - Red Button */}
                 <div className="space-y-3 mb-4">
@@ -886,7 +829,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 <div className="px-3 pb-1 flex-1 min-h-0 overflow-y-auto">
                   <div className="grid gap-2">
                     {gameSession.teams.map((team: string, index: number) => {
-                      const questionKey = (selectedQuestion as any).questionKey;
+                      const questionKey = selectedQuestion.questionKey;
                       const points = questionKey ? (() => {
                         const idx = parseInt(questionKey.split('-')[1]);
                         return idx < 2 ? 200 : idx < 4 ? 400 : 600;
@@ -973,16 +916,15 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     );
   }
 
-  // Game board view - Jeopardy style layout
   return (
     <div className="min-h-screen flex flex-col page-transition" style={{
-      background: 'linear-gradient(180deg, #000000 0%, #7b0000 100%)'
+      background: 'linear-gradient(180deg,rgb(235, 230, 230) 0%,rgb(245, 239, 239) 100%)'
     }}>
       {/* Header - Top navigation with scores */}
       <header className="p-4" style={{
         background: '#1e1e1e',
-        borderBottom: '2px solid #990000',
-        boxShadow: '0 4px 20px rgba(229, 9, 20, 0.3)'
+        borderBottom: '2px solidrgb(0, 0, 0)',
+        boxShadow: '0 4px 20px rgba(12, 12, 12, 0.3)'
       }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -1109,7 +1051,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           background: '#333333',
                           color: '#666666'
                         } : {
-                          background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                          background: 'linear-gradient(135deg, rgb(97, 248, 198), #059669 100%)',
                           color: '#f5f5f5',
                           border: '2px solid #10b981'
                         }}
@@ -1130,9 +1072,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           background: '#333333',
                           color: '#666666'
                         } : {
-                          background: 'linear-gradient(135deg, #e50914 0%, #990000 100%)',
+                          background: 'linear-gradient(135deg,rgb(255, 140, 0) 0%,rgb(232, 179, 95) 100%)',
                           color: '#f5f5f5',
-                          border: '2px solid #e50914'
+                          border: '2px solid rgb(232, 172, 83)'
                         }}
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-2`) ? "✓" : "400"}
@@ -1170,11 +1112,11 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                             alt={category.displayName}
                             className="w-full h-full object-cover"
                             onError={(e) => {
-                              console.log(`Image failed to load for category ${category.name}: ${category.logoUrl}`);
+
                               e.currentTarget.style.display = 'none';
                             }}
                             onLoad={() => {
-                              console.log(`Image loaded successfully for category ${category.name}: ${category.logoUrl}`);
+
                             }}
                           />
                         ) : (
@@ -1211,7 +1153,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           background: '#333333',
                           color: '#666666'
                         } : {
-                          background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                          background: 'linear-gradient(135deg,rgb(97, 248, 198) 0%, #059669 100%)',
                           color: '#f5f5f5',
                           border: '2px solid #10b981'
                         }}
@@ -1232,9 +1174,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           background: '#333333',
                           color: '#666666'
                         } : {
-                          background: 'linear-gradient(135deg, #e50914 0%, #990000 100%)',
+                          background: 'linear-gradient(135deg, rgb(255, 140, 0) 0%,rgb(232, 179, 95) 100%)',
                           color: '#f5f5f5',
-                          border: '2px solid #e50914'
+                          border: '2px solid rgb(239, 183, 85)'
                         }}
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-3`) ? "✓" : "400"}
