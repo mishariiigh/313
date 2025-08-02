@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -93,10 +94,8 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     }
 
     if (gameData && categories.length > 0) {
-
       const totalQuestions = categories.length * 6; // 6 questions per category
       if (gameData.gameSession?.usedQuestions?.length >= totalQuestions && !gameData.gameSession?.isCompleted) {
-
         apiRequest("POST", `/api/games/${id}/complete`).then(() => {
           queryClient.invalidateQueries({ queryKey: [`/api/games/${id}`] });
         });
@@ -241,7 +240,6 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   };
 
   const handleQuestionClick = (categoryName: string, index: number) => {
-
     const questionKey = `${categoryName}-${index}`;
     if (gameSession.usedQuestions?.includes(questionKey)) {
       return;
@@ -252,7 +250,6 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
     const question = gameData?.questions?.[questionIndex];
 
     if (question) {
-
       setSelectedQuestion({...question, questionKey});
 
       const isHintUsed = gameSession.usedHints?.includes(questionKey);
@@ -280,7 +277,6 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
     const questionKey = selectedQuestion.questionKey;
     if (questionKey) {
-
       markTeamCorrectMutation.mutate({ teamIndex, questionKey });
     } else {
       console.error(`No question key stored for selected question`);
@@ -292,7 +288,6 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
     const questionKey = selectedQuestion.questionKey;
     if (questionKey) {
-
       skipQuestionMutation.mutate({ questionKey });
     } else {
       console.error(`No question key stored for selected question`);
@@ -304,7 +299,6 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
     const questionKey = selectedQuestion.questionKey;
     if (questionKey) {
-
       useHintMutation.mutate({ 
         questionKey, 
         teamIndex: gameSession.currentTurn 
@@ -316,7 +310,6 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
   const getCurrentQuestionKey = () => {
     if (!selectedQuestion) return null;
-
     return selectedQuestion.questionKey || null;
   };
 
@@ -1112,11 +1105,9 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                             alt={category.displayName}
                             className="w-full h-full object-cover"
                             onError={(e) => {
-
                               e.currentTarget.style.display = 'none';
                             }}
                             onLoad={() => {
-
                             }}
                           />
                         ) : (

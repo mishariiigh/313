@@ -90,15 +90,10 @@ export default function Dashboard() {
   };
 
   const handleContinueGame = async () => {
-    console.log("Continue Game clicked - Active Session ID:", activeGameData?.activeSession?.id);
-    
-    // Force refresh the active games data before continuing
     await queryClient.invalidateQueries({ queryKey: ["/api/games/active"] });
     await queryClient.refetchQueries({ queryKey: ["/api/games/active"] });
     
-    // Get the refreshed data
     const refreshedData = queryClient.getQueryData(["/api/games/active"]) as { activeSession?: any } | undefined;
-    console.log("Refreshed active session:", refreshedData?.activeSession?.id);
     
     if (refreshedData?.activeSession?.id) {
       setLocation(`/game/${refreshedData.activeSession.id}`);

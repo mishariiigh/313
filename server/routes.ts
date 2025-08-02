@@ -6,7 +6,7 @@ import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
 import multer from "multer";
 import { storage } from "./firebase-storage";
-import { insertUserSchema, insertQuestionSchema, insertGameSessionSchema, insertCategorySchema, insertCouponSchema, insertGamePackageSchema } from "@shared/firebase-schema";
+import { insertUserSchema, insertQuestionSchema, insertCategorySchema, insertCouponSchema, insertGamePackageSchema } from "@shared/firebase-schema";
 import { z } from "zod";
 import Stripe from "stripe";
 import { verifyIdToken, createOrUpdateFirebaseUser } from "./firebase-auth";
@@ -89,29 +89,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // File upload endpoint
   app.post("/api/upload", upload.single('file'), async (req, res) => {
-    console.log('Upload endpoint called');
-    console.log('Is authenticated:', req.isAuthenticated());
-    console.log('File present:', !!req.file);
-    
     try {
       if (!req.isAuthenticated()) {
-        console.log('Authentication failed');
         return res.status(401).json({ message: "غير مسجل الدخول" });
       }
 
       if (!req.file) {
-        console.log('No file uploaded');
         return res.status(400).json({ message: "لم يتم رفع أي ملف" });
       }
 
-      console.log('Processing file:', req.file.originalname, 'Size:', req.file.size, 'Type:', req.file.mimetype);
-
-      // For development purposes, we'll convert to base64 and store as data URL
-      // This avoids Firebase Storage authentication issues
       const base64 = req.file.buffer.toString('base64');
       const dataUrl = `data:${req.file.mimetype};base64,${base64}`;
-      
-      console.log(`Image uploaded successfully: ${req.file.originalname} (${req.file.size} bytes)`);
 
       res.json({ 
         message: "تم رفع الصورة بنجاح",
@@ -120,7 +108,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
     } catch (error: any) {
-      console.error('File upload error:', error);
       res.status(500).json({ 
         message: "حدث خطأ أثناء رفع الصورة: " + error.message 
       });
@@ -230,170 +217,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Debug Firebase data
-  app.get("/api/admin/debug-firebase", async (req, res) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "غير مسجل الدخول" });
-    }
-
-    const user = req.user as any;
-    if (!user.isAdmin) {
-      return res.status(403).json({ message: "غير مصرح بالوصول" });
-    }
-
-    try {
-      const { debugFirebaseData } = await import("./firebase-debug");
-      await debugFirebaseData();
-      res.json({ message: "تم فحص البيانات، تحقق من سجل الخادم" });
-    } catch (error: any) {
-      console.error("Debug error:", error);
-      res.status(500).json({ message: "خطأ في فحص البيانات: " + error.message });
-    }
-  });
-
-  // Cleanup Firebase duplicates
-  app.post("/api/admin/cleanup-firebase", async (req, res) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "غير مسجل الدخول" });
-    }
-
-    const user = req.user as any;
-    if (!user.isAdmin) {
-      return res.status(403).json({ message: "غير مصرح بالوصول" });
-    }
-
-    try {
-      const { cleanupFirebaseData } = await import("./firebase-cleanup");
-      const result = await cleanupFirebaseData();
-      res.json({ 
-        message: "تم تنظيف Firebase بنجاح", 
-        ...result 
-      });
-    } catch (error: any) {
-      console.error("Cleanup error:", error);
-      res.status(500).json({ message: "خطأ في تنظيف Firebase: " + error.message });
-    }
-  });
-
-  // Seed data endpoint for admin - Push to Firebase
-  app.post("/api/admin/seed-firebase", async (req, res) => {
-    if (!req.isAuthenticated() || !(req.user as any)?.isAdmin) {
-      return res.status(403).json({ message: "غير مصرح لك بالوصول" });
-    }
-
-    try {
-      // Switch to Firebase storage temporarily
-      const { storage: firebaseStorage } = await import('./firebase-storage');
-      const tempStorage = storage;
-      
-      // Get all data from temp storage
-      const users = await tempStorage.getAllUsers();
-      const categories = await tempStorage.getAllCategories();
-      const questions = await tempStorage.getAllQuestions();
-      const gamePackages = await tempStorage.getAllGamePackages();
-      const coupons = await tempStorage.getAllCoupons();
-      
-      // Push to Firebase
-      let results = {
-        users: 0,
-        categories: 0,
-        questions: 0,
-        gamePackages: 0,
-        coupons: 0
-      };
-      
-      // Create users in Firebase
-      for (const user of users) {
-        try {
-          await firebaseStorage.createUser({
-            email: user.email,
-            name: user.name,
-            password: user.password,
-            availableGames: user.availableGames,
-            isAdmin: user.isAdmin
-          });
-          results.users++;
-        } catch (error) {
-          console.log('User already exists:', user.email);
-        }
-      }
-      
-      // Create categories in Firebase
-      for (const category of categories) {
-        try {
-          await firebaseStorage.createCategory({
-            name: category.name,
-            displayName: category.displayName,
-            description: category.description,
-            isActive: category.isActive
-          });
-          results.categories++;
-        } catch (error) {
-          console.log('Category already exists:', category.name);
-        }
-      }
-      
-      // Create questions in Firebase
-      for (const question of questions) {
-        try {
-          await firebaseStorage.createQuestion({
-            question: question.question,
-            answer: question.answer,
-            category: question.category,
-            difficulty: question.difficulty,
-            hint: question.hint,
-            explanation: question.explanation
-          });
-          results.questions++;
-        } catch (error) {
-          console.log('Question creation failed:', error.message);
-        }
-      }
-      
-      // Create game packages in Firebase
-      for (const pkg of gamePackages) {
-        try {
-          await firebaseStorage.createGamePackage({
-            name: pkg.name,
-            description: pkg.description,
-            gameCount: pkg.gameCount,
-            priceInCents: pkg.priceInCents,
-            sortOrder: pkg.sortOrder,
-            isActive: pkg.isActive
-          });
-          results.gamePackages++;
-        } catch (error) {
-          console.log('Package already exists:', pkg.name);
-        }
-      }
-      
-      // Create coupons in Firebase
-      for (const coupon of coupons) {
-        try {
-          await firebaseStorage.createCoupon({
-            code: coupon.code,
-            discountType: coupon.discountType,
-            discountValue: coupon.discountValue,
-            maxUsage: coupon.maxUsage,
-            expiresAt: coupon.expiresAt,
-            isActive: coupon.isActive
-          });
-          results.coupons++;
-        } catch (error) {
-          console.log('Coupon already exists:', coupon.code);
-        }
-      }
-      
-      res.json({ 
-        message: "تم رفع البيانات إلى Firebase بنجاح", 
-        results,
-        total: results.users + results.categories + results.questions + results.gamePackages + results.coupons
-      });
-    } catch (error) {
-      console.error('Error seeding Firebase:', error);
-      res.status(500).json({ message: "خطأ في رفع البيانات إلى Firebase: " + error.message });
-    }
-  });
+  
 
   // Game routes
   app.post("/api/games/start", async (req, res) => {
@@ -576,16 +400,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const user = req.user as any;
       const gameSessions = await storage.getUserGameSessions(user.id);
-      
-      console.log(`Debug: User ${user.id} has ${gameSessions.length} total game sessions`);
-      
-      // Get all active (non-completed) sessions
       const activeSessions = gameSessions.filter(session => !session.isCompleted);
-      console.log(`Debug: Found ${activeSessions.length} active sessions:`, activeSessions.map(s => ({ id: s.id, createdAt: s.createdAt })));
-      
-      // Return the most recently created active session (first in array since ordered by desc(createdAt))
       const activeSession = activeSessions.length > 0 ? activeSessions[0] : null;
-      console.log(`Debug: Returning active session:`, activeSession ? { id: activeSession.id, createdAt: activeSession.createdAt } : null);
       
       res.json({ activeSession: activeSession || null });
     } catch (error: any) {
@@ -602,56 +418,94 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const gameSession = await storage.getGameSession(req.params.id);
       if (!gameSession) {
+        console.log(`Game session not found: ${req.params.id}`);
         return res.status(404).json({ message: "جلسة اللعبة غير موجودة" });
       }
 
       const user = req.user as any;
       if (gameSession.userId !== user.id) {
+        console.log(`Access denied for user ${user.id} to game ${req.params.id}`);
         return res.status(403).json({ message: "غير مصرح بالوصول" });
       }
 
       // For team games, return all questions
       if (gameSession.gameType === "team") {
         const questions = await Promise.all(
-          gameSession.questionIds.map(id => storage.getQuestionById(id))
+          gameSession.questionIds.map(async id => {
+            try {
+              return await storage.getQuestionById(id);
+            } catch (error) {
+              console.error(`Error loading question ${id}:`, error);
+              return null;
+            }
+          })
         );
+        
+        const validQuestions = questions.filter(q => q !== null);
+        
         return res.json({
           gameSession: {
             id: gameSession.id,
-            currentQuestionIndex: gameSession.currentQuestionIndex,
-            score: gameSession.score,
+            currentQuestionIndex: gameSession.currentQuestionIndex || 0,
+            score: gameSession.score || 0,
             totalQuestions: gameSession.questionIds.length,
-            isCompleted: gameSession.isCompleted,
-            gameType: gameSession.gameType,
-            teams: gameSession.teams,
-            teamScores: gameSession.teamScores,
-            currentTurn: gameSession.currentTurn,
-            usedQuestions: gameSession.usedQuestions,
-            usedHints: gameSession.usedHints,
-            teamHintsUsed: gameSession.teamHintsUsed,
-            selectedCategories: gameSession.selectedCategories,
+            isCompleted: gameSession.isCompleted || false,
+            gameType: gameSession.gameType || "team",
+            teams: gameSession.teams || [],
+            teamScores: gameSession.teamScores || [],
+            currentTurn: gameSession.currentTurn || 0,
+            usedQuestions: gameSession.usedQuestions || [],
+            usedHints: gameSession.usedHints || [],
+            teamHintsUsed: gameSession.teamHintsUsed || [],
+            selectedCategories: gameSession.selectedCategories || [],
           },
-          questions: questions,
+          questions: validQuestions,
         });
       }
 
       // For single games, return current question
-      const questionId = gameSession.questionIds[gameSession.currentQuestionIndex];
+      if (!gameSession.questionIds || gameSession.questionIds.length === 0) {
+        return res.status(400).json({ message: "لا توجد أسئلة في هذه الجلسة" });
+      }
+
+      const currentIndex = gameSession.currentQuestionIndex || 0;
+      if (currentIndex >= gameSession.questionIds.length) {
+        // Game is completed
+        return res.json({ 
+          gameSession: {
+            id: gameSession.id,
+            currentQuestionIndex: currentIndex,
+            score: gameSession.score || 0,
+            totalQuestions: gameSession.questionIds.length,
+            isCompleted: true,
+            gameType: gameSession.gameType || "single",
+          },
+          currentQuestion: null 
+        });
+      }
+
+      const questionId = gameSession.questionIds[currentIndex];
       const question = await storage.getQuestionById(questionId);
+
+      if (!question) {
+        console.error(`Question not found: ${questionId}`);
+        return res.status(500).json({ message: "السؤال غير موجود" });
+      }
 
       res.json({ 
         gameSession: {
           id: gameSession.id,
-          currentQuestionIndex: gameSession.currentQuestionIndex,
-          score: gameSession.score,
+          currentQuestionIndex: currentIndex,
+          score: gameSession.score || 0,
           totalQuestions: gameSession.questionIds.length,
-          isCompleted: gameSession.isCompleted,
-          gameType: gameSession.gameType,
+          isCompleted: gameSession.isCompleted || false,
+          gameType: gameSession.gameType || "single",
         },
         currentQuestion: question 
       });
-    } catch (error) {
-      res.status(500).json({ message: "خطأ في جلب بيانات اللعبة" });
+    } catch (error: any) {
+      console.error("Error loading game session:", error);
+      res.status(500).json({ message: "خطأ في جلب بيانات اللعبة: " + error.message });
     }
   });
 
@@ -950,20 +804,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Update game package pricing to Kuwaiti Dinar
-  app.post("/api/admin/update-pricing", async (req, res) => {
-    if (!req.isAuthenticated() || !(req.user as any).isAdmin) {
-      return res.status(401).json({ message: "غير مصرح بالوصول" });
-    }
-
-    try {
-      const { updateGamePackagePricing } = await import("./update-pricing");
-      const result = await updateGamePackagePricing();
-      res.json(result);
-    } catch (error) {
-      res.status(500).json({ message: "خطأ في تحديث الأسعار", error: error.message });
-    }
-  });
+  
 
   // Simple add games route for testing (bypasses payment)
   app.post("/api/add-games", async (req, res) => {
