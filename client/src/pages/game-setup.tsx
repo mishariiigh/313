@@ -161,23 +161,24 @@ export default function GameSetupPage() {
     <div className="min-h-screen page-transition">
       {/* Header */}
       <header className="p-6 mb-6" style={{
-        background: 'linear-gradient(135deg, hsl(0, 79%, 50%) 0%, hsl(0, 79%, 45%) 100%)',
-        borderBottom: '3px solid hsl(0, 79%, 40%)',
-        boxShadow: '0 4px 20px hsla(0, 79%, 50%, 0.3)'
+        background: 'linear-gradient(135deg, hsl(0, 1.90%, 10.40%) 0%, hsl(0, 3.00%, 19.80%) 100%)',
+        borderBottom: '3px solid hsl(0, 15.20%, 93.50%)',
+        boxShadow: '0 4px 20px hsla(0, 87.50%, 3.10%, 4.30)'
       }}>
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-4">
             <Logo size="medium" />
             <button className="p-2 ml-4 rounded-lg transition-colors" style={{
-              background: '#1e1e1e',
-              color: '#f5f5f5'
+              background: 'rgb(200, 4, 4)',
+              color: ' #f5f5f5'
             }} 
-            onMouseEnter={(e) => e.target.style.background = '#333333'}
-            onMouseLeave={(e) => e.target.style.background = '#1e1e1e'}
+            onMouseEnter={(e) => (e.target as HTMLElement).style.background = '#333333'}
+            onMouseLeave={(e) => (e.target as HTMLElement).style.background = '#FF0000'}
             onClick={handleBack}>
-              <ArrowRight className="h-5 w-5 text-red-600" />
+              <ArrowRight className="h-5 w-5 text-white-600" />
             </button>
             <div>
+              
               <h1 className="text-xl font-bold text-white">إعداد لعبة جديدة - 313</h1>
               <p className="text-gray-100">أدخل أسماء الفريقين</p>
             </div>
@@ -186,62 +187,86 @@ export default function GameSetupPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-2xl mx-auto px-4 py-8">
-        <div className="luxury-card p-8 question-slide-in">
+      <main className="max-w-6xl mx-auto px-8 py-8">
+        <div className="luxury-card p-4 question-slide-in">
           <div className="space-y-8">
-            {/* Category Selection */}
-            <div className="question-slide-in">
-              <Label className="text-lg font-semibold text-luxury-green-dark mb-4 block flex items-center">
-                <BookOpen className="h-5 w-5 ml-2 text-luxury-green" />
-                اختيار الفئات (يجب اختيار 6 فئات بالضبط)
-              </Label>
-              
-              {categoriesLoading ? (
-                <div className="flex items-center justify-center p-8">
-                  <div className="luxury-spinner" />
-                </div>
-              ) : categories.length === 0 ? (
-                <div className="text-center p-8 text-gray-500">
-                  لا توجد فئات متاحة حالياً
-                </div>
-              ) : (
-                <>
-                  <div className="grid grid-cols-2 gap-4">
-                    {categories.map((category, index) => {
-                      const icon = CATEGORY_ICONS[category.name] || "📝";
-                      return (
-                        <div key={category.id} className="flex items-center space-x-reverse space-x-3 luxury-card p-4 hint-reveal" style={{ animationDelay: `${index * 0.1}s` }}>
-                          <Checkbox
-                            id={`category-${category.id}`}
-                            checked={selectedCategories.includes(category.name)}
-                            onCheckedChange={() => handleCategoryToggle(category.name)}
-                            className="data-[state=checked]:bg-luxury-green data-[state=checked]:border-luxury-green"
-                          />
-                          <label
-                            htmlFor={`category-${category.id}`}
-                            className="flex items-center space-x-reverse space-x-2 cursor-pointer flex-1"
-                          >
-                            <span className="text-2xl">{icon}</span>
-                            <div>
-                              <span className="text-luxury-green-dark font-medium">{category.displayName}</span>
-                              {category.description && (
-                                <p className="text-sm text-gray-600">{category.description}</p>
-                              )}
+           {/* Category Selection */}
+           <div className="question-slide-in">
+            <Label className="text-lg font-semibold text-luxury-green-dark mb-4 block flex items-center">
+              <BookOpen className="h-5 w-5 ml-2 text-luxury-green" />
+              اختيار الفئات (يجب اختيار 6 فئات بالضبط)
+            </Label>
+
+            {categoriesLoading ? (
+              <div className="flex items-center justify-center p-8">
+                <div className="luxury-spinner" />
+              </div>
+            ) : categories.length === 0 ? (
+              <div className="text-center p-8 text-gray-500">
+                لا توجد فئات متاحة حالياً
+              </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {categories.map((category, index) => {
+                    const icon = CATEGORY_ICONS[category.displayName] || "📝";
+                    const isSelected = selectedCategories.includes(category.name);
+                    return (
+                      <div
+                        key={category.id}
+                        className={`flex flex-col items-center rounded-lg overflow-hidden transition-all duration-300 cursor-pointer border-4 ${isSelected ? 'border-gaming-red shadow-lg' : 'border-gray-600'} hover:border-gaming-red`}
+                        style={{
+                          background: 'linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 100%)',
+                          animationDelay: `${index * 0.1}s`,
+                          width: '100%',
+                          maxWidth: '280px',
+                          margin: '0 auto'
+                        }}
+                        onClick={() => handleCategoryToggle(category.name)}
+                      >
+                        {/* Category Image Larger Fixed Size */}
+                        <div className="w-full h-60 overflow-hidden flex items-center justify-center bg-black">
+                          {category.logoUrl ? (
+                            <img
+                              src={category.logoUrl}
+                              alt={category.displayName}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                console.log(`Failed to load image for category ${category.name}: ${category.logoUrl}`);
+                                const img = e.target as HTMLImageElement;
+                                const fallbackDiv = img.nextElementSibling as HTMLElement;
+                                if (img && fallbackDiv) {
+                                  img.style.display = 'none';
+                                  fallbackDiv.style.display = 'flex';
+                                  fallbackDiv.textContent = icon;
+                                }
+                              }}
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-3xl bg-gaming-darkgrey">
+                              {icon}
                             </div>
-                          </label>
+                          )}
                         </div>
-                      );
-                    })}
-                  </div>
-                  
-                  <div className="mt-3 text-sm text-center">
-                    <span className={`font-medium ${selectedCategories.length === 6 ? 'text-luxury-green' : 'text-orange-600'}`}>
-                      تم اختيار {selectedCategories.length} من 6 فئات
-                    </span>
-                  </div>
-                </>
-              )}
-            </div>
+
+                        {/* Category Name Box */}
+                        <div className="w-full bg-black text-gaming-offwhite text-center py-2">
+                          <span className="font-medium text-lg">{category.displayName}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-3 text-sm text-center">
+                  <span className={`font-medium ${selectedCategories.length === 6 ? 'text-luxury-green' : 'text-orange-600'}`}>
+                    تم اختيار {selectedCategories.length} من 6 فئات
+                  </span>
+                </div>
+              </>
+            )}
+          </div>
+
 
             {/* Teams Setup */}
             <div className="question-slide-in">

@@ -222,7 +222,7 @@ export default function AdminDashboard() {
   });
 
   const deleteCategoryMutation = useMutation({
-    mutationFn: async (id: number) => {
+    mutationFn: async (id: string) => {
       const response = await apiRequest("DELETE", `/api/admin/categories/${id}`);
       return response.json();
     },
@@ -388,7 +388,7 @@ export default function AdminDashboard() {
     }).length;
   }
 
-  // Image upload handler with automatic resizing
+  // Image upload handler using FormData and Firebase Storage
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -402,52 +402,55 @@ export default function AdminDashboard() {
       return;
     }
 
+    // Check file size (allow up to 10MB)
+    const maxSizeInBytes = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSizeInBytes) {
+      toast({
+        title: "حجم الملف كبير جداً",
+        description: `حجم الملف ${(file.size / 1024 / 1024).toFixed(2)} ميجابايت. الحد الأقصى المسموح 10 ميجابايت`,
+        variant: "destructive"
+      });
+      return;
+    }
+
     try {
-      // Create a canvas to resize the image
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      const img = new Image();
+      // Show loading state
+      toast({
+        title: "جاري رفع الصورة...",
+        description: "يرجى الانتظار",
+      });
 
-      img.onload = () => {
-        const MAX_WIDTH = 400;
-        const MAX_HEIGHT = 300;
-        
-        let { width, height } = img;
-        
-        // Calculate new dimensions while maintaining aspect ratio
-        if (width > height) {
-          if (width > MAX_WIDTH) {
-            height = (height * MAX_WIDTH) / width;
-            width = MAX_WIDTH;
-          }
-        } else {
-          if (height > MAX_HEIGHT) {
-            width = (width * MAX_HEIGHT) / height;
-            height = MAX_HEIGHT;
-          }
-        }
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('file', file);
 
-        canvas.width = width;
-        canvas.height = height;
+      // Upload to Firebase Storage via API
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+        credentials: 'include',
+      });
 
-        // Draw and resize the image
-        ctx?.drawImage(img, 0, 0, width, height);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'فشل في رفع الصورة');
+      }
 
-        // Convert to base64
-        const resizedImageUrl = canvas.toDataURL('image/jpeg', 0.8);
-        setQuestionForm({ ...questionForm, imageUrl: resizedImageUrl });
-        
-        toast({
-          title: "تم رفع الصورة بنجاح",
-          description: `تم تغيير الحجم إلى ${Math.round(width)}×${Math.round(height)} بكسل`
-        });
-      };
+      const result = await response.json();
+      
+      // Update form with the uploaded image URL
+      setQuestionForm({ ...questionForm, imageUrl: result.imageUrl });
+      
+      toast({
+        title: "تم رفع الصورة بنجاح",
+        description: `تم رفع الصورة (${(file.size / 1024).toFixed(1)} كيلوبايت) إلى Firebase Storage`,
+      });
 
-      img.src = URL.createObjectURL(file);
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Image upload error:', error);
       toast({
         title: "خطأ في رفع الصورة",
-        description: "حدث خطأ أثناء معالجة الصورة",
+        description: error.message || "حدث خطأ أثناء رفع الصورة",
         variant: "destructive"
       });
     }
@@ -1585,7 +1588,10 @@ export default function AdminDashboard() {
                                     <Button
                                       size="sm"
                                       variant="destructive"
-                                      onClick={() => deleteCategoryMutation.mutate(category.id)}
+                                      onClick={() => {
+                                        console.log('Deleting category with ID:', category.id, 'Type:', typeof category.id);
+                                        deleteCategoryMutation.mutate(category.id);
+                                      }}
                                     >
                                       <Trash2 className="w-4 h-4" />
                                     </Button>

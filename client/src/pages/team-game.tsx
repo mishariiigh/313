@@ -483,17 +483,17 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             {/* Main Question Panel (Left Side - 80% width) */}
             <div className="flex-1" style={{ flex: '0 0 80%' }}>
               {/* Question with Triangle Border Design */}
-              <div className="relative rounded-3xl p-6 h-full shadow-2xl overflow-hidden" style={{
-                background: '#f2ede3',
-                border: '3px solidrgb(201, 183, 184)',
+              <div className="relative rounded-3xl p-2 h-full shadow-2xl overflow-hidden" style={{
+                background: 'rgb(241, 11, 11)',
+                border: '3px solid rgb(222, 33, 0)',
                 boxShadow: '0 8px 32px rgba(229, 9, 20, 0.25)'
               }}>
                 
                 
                 {/* Inner Content Container */}
                 <div className="relative rounded-2xl p-4 h-full flex flex-col justify-between border-2 overflow-hidden" style={{
-                  background: '#1a1a1a',
-                  borderColor: '#990000'
+                  background: 'rgb(255, 245, 245)',
+                  borderColor: ' #990000'
                 }}>
                   {/* Category Header */}
                   <div className="text-white rounded-2xl px-4 py-2 mb-4 text-center shadow-lg" style={{
@@ -511,7 +511,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   {/* Question Title - Arabic, centered, bold */}
                   <div className="text-center mb-3">
                     <h1 className="text-2xl font-bold leading-relaxed" style={{
-                      color: '#f5f5f5',
+                      color: 'rgb(253, 0, 0)',
                       fontFamily: 'Cairo, Arial, sans-serif',
                       textShadow: '0 2px 4px rgba(188, 166, 166, 0.1)'
                     }}>

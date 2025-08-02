@@ -4,6 +4,7 @@ import session from "express-session";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
+import multer from "multer";
 import { storage } from "./firebase-storage";
 import { insertUserSchema, insertQuestionSchema, insertGameSessionSchema, insertCategorySchema, insertCouponSchema, insertGamePackageSchema } from "@shared/firebase-schema";
 import { z } from "zod";
@@ -12,6 +13,21 @@ import { verifyIdToken, createOrUpdateFirebaseUser } from "./firebase-auth";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_...", {
   apiVersion: "2024-06-20" as any,
+});
+
+// Configure multer for memory storage
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('يجب أن يكون الملف صورة'));
+    }
+  }
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -68,6 +84,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
       done(null, user);
     } catch (error) {
       done(error);
+    }
+  });
+
+  // File upload endpoint
+  app.post("/api/upload", upload.single('file'), async (req, res) => {
+    console.log('Upload endpoint called');
+    console.log('Is authenticated:', req.isAuthenticated());
+    console.log('File present:', !!req.file);
+    
+    try {
+      if (!req.isAuthenticated()) {
+        console.log('Authentication failed');
+        return res.status(401).json({ message: "غير مسجل الدخول" });
+      }
+
+      if (!req.file) {
+        console.log('No file uploaded');
+        return res.status(400).json({ message: "لم يتم رفع أي ملف" });
+      }
+
+      console.log('Processing file:', req.file.originalname, 'Size:', req.file.size, 'Type:', req.file.mimetype);
+
+      // For development purposes, we'll convert to base64 and store as data URL
+      // This avoids Firebase Storage authentication issues
+      const base64 = req.file.buffer.toString('base64');
+      const dataUrl = `data:${req.file.mimetype};base64,${base64}`;
+      
+      console.log(`Image uploaded successfully: ${req.file.originalname} (${req.file.size} bytes)`);
+
+      res.json({ 
+        message: "تم رفع الصورة بنجاح",
+        imageUrl: dataUrl,
+        filename: req.file.originalname
+      });
+
+    } catch (error: any) {
+      console.error('File upload error:', error);
+      res.status(500).json({ 
+        message: "حدث خطأ أثناء رفع الصورة: " + error.message 
+      });
     }
   });
 
@@ -1398,8 +1454,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       await storage.deleteCategory(req.params.id);
       res.json({ message: "تم حذف الفئة بنجاح" });
-    } catch (error) {
-      res.status(500).json({ message: "خطأ في حذف الفئة" });
+    } catch (error: any) {
+      console.error('Delete category error:', error);
+      res.status(500).json({ message: "خطأ في حذف الفئة: " + error.message });
     }
   });
 

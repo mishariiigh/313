@@ -7,16 +7,16 @@
 @layer base {
   :root {
     --background: hsl(0, 100%, 30%);
-    --foreground: hsl(0, 100%, 64%);
+    --foreground: hsl(0, 0%, 0%);
     --card: hsl(0, 0%, 12%);
     --card-foreground: hsl(0, 0%, 96%);
     --primary: hsl(355, 92%, 47%);
-    --primary-foreground: hsl(0, 100%, 50%);
+    --primary-foreground: hsl(0, 3%, 87%);
     --secondary: hsl(0, 0%, 12%);
     --muted: hsl(0, 100%, 30%);
     --muted-foreground: hsl(0, 0%, 97%);
     --accent: hsl(355, 92%, 47%);
-    --destructive: hsl(0, 84%, 60%);
+    --destructive: hsl(15, 100%, 50%);
     --border: hsl(0, 100%, 30%);
     --input: hsl(0, 0%, 12%);
     --ring: hsl(355, 92%, 47%);
@@ -40,7 +40,7 @@
     --muted: hsl(0, 0%, 20%);
     --accent: hsl(0, 79%, 40%);
     --destructive: hsl(0, 62%, 50%);
-    --border: hsl(0, 0%, 25%);
+    --border: hsl(73, 100%, 50%);
     --input: hsl(0, 0%, 20%);
     --ring: hsl(0, 79%, 50%);
   }

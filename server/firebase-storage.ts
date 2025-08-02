@@ -69,6 +69,8 @@ export interface IFirebaseStorage {
   getAllCategories(): Promise<Category[]>;
   createCategory(category: InsertCategory): Promise<Category>;
   updateCategory(id: string, updates: Partial<Category>): Promise<Category>;
+  deleteCategory(id: string): Promise<void>;
+
 
   // Coupon operations
   getAllCoupons(): Promise<Coupon[]>;
@@ -380,6 +382,23 @@ export class FirebaseStorage implements IFirebaseStorage {
     const categoryDoc = await getDoc(categoryRef);
     return { id: categoryDoc.id, ...categoryDoc.data() } as Category;
   }
+  async deleteCategory(id: string): Promise<void> {
+    try {
+      const categoryRef = doc(db, "categories", id);
+      
+      // Check if the category exists before deleting
+      const categoryDoc = await getDoc(categoryRef);
+      if (!categoryDoc.exists()) {
+        throw new Error(`الفئة بالمعرف ${id} غير موجودة`);
+      }
+      
+      await deleteDoc(categoryRef);
+    } catch (error: any) {
+      console.error('Firebase deleteCategory error:', error);
+      throw error;
+    }
+  }
+
 
   // Coupon operations
   async getAllCoupons(): Promise<Coupon[]> {
