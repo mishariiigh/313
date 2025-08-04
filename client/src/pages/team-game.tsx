@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -29,6 +28,12 @@ const CATEGORY_ICONS: { [key: string]: string } = {
   "sports": "🏅",
   "religion": "✨",
   "science": "🔬",
+  "arts": "🎨",
+  "nature": "🌿",
+  "technology": "💻",
+  "food": "🍽️",
+  "music": "🎵",
+  "medicine": "⚕️",
 };
 
 interface TeamGamePageProps {
@@ -55,7 +60,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  
+
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
   const [showHint, setShowHint] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
@@ -105,7 +110,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    
+
     if (isTimerActive && !isTimerPaused && timeLeft > 0 && !isTimeOut) {
       interval = setInterval(() => {
         setTimeLeft((prevTime) => {
@@ -323,7 +328,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
             <h1 className="text-4xl font-bold text-gray-800 mb-6">
               تهانينا! انتهت اللعبة
             </h1>
-            
+
             {winner && (
               <div className="mb-8">
                 <div className="text-2xl font-bold text-red-600 mb-4">
@@ -337,7 +342,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 </div>
               </div>
             )}
-            
+
             <div className="p-6 rounded-xl mb-8" style={{
               background: '#1e1e1e',
               border: '2px solid #990000'
@@ -354,7 +359,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 ))}
               </div>
             </div>
-            
+
             <Button
               onClick={() => setLocation("/dashboard")}
               className="bg-red-500 hover:bg-red-600 text-white text-lg py-4 px-8"
@@ -393,7 +398,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 <ArrowLeft className="ml-2 h-4 w-4" />
                 العودة للوحة
               </Button>
-              
+
               <Button
                 onClick={async () => {
                   if (window.confirm("هل أنت متأكد من إنهاء اللعبة؟")) {
@@ -457,7 +462,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 </span>
               </div>
             )}
-            
+
             {isTimeOut && (
               <div className="flex items-center gap-4">
                 <div className="flex items-center justify-center w-16 h-16 rounded-full text-2xl font-bold bg-red-800 text-white border-4 border-red-900">
@@ -479,12 +484,12 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
               <div className="relative rounded-3xl p-2 h-full shadow-2xl overflow-hidden" style={{
                 background: 'rgb(241, 11, 11)',
                 border: '3px solid rgb(222, 33, 0)',
-                boxShadow: '0 8px 32px rgba(229, 9, 20, 0.25)'
+                boxShadow: '0 10px 40px rgba(153, 9, 20, 0.3)'
               }}>
-                
-                
+
+
                 {/* Inner Content Container */}
-                <div className="relative rounded-2xl p-4 h-full flex flex-col justify-between border-2 overflow-hidden" style={{
+                <div className="relative rounded-2xl p-2 h-full flex flex-col justify-between border-1 overflow-hidden" style={{
                   background: 'rgb(255, 245, 245)',
                   borderColor: ' #990000'
                 }}>
@@ -511,23 +516,23 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       {selectedQuestion.question}
                     </h1>
                   </div>
-                  
+
                   {/* Question Image - Below question text */}
                   {selectedQuestion.imageUrl && (
-  <div className="flex justify-center mb-1 flex-1 min-h-0">
-    <div
-      className="rounded-3xl p-2 shadow-xl border-2 max-w-full w-full max-h-[450px] overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
-      style={{
-        background: 'linear-gradient(135deg, #333333 0%, #1e1e1e 100%)',
-        borderColor: '#990000'
-      }}
-      onClick={() => setImagePopupOpen(true)}
-    >
+                <div className="flex justify-center mb-1 flex-1 min-h-0">
+                  <div
+                    className="rounded-3xl p-2 shadow-xl  max-w-full w-full max-h-[450px] overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+                    style={{
+                      background: 'linear-gradient(135deg, #333333 0%, #1e1e1e 100%)',
+                      borderColor: '#990000'
+                    }}
+                    onClick={() => setImagePopupOpen(true)}
+              >
       <img
         src={selectedQuestion.imageUrl}
         alt="صورة السؤال"
-        className="w-full h-full object-contain rounded-2xl shadow-lg"
-      />
+        className="w-full h-full object-contain"
+        />
     </div>
   </div>
 )}
@@ -594,7 +599,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     ))}
                   </div>
                 </div>
-                
+
 
                 {/* Hint Option - Red Button */}
                 <div className="space-y-3 mb-4">
@@ -602,7 +607,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     const currentQuestionKey = getCurrentQuestionKey();
                     const isHintUsed = currentQuestionKey && gameSession.usedHints?.includes(currentQuestionKey);
                     const currentTeamHintUsed = gameSession.teamHintsUsed?.[gameSession.currentTurn];
-                    
+
                     return (
                       <Button
                         onClick={() => {
@@ -676,10 +681,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 }}>
                   <h3 className="font-bold text-md">💡 تلميح</h3>
                 </div>
-                <p className="text-md font-medium leading-relaxed" style={{
-                  fontFamily: 'Cairo, Arial, sans-serif',
-                  color: '#f5f5f5'
-                }}>{selectedQuestion.hint}</p>
+                <p className="text-white text-lg leading-relaxed">{selectedQuestion.hint}</p>
               </div>
             </div>
           </div>
@@ -693,7 +695,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
               className="absolute inset-0 bg-black/80 backdrop-blur-sm"
               onClick={() => setImagePopupOpen(false)}
             />
-            
+
             {/* Modal Content - Full Size Image */}
             <div className="relative max-w-[90vw] max-h-[90vh] p-4">
               <div className="relative rounded-3xl shadow-2xl overflow-hidden" style={{
@@ -714,7 +716,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
-                
+
                 {/* Full Size Image */}
                 <img 
                   src={selectedQuestion.imageUrl} 
@@ -741,7 +743,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(123, 0, 0, 0.8) 100%)'
               }}
             />
-            
+
             {/* Modal Content - Creative Card Design */}
 <div className="relative max-w-2xl w-full h-[85vh] flex flex-col" dir="rtl">
               {/* Main Card Container */}
@@ -750,7 +752,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 border: '4px solid #e50914',
                 boxShadow: '0 25px 50px rgba(229, 9, 20, 0.4), 0 0 0 1px rgba(229, 9, 20, 0.2)'
               }}>
-                
+
                 {/* Top Header with Close Button */}
                 <div className="relative p-2 text-center flex-shrink-0" style={{
                   background: 'linear-gradient(135deg, #e50914 0%, #990000 50%, #e50914 100%)'
@@ -768,7 +770,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
-                  
+
                   {/* Header Content */}
                   <div className="text-white">
                     <div className="text-2xl">🎯</div>
@@ -798,7 +800,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       {selectedQuestion.answer}
                     </p>
                   </div>
-                  
+
                   {selectedQuestion.explanation && (
                     <div className="mb-2 p-2 rounded-xl" style={{
                       background: 'linear-gradient(135deg, #333333 0%, #1e1e1e 100%)',
@@ -816,6 +818,25 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       </p>
                     </div>
                   )}
+                      {/* Video Display */}
+                      {selectedQuestion.videoUrl && (
+                        <div className="mt-4">
+                          <div className="text-center mb-3">
+                            <span className="inline-block bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">
+                              🎥 فيديو توضيحي
+                            </span>
+                          </div>
+                          <video
+                            src={selectedQuestion.videoUrl}
+                            controls
+                            className="max-w-full h-auto max-h-60 mx-auto rounded-lg shadow-lg"
+                            preload="metadata"
+                            controlsList="nodownload"
+                          >
+                            المتصفح الخاص بك لا يدعم تشغيل الفيديو.
+                          </video>
+                        </div>
+                      )}
                 </div>
 
                 {/* Team Selection Section */}
@@ -827,7 +848,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                         const idx = parseInt(questionKey.split('-')[1]);
                         return idx < 2 ? 200 : idx < 4 ? 400 : 600;
                       })() : getPointsForDifficulty(selectedQuestion.difficulty);
-                      
+
                       return (
                         <button
                           key={index}
@@ -885,7 +906,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       <span className="text-xs">لم يجب أي فريق بشكل صحيح</span>
                     </div>
                   </button>
-                  
+
                   <button
                     onClick={() => setShowAnswer(false)}
                     className="w-full p-1 rounded-xl transition-all duration-300 hover:scale-105 transform font-bold border-2"
@@ -962,7 +983,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
               </Button>
             </div>
           </div>
-          
+
           {/* Team Scores */}
           <div className="flex gap-4">
             {gameSession.teams.map((team: string, index: number) => (
@@ -1027,7 +1048,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                   borderColor: '#990000',
                   boxShadow: '0 8px 32px rgba(229, 9, 20, 0.3)'
                 }}>
-                  
+
                   <div className="flex items-center justify-center gap-2">
                     {/* Left Column - Stacked Buttons with no gaps */}
                     <div className="flex flex-col">
@@ -1051,7 +1072,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-0`) ? "✓" : "200"}
                       </button>
-                      
+
                       {/* Left 400 Button */}
                       <button
                         onClick={() => handleQuestionClick(category.name, 2)}
@@ -1072,7 +1093,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-2`) ? "✓" : "400"}
                       </button>
-                      
+
                       {/* Left 600 Button */}
                       <button
                         onClick={() => handleQuestionClick(category.name, 4)}
@@ -1118,7 +1139,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                           </div>
                         )}
                       </div>
-                      
+
                       {/* Category Name - Full width bottom bar */}
                       <div className="w-40 text-white py-3 px-3 rounded-b-3xl text-center" style={{
                         background: 'linear-gradient(135deg, #e50914 0%, #990000 100%)'
@@ -1151,7 +1172,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-1`) ? "✓" : "200"}
                       </button>
-                      
+
                       {/* Right 400 Button */}
                       <button
                         onClick={() => handleQuestionClick(category.name, 3)}
@@ -1172,7 +1193,7 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                       >
                         {gameSession.usedQuestions?.includes(`${category.name}-3`) ? "✓" : "400"}
                       </button>
-                      
+
                       {/* Right 600 Button */}
                       <button
                         onClick={() => handleQuestionClick(category.name, 5)}

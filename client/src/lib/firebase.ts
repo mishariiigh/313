@@ -1,26 +1,21 @@
+
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult } from "firebase/auth";
-import { clientConfig } from "./config";
 
-// Validate Firebase configuration
-if (!clientConfig.firebase.apiKey || !clientConfig.firebase.projectId || !clientConfig.firebase.appId) {
-  throw new Error(
-    "Missing required Firebase environment variables. Please check your .env file and ensure you have:\n" +
-    "- VITE_FIREBASE_API_KEY\n" +
-    "- VITE_FIREBASE_PROJECT_ID\n" +
-    "- VITE_FIREBASE_APP_ID"
-  );
-}
-
-// Firebase configuration from environment variables
+// Firebase configuration - using environment variables
 const firebaseConfig = {
-  apiKey: clientConfig.firebase.apiKey,
-  authDomain: clientConfig.firebase.authDomain,
-  projectId: clientConfig.firebase.projectId,
-  storageBucket: clientConfig.firebase.storageBucket,
-  appId: clientConfig.firebase.appId,
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
+
+
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

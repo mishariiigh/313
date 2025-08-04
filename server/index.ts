@@ -10,12 +10,7 @@ config();
 // Then import config after env vars are loaded
 import { config as appConfig } from "@shared/config";
 
-// Validate configuration
-console.log("🔧 Validating environment configuration...");
-const isValid = appConfig.validate();
-if (!isValid) {
-  console.warn("⚠️  Some environment variables are missing. Check your .env file.");
-}
+console.log("🔧 Starting application...");
 
 const app = express();
 app.use(express.json({ limit: '50mb' }));
@@ -83,8 +78,8 @@ app.use((req, res, next) => {
   // Default to 5000 if not specified.
   const port = parseInt(process.env.PORT || '5000', 10);
   
-  // Use localhost for macOS compatibility instead of 0.0.0.0
-  const host = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost';
+  // Use 0.0.0.0 for Replit compatibility
+  const host = '0.0.0.0';
   
   server.listen({
     port,

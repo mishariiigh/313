@@ -122,7 +122,8 @@ export default function Dashboard() {
       {/* Creative Header */}
       <header className="relative overflow-hidden">
         {/* Gradient Background */}
-        <div className="absolute inset-0 bg-gaming-darkgrey border-b-2 border-gaming-mutedred"></div>
+        <div className="absolute inset-0 bg-gaming-darkgrey border-b-2 border-gaming-mutedred">
+        </div>
         
         {/* Decorative Elements */}
         <div className="absolute top-0 left-0 w-full h-full">

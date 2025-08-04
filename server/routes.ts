@@ -6,7 +6,7 @@ import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
 import multer from "multer";
 import { storage } from "./firebase-storage";
-import { insertUserSchema, insertQuestionSchema, insertCategorySchema, insertCouponSchema, insertGamePackageSchema } from "@shared/firebase-schema";
+import { insertUserSchema, insertQuestionSchema, insertCategorySchema, insertCouponSchema, insertGamePackageSchema, type InsertUser } from "@shared/firebase-schema";
 import { z } from "zod";
 import Stripe from "stripe";
 import { verifyIdToken, createOrUpdateFirebaseUser } from "./firebase-auth";
@@ -19,13 +19,13 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_...", {
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB limit
+    fileSize: 50 * 1024 * 1024, // 50MB limit for videos
   },
   fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
+    if (file.mimetype.startsWith('image/') || file.mimetype.startsWith('video/')) {
       cb(null, true);
     } else {
-      cb(new Error('يجب أن يكون الملف صورة'));
+      cb(new Error('يجب أن يكون الملف صورة أو فيديو'));
     }
   }
 });
@@ -87,30 +87,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // File upload endpoint
+  // File upload route
   app.post("/api/upload", upload.single('file'), async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+
+    const user = req.user as any;
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "غير مصرح بالوصول" });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ message: "لم يتم رفع أي ملف" });
+    }
+
+    const fileType = req.body.type || 'image';
+
+    // Validate file type
+    if (fileType === 'video' && !req.file.mimetype.startsWith('video/')) {
+      return res.status(400).json({ message: "نوع الملف غير صحيح. يجب أن يكون فيديو" });
+    }
+
+    if (fileType === 'image' && !req.file.mimetype.startsWith('image/')) {
+      return res.status(400).json({ message: "نوع الملف غير صحيح. يجب أن تكون صورة" });
+    }
+
+    // File size validation
+    const maxSizeImage = 10 * 1024 * 1024; // 10MB for images
+    const maxSizeVideo = 50 * 1024 * 1024; // 50MB for videos
+
+    if (fileType === 'image' && req.file.size > maxSizeImage) {
+      return res.status(400).json({ message: "حجم الصورة كبير جداً. الحد الأقصى 10 ميجابايت" });
+    }
+
+    if (fileType === 'video' && req.file.size > maxSizeVideo) {
+      return res.status(400).json({ message: "حجم الفيديو كبير جداً. الحد الأقصى 50 ميجابايت" });
+    }
+
     try {
-      if (!req.isAuthenticated()) {
-        return res.status(401).json({ message: "غير مسجل الدخول" });
-      }
+      const { getStorage, ref, uploadBytes, getDownloadURL } = await import("firebase/storage");
+      const storage = getStorage();
 
-      if (!req.file) {
-        return res.status(400).json({ message: "لم يتم رفع أي ملف" });
-      }
+      // Generate unique filename
+      const timestamp = Date.now();
+      const randomId = Math.random().toString(36).substring(2);
+      const fileExtension = req.file.originalname.split('.').pop();
+      const folder = fileType === 'video' ? 'videos' : 'images';
+      const fileName = `${folder}/${timestamp}_${randomId}.${fileExtension}`;
 
-      const base64 = req.file.buffer.toString('base64');
-      const dataUrl = `data:${req.file.mimetype};base64,${base64}`;
+      const storageRef = ref(storage, fileName);
 
-      res.json({ 
-        message: "تم رفع الصورة بنجاح",
-        imageUrl: dataUrl,
-        filename: req.file.originalname
-      });
+      // Upload file to Firebase Storage
+      const snapshot = await uploadBytes(storageRef, req.file.buffer);
+      const downloadURL = await getDownloadURL(snapshot.ref);
 
-    } catch (error: any) {
-      res.status(500).json({ 
-        message: "حدث خطأ أثناء رفع الصورة: " + error.message 
-      });
+      res.json({ url: downloadURL, type: fileType });
+    } catch (error) {
+      console.error('Upload error:', error);
+      res.status(500).json({ message: "خطأ في رفع الملف" });
     }
   });
 
@@ -118,7 +153,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/register", async (req, res) => {
     try {
       const { email, password, name, phoneNumber } = insertUserSchema.parse(req.body);
-      
+
       // Check if user already exists with email
       const existingUserByEmail = await storage.getUserByEmail(email);
       if (existingUserByEmail) {
@@ -133,7 +168,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Hash password
       const hashedPassword = await bcrypt.hash(password, 10);
-      
+
       // Create user with 2 free games
       const user = await storage.createUser({
         email,
@@ -192,17 +227,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/google", async (req, res) => {
     try {
       const { idToken } = req.body;
-      
+
       if (!idToken) {
         return res.status(400).json({ message: "معرف التوكن مطلوب" });
       }
 
       // Verify the Google ID token
       const decodedToken = await verifyIdToken(idToken);
-      
+
       // Create or update user in our database
       const user = await createOrUpdateFirebaseUser(decodedToken);
-      
+
       // Create session for the user
       req.login(user, (err) => {
         if (err) {
@@ -217,7 +252,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  
+
 
   // Game routes
   app.post("/api/games/start", async (req, res) => {
@@ -227,7 +262,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     const user = req.user as any;
     const { gameType = "single", teams = [], selectedCategories = [] } = req.body;
-    
+
     if (user.availableGames <= 0) {
       return res.status(400).json({ message: "لا توجد ألعاب متاحة" });
     }
@@ -238,20 +273,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Get all active categories from database
         const allCategories = await storage.getAllCategories();
         const activeCategories = allCategories.filter(cat => cat.isActive);
-        
+
         // Validate that categories are provided
         if (!selectedCategories || selectedCategories.length === 0) {
           return res.status(400).json({ message: "يجب اختيار الفئات المطلوبة" });
         }
-        
+
         // Use the provided selectedCategories
         const requiredCategoriesCount = Math.min(6, activeCategories.length);
-        
+
         // Validate that the required number of categories are selected
         if (selectedCategories.length !== requiredCategoriesCount) {
           return res.status(400).json({ message: `يجب اختيار ${requiredCategoriesCount} فئات` });
         }
-        
+
         // Validate that provided categories exist in the database
         const validCategoryNames = activeCategories.map(cat => cat.name);
         const invalidCategories = selectedCategories.filter(cat => !validCategoryNames.includes(cat));
@@ -265,39 +300,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
 
         const questionsByCategory: { [key: string]: any[] } = {};
-        
+
         // Get 6 questions for each selected category
         for (const category of selectedCategories) {
           // Find the category in the database to get its display name
           const dbCategory = activeCategories.find(cat => cat.name === category);
           const categoryDisplayName = dbCategory ? dbCategory.displayName : category;
-          
+
           // Try to get questions by both English name and Arabic display name
           let categoryQuestions = await storage.getQuestionsByCategory(category, 6);
           if (categoryQuestions.length < 6) {
             categoryQuestions = await storage.getQuestionsByCategory(categoryDisplayName, 6);
           }
-          
+
           if (categoryQuestions.length < 6) {
             console.log(`Only ${categoryQuestions.length} questions available for ${category}/${categoryDisplayName}, need 6`);
             return res.status(400).json({ message: `لا توجد أسئلة كافية في فئة ${categoryDisplayName}` });
           }
-          
+
           // Ensure questions are properly ordered by difficulty for consistent scoring
           const orderedQuestions = categoryQuestions.sort((a, b) => {
             const difficultyOrder = { 'سهل': 1, 'متوسط': 2, 'صعب': 3 };
             return (difficultyOrder[a.difficulty] || 4) - (difficultyOrder[b.difficulty] || 4);
           });
-          
+
           questionsByCategory[category] = orderedQuestions;
         }
-        
+
         // Organize questions in the order they appear on the board
         const organizedQuestions = [];
         for (const category of selectedCategories) {
           organizedQuestions.push(...questionsByCategory[category]);
         }
-        
+
         // Create game session with organized questions
         const gameSession = await storage.createGameSession({
           userId: user.id,
@@ -307,8 +342,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           isCompleted: false,
           gameType,
           teams: gameType === "team" ? teams : [],
-          teamScores: gameType === "team" ? teams.map(() => 0) : [],
-          teamHintsUsed: gameType === "team" ? teams.map(() => false) : [],
+          teamScores: teams.map(() => 0),
+          teamHintsUsed: teams.map(() => false),
           currentTurn: 0,
           usedQuestions: [],
           selectedCategories: gameType === "team" ? selectedCategories : [],
@@ -332,7 +367,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
         return;
       }
-      
+
       // For single games, get random questions
       const questions = await storage.getRandomQuestions(36);
       if (questions.length < 36) {
@@ -349,8 +384,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         isCompleted: false,
         gameType,
         teams: gameType === "team" ? teams : [],
-        teamScores: gameType === "team" ? teams.map(() => 0) : [],
-        teamHintsUsed: gameType === "team" ? teams.map(() => false) : [],
+        teamScores: teams.map(() => 0),
+        teamHintsUsed: teams.map(() => false),
         currentTurn: 0,
         usedQuestions: [],
       });
@@ -402,7 +437,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const gameSessions = await storage.getUserGameSessions(user.id);
       const activeSessions = gameSessions.filter(session => !session.isCompleted);
       const activeSession = activeSessions.length > 0 ? activeSessions[0] : null;
-      
+
       res.json({ activeSession: activeSession || null });
     } catch (error: any) {
       console.error("Active games error:", error);
@@ -440,9 +475,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
             }
           })
         );
-        
+
         const validQuestions = questions.filter(q => q !== null);
-        
+
         return res.json({
           gameSession: {
             id: gameSession.id,
@@ -555,22 +590,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const { teamIndex, questionKey } = req.body;
-      
+
       // Calculate points based on question difficulty
       const [, questionIndex] = questionKey.split('-');
       const index = parseInt(questionIndex);
       const points = index < 2 ? 200 : index < 4 ? 400 : 600;
-      
+
       // Update team score
       const newTeamScores = [...gameSession.teamScores];
       newTeamScores[teamIndex] = (newTeamScores[teamIndex] || 0) + points;
-      
+
       // Mark question as used
       const newUsedQuestions = [...(gameSession.usedQuestions || []), questionKey];
-      
+
       // Move to next team's turn
       const newCurrentTurn = (gameSession.currentTurn + 1) % gameSession.teams.length;
-      
+
       await storage.updateGameSession(gameSession.id, {
         teamScores: newTeamScores,
         usedQuestions: newUsedQuestions,
@@ -600,13 +635,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const { questionKey } = req.body;
-      
+
       // Mark question as used (without scoring)
       const newUsedQuestions = [...(gameSession.usedQuestions || []), questionKey];
-      
+
       // Move to next team's turn
       const newCurrentTurn = (gameSession.currentTurn + 1) % gameSession.teams.length;
-      
+
       await storage.updateGameSession(gameSession.id, {
         usedQuestions: newUsedQuestions,
         currentTurn: newCurrentTurn,
@@ -636,21 +671,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const { questionKey, teamIndex } = req.body;
-      
+
       // For team games, check if this team has already used their hint
       if (gameSession.gameType === "team") {
         const teamHintsUsed = gameSession.teamHintsUsed || [];
         if (teamHintsUsed[teamIndex]) {
           return res.status(400).json({ message: "هذا الفريق استخدم التلميح بالفعل" });
         }
-        
+
         // Mark this team as having used their hint
         const newTeamHintsUsed = [...teamHintsUsed];
         newTeamHintsUsed[teamIndex] = true;
-        
+
         // Also track the question for display purposes
         const newUsedHints = [...(gameSession.usedHints || []), questionKey];
-        
+
         await storage.updateGameSession(gameSession.id, {
           usedHints: newUsedHints,
           teamHintsUsed: newTeamHintsUsed,
@@ -660,10 +695,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (gameSession.usedHints?.includes(questionKey)) {
           return res.status(400).json({ message: "تم استخدام التلميح لهذا السؤال من قبل" });
         }
-        
+
         // Mark hint as used
         const newUsedHints = [...(gameSession.usedHints || []), questionKey];
-        
+
         await storage.updateGameSession(gameSession.id, {
           usedHints: newUsedHints,
         });
@@ -695,7 +730,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Switch to next team's turn
       const newCurrentTurn = (gameSession.currentTurn + 1) % gameSession.teams.length;
-      
+
       await storage.updateGameSession(gameSession.id, {
         currentTurn: newCurrentTurn,
       });
@@ -724,16 +759,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const { teamIndex, scoreChange } = req.body;
-      
+
       // Validate team index
       if (teamIndex < 0 || teamIndex >= gameSession.teams.length) {
         return res.status(400).json({ message: "رقم الفريق غير صحيح" });
       }
-      
+
       // Update team score
       const newTeamScores = [...gameSession.teamScores];
       newTeamScores[teamIndex] = Math.max(0, (newTeamScores[teamIndex] || 0) + scoreChange);
-      
+
       await storage.updateGameSession(gameSession.id, {
         teamScores: newTeamScores,
       });
@@ -804,7 +839,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  
+
 
   // Simple add games route for testing (bypasses payment)
   app.post("/api/add-games", async (req, res) => {
@@ -815,10 +850,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { gameCount } = req.body;
       const user = req.user as any;
-      
+
       // Add games to user account
       await storage.updateUserGames(user.id, user.availableGames + gameCount);
-      
+
       res.json({ success: true, message: "تم إضافة الألعاب بنجاح" });
     } catch (error: any) {
       console.error("Add games error:", error);
@@ -835,19 +870,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { gameCount, couponCode } = req.body;
       const user = req.user as any;
-      
+
       // Get game package pricing
       const gamePackages = await storage.getActiveGamePackages();
       const gamePackage = gamePackages.find(pkg => pkg.gameCount === gameCount);
-      
+
       if (!gamePackage) {
         return res.status(400).json({ message: "باقة الألعاب غير موجودة" });
       }
-      
+
       let amount = gamePackage.price;
       let discountAmount = 0;
       let validCoupon = null;
-      
+
       // Apply coupon if provided
       if (couponCode) {
         const coupon = await storage.getCouponByCode(couponCode);
@@ -855,7 +890,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const now = new Date();
           const isNotExpired = !coupon.expiresAt || now <= new Date(coupon.expiresAt);
           const hasUsageLeft = !coupon.maxUsage || coupon.usageCount < coupon.maxUsage;
-          
+
           if (isNotExpired && hasUsageLeft) {
             validCoupon = coupon;
             if (coupon.discountType === 'percentage') {
@@ -867,16 +902,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
       }
-      
+
       // Convert to Stripe format (cents)
       const stripeAmount = Math.round(amount * 100);
-      
+
       // Create payment intent with Stripe (only if valid key exists)
       if (process.env.STRIPE_SECRET_KEY && process.env.STRIPE_SECRET_KEY.startsWith('sk_')) {
         try {
           const Stripe = require('stripe');
           const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-          
+
           const paymentIntent = await stripe.paymentIntents.create({
             amount: stripeAmount,
             currency: 'kwd',
@@ -888,7 +923,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               couponCode: couponCode || ''
             }
           });
-          
+
           res.json({ 
             clientSecret: paymentIntent.client_secret,
             amount: amount,
@@ -927,15 +962,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { paymentIntentId, gameCount, amount, couponCode, discountAmount } = req.body;
       const user = req.user as any;
-      
+
       console.log("Payment confirmation request:", { paymentIntentId, gameCount, amount, couponCode, discountAmount });
-      
+
       // For real Stripe payments (skip validation for mock payments)
       if (!paymentIntentId.startsWith('pi_mock_')) {
         if (!process.env.STRIPE_SECRET_KEY) {
           return res.status(400).json({ message: "خدمة الدفع غير متوفرة حاليا" });
         }
-        
+
         try {
           const Stripe = require('stripe');
           const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -949,7 +984,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return res.status(400).json({ message: "خطأ في التحقق من الدفع" });
         }
       }
-      
+
       // Create purchase record (Firebase doesn't allow undefined values)
       const purchaseData: any = {
         userId: user.id,
@@ -957,16 +992,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         amount: parseFloat(amount),
         stripePaymentIntentId: paymentIntentId,
       };
-      
+
       // Only add optional fields if they have actual values
       if (couponCode && couponCode !== 'undefined' && couponCode.trim() !== '') {
         purchaseData.couponCode = couponCode;
       }
-      
+
       if (discountAmount && discountAmount !== 'undefined' && discountAmount !== '0') {
         purchaseData.discountAmount = parseFloat(discountAmount);
       }
-      
+
       console.log("Creating purchase with data:", purchaseData);
       await storage.createPurchase(purchaseData);
 
@@ -980,7 +1015,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // INCREASE USER'S AVAILABLE GAMES - This is the key functionality
       const updatedUser = await storage.updateUserGames(user.id, user.availableGames + parseInt(gameCount));
-      
+
       res.json({ 
         success: true, 
         availableGames: updatedUser.availableGames,
@@ -1060,7 +1095,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     try {
       const questionData = insertQuestionSchema.parse(req.body);
-      
+
       // Check if category/difficulty combination has reached the limit (2 questions max)
       const existingQuestions = await storage.getQuestions(questionData.category, questionData.difficulty);
       if (existingQuestions.length >= 2) {
@@ -1068,14 +1103,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           message: `تم الوصول للحد الأقصى من الأسئلة لهذه الفئة والصعوبة (2/2). لا يمكن إضافة المزيد من الأسئلة.` 
         });
       }
-      
+
       // Validate that hint is provided
       if (!questionData.hint || questionData.hint.trim() === '') {
         return res.status(400).json({ 
           message: "التلميح مطلوب لكل سؤال" 
         });
       }
-      
+
       const question = await storage.createQuestion(questionData);
       res.json({ question });
     } catch (error: any) {
@@ -1174,15 +1209,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const configQuestions = loadQuestions();
       let created = 0;
       let skipped = 0;
-      
+
       console.log(`Loading ${configQuestions.length} questions from config...`);
-      
+
       for (const question of configQuestions) {
         try {
           // Check if question already exists
           const existingQuestions = await storage.getQuestionsByCategory(question.category);
           const exists = existingQuestions.some(q => q.question === question.question);
-          
+
           if (!exists) {
             await storage.createQuestion({
               ...question,
@@ -1197,7 +1232,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.log('Error creating question:', error.message);
         }
       }
-      
+
       res.json({ 
         message: `تم إضافة ${created} سؤال جديد وتخطي ${skipped} سؤال موجود مسبقاً`,
         totalInConfig: configQuestions.length,
@@ -1367,7 +1402,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { code } = req.body;
       const coupon = await storage.getCouponByCode(code);
-      
+
       if (!coupon) {
         return res.status(404).json({ message: "كوبون غير صحيح" });
       }
@@ -1513,7 +1548,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     try {
       const { email, phoneNumber, name, password, availableGames = 0, isAdmin = false } = req.body;
-      
+
       // Check if user already exists with email
       const existingUserByEmail = await storage.getUserByEmail(email);
       if (existingUserByEmail) {
@@ -1530,7 +1565,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Hash password
       const hashedPassword = await bcrypt.hash(password, 10);
-      
+
       const userData = insertUserSchema.parse({
         email,
         phoneNumber: phoneNumber || '',
@@ -1539,7 +1574,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         availableGames,
         isAdmin
       });
-      
+
       const newUser = await storage.createUser(userData);
       res.json({ user: newUser });
     } catch (error: any) {
@@ -1560,7 +1595,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.params.id; // Use string ID for Firebase
       const { email, phoneNumber, name, password, availableGames, isAdmin } = req.body;
-      
+
       // Don't allow admin to modify their own admin status
       if (userId === user.id && isAdmin !== undefined) {
         return res.status(400).json({ message: "لا يمكن تعديل صلاحيات المدير الخاص بك" });
@@ -1575,18 +1610,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const updates: Partial<InsertUser> = {};
-      
+
       if (email !== undefined) updates.email = email;
       if (phoneNumber !== undefined) updates.phoneNumber = phoneNumber;
       if (name !== undefined) updates.name = name;
       if (availableGames !== undefined) updates.availableGames = availableGames;
       if (isAdmin !== undefined) updates.isAdmin = isAdmin;
-      
+
       // Hash password if provided
       if (password && password.trim() !== "") {
         updates.password = await bcrypt.hash(password, 10);
       }
-      
+
       const updatedUser = await storage.updateUser(userId, updates);
       res.json({ user: updatedUser });
     } catch (error: any) {
@@ -1606,7 +1641,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     try {
       const userId = req.params.id; // Use string ID for Firebase
-      
+
       // Don't allow admin to delete themselves
       if (userId === user.id) {
         return res.status(400).json({ message: "لا يمكن حذف حسابك الخاص" });

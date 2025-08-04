@@ -158,13 +158,18 @@ export default function GameSetupPage() {
   };
 
   return (
+    
     <div className="min-h-screen page-transition">
       {/* Header */}
       <header className="p-6 mb-6" style={{
         background: 'linear-gradient(135deg, hsl(0, 1.90%, 10.40%) 0%, hsl(0, 3.00%, 19.80%) 100%)',
-        borderBottom: '3px solid hsl(0, 15.20%, 93.50%)',
+        borderBottom: '3px solid hsl(0, 93.40%, 29.80%)',
         boxShadow: '0 4px 20px hsla(0, 87.50%, 3.10%, 4.30)'
+        
       }}>
+
+
+
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-4">
             <Logo size="medium" />
@@ -184,6 +189,7 @@ export default function GameSetupPage() {
             </div>
           </div>
         </div>
+        
       </header>
 
       {/* Main Content */}

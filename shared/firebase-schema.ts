@@ -27,6 +27,7 @@ export const questionSchema = z.object({
   hint: z.string(),
   explanation: z.string().optional(),
   imageUrl: z.string().optional(),
+  videoUrl: z.string().optional(),
   isPublished: z.boolean().default(false),
   createdAt: z.any(), // Firebase Timestamp
 });

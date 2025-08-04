@@ -1,3 +1,4 @@
+
 // Client-side configuration management
 export const clientConfig = {
   // Firebase configuration from environment variables
@@ -5,8 +6,11 @@ export const clientConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
     appId: import.meta.env.VITE_FIREBASE_APP_ID,
-    authDomain: import.meta.env.VITE_FIREBASE_PROJECT_ID ? `${import.meta.env.VITE_FIREBASE_PROJECT_ID}.firebaseapp.com` : undefined,
-    storageBucket: import.meta.env.VITE_FIREBASE_PROJECT_ID ? `${import.meta.env.VITE_FIREBASE_PROJECT_ID}.firebasestorage.app` : undefined,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
   },
 
   // Stripe configuration from environment variables
@@ -48,22 +52,4 @@ export const clientConfig = {
     analytics: true
   },
 
-  // Validation
-  validate() {
-    const missingVars: string[] = [];
-
-    if (!this.firebase.apiKey) missingVars.push('VITE_FIREBASE_API_KEY');
-    if (!this.firebase.projectId) missingVars.push('VITE_FIREBASE_PROJECT_ID');
-    if (!this.firebase.appId) missingVars.push('VITE_FIREBASE_APP_ID');
-
-    if (missingVars.length > 0) {
-      console.warn('Missing environment variables:', missingVars.join(', '));
-      console.warn('Some features may not work properly. Check your .env file.');
-    }
-
-    return missingVars.length === 0;
-  }
-};
-
-// Initialize validation on import
-clientConfig.validate();
+  };

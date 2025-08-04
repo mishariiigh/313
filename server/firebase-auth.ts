@@ -1,51 +1,57 @@
-// Import the shared Firebase instance to avoid duplicate app error
-import app, { auth, db } from "./firebase";
 
-// For now, we'll use a simplified approach without admin SDK
+import { storage } from "./firebase-storage";
+
+// Simplified token verification for development
 export const verifyIdToken = async (idToken: string) => {
   try {
-    // This is a simplified verification - in production you'd use Firebase Admin SDK
-    // For now, we'll decode the token payload (this is NOT secure for production)
-    const payload = JSON.parse(atob(idToken.split('.')[1]));
-    return payload;
+    // In a real production app, you'd use Firebase Admin SDK here
+    // For development, we'll decode the JWT payload
+    const base64Url = idToken.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    const payload = JSON.parse(jsonPayload);
+    
+    // Basic validation
+    if (!payload.email || !payload.sub) {
+      throw new Error('Invalid token payload');
+    }
+
+    return {
+      uid: payload.sub,
+      email: payload.email,
+      name: payload.name || payload.email.split('@')[0],
+      picture: payload.picture,
+      email_verified: payload.email_verified || false
+    };
   } catch (error) {
     console.error('Error verifying ID token:', error);
-    throw error;
+    throw new Error('Invalid ID token');
   }
 };
 
-// Create or update user in our database using Firebase storage
-export const createOrUpdateFirebaseUser = async (firebaseUser: any) => {
+export const createOrUpdateFirebaseUser = async (decodedToken: any) => {
   try {
-    const { uid, email, name, picture, phoneNumber } = firebaseUser;
+    // Check if user exists
+    let user = await storage.getUserByEmail(decodedToken.email);
     
-    // Import storage here to avoid circular dependency
-    const { storage } = await import('./firebase-storage');
-    
-    // Check if user exists in our database
-    const existingUser = await storage.getUser(uid);
-    
-    if (!existingUser) {
-      // Create new user - Google users might not have phone numbers
+    if (user) {
+      // Update existing user
+      return user;
+    } else {
+      // Create new user
       const newUser = await storage.createUser({
-        email: email || '',
-        phoneNumber: phoneNumber || '', // Phone number might be empty for Google auth
-        name: name || email?.split('@')[0] || 'مستخدم',
+        email: decodedToken.email,
+        name: decodedToken.name || decodedToken.email.split('@')[0],
+        phoneNumber: '', // Google auth doesn't provide phone number
         password: '', // No password for Google auth users
-        availableGames: 2, // Give new users 2 free games
-        isAdmin: false,
+        availableGames: 2, // Give 2 free games to new users
+        isAdmin: false
       });
       
       return newUser;
-    } else {
-      // Update existing user
-      const updatedUser = await storage.updateUser(uid, {
-        email: email || existingUser.email,
-        name: name || existingUser.name,
-        phoneNumber: phoneNumber || existingUser.phoneNumber,
-      });
-      
-      return updatedUser;
     }
   } catch (error) {
     console.error('Error creating/updating Firebase user:', error);

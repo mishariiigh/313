@@ -21,12 +21,12 @@ export default function AdminDashboard() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("analytics");
-  
+
   // Helper function to format currency in KWD
   const formatKWD = (amountInCents: number) => {
     return `${(amountInCents / 1000).toFixed(3)} د.ك`;
   };
-  
+
   // Search and filter states
   const [questionSearch, setQuestionSearch] = useState("");
   const [categorySearch, setCategorySearch] = useState("");
@@ -44,17 +44,16 @@ export default function AdminDashboard() {
     hint: "",
     explanation: "",
     imageUrl: "",
+    videoUrl: "",
   });
-  const [bulkQuestionMode, setBulkQuestionMode] = useState(false);
-  const [bulkQuestions, setBulkQuestions] = useState([
-    { question: "", answer: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" },
-  ]);
+
   const [categoryForm, setCategoryForm] = useState({
     name: "",
     displayName: "",
     description: "",
     logoUrl: "",
   });
+
   const [couponForm, setCouponForm] = useState({
     code: "",
     discountType: "percentage",
@@ -62,9 +61,10 @@ export default function AdminDashboard() {
     maxUsage: "",
     expiresAt: "",
   });
+
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
-  const [editingCoupon, setEditingCoupon] = useState<Coupon | null>(null);
+
   const [gamePackageForm, setGamePackageForm] = useState({
     name: "",
     description: "",
@@ -74,6 +74,7 @@ export default function AdminDashboard() {
     isActive: true,
   });
   const [editingGamePackage, setEditingGamePackage] = useState<GamePackage | null>(null);
+
   const [userForm, setUserForm] = useState({
     email: "",
     phoneNumber: "",
@@ -123,39 +124,11 @@ export default function AdminDashboard() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/questions"] });
-      setQuestionForm({ question: "", answer: "", category: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" });
+      setQuestionForm({ question: "", answer: "", category: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "", videoUrl: "" });
       toast({ title: "تم إنشاء السؤال بنجاح" });
     },
     onError: (error: any) => {
       toast({ title: "خطأ في إنشاء السؤال", description: error.message, variant: "destructive" });
-    },
-  });
-
-  const createBulkQuestionsMutation = useMutation({
-    mutationFn: async (data: { category: string; questions: typeof bulkQuestions }) => {
-      const questionsWithCategory = data.questions.map(q => ({
-        ...q,
-        category: data.category
-      }));
-      
-      // Create all questions in parallel
-      const promises = questionsWithCategory.map(question =>
-        apiRequest("POST", "/api/admin/questions", question)
-      );
-      
-      const responses = await Promise.all(promises);
-      return responses;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/questions"] });
-      setBulkQuestions([
-        { question: "", answer: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" },
-      ]);
-      setBulkQuestionMode(false);
-      toast({ title: `تم إنشاء ${questionsWithCategory.length} أسئلة بنجاح` });
-    },
-    onError: (error: any) => {
-      toast({ title: "خطأ في إنشاء الأسئلة", description: error.message, variant: "destructive" });
     },
   });
 
@@ -195,7 +168,7 @@ export default function AdminDashboard() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/categories"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/questions"] }); // Refresh questions for filter
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/questions"] });
       setCategoryForm({ name: "", displayName: "", description: "", logoUrl: "" });
       toast({ title: "تم إنشاء الفئة بنجاح" });
     },
@@ -211,7 +184,7 @@ export default function AdminDashboard() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/categories"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/questions"] }); // Refresh questions for filter
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/questions"] });
       setEditingCategory(null);
       setCategoryForm({ name: "", displayName: "", description: "", logoUrl: "" });
       toast({ title: "تم تحديث الفئة بنجاح" });
@@ -228,7 +201,7 @@ export default function AdminDashboard() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/categories"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/questions"] }); // Refresh questions for filter
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/questions"] });
       toast({ title: "تم حذف الفئة بنجاح" });
     },
     onError: (error: any) => {
@@ -269,7 +242,7 @@ export default function AdminDashboard() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/game-packages"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/game-packages"] }); // Refresh public packages
+      queryClient.invalidateQueries({ queryKey: ["/api/game-packages"] });
       setGamePackageForm({ name: "", description: "", gameCount: "", priceInCents: "", sortOrder: "", isActive: true });
       toast({ title: "تم إنشاء باقة الألعاب بنجاح" });
     },
@@ -285,7 +258,7 @@ export default function AdminDashboard() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/game-packages"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/game-packages"] }); // Refresh public packages
+      queryClient.invalidateQueries({ queryKey: ["/api/game-packages"] });
       setEditingGamePackage(null);
       setGamePackageForm({ name: "", description: "", gameCount: "", priceInCents: "", sortOrder: "", isActive: true });
       toast({ title: "تم تحديث باقة الألعاب بنجاح" });
@@ -302,7 +275,7 @@ export default function AdminDashboard() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/game-packages"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/game-packages"] }); // Refresh public packages
+      queryClient.invalidateQueries({ queryKey: ["/api/game-packages"] });
       toast({ title: "تم حذف باقة الألعاب بنجاح" });
     },
     onError: (error: any) => {
@@ -386,74 +359,6 @@ export default function AdminDashboard() {
       const matchesDifficulty = !difficulty || q.difficulty === difficulty;
       return matchesCategory && matchesDifficulty;
     }).length;
-  }
-
-  // Image upload handler using FormData and Firebase Storage
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    if (!file.type.startsWith('image/')) {
-      toast({
-        title: "خطأ في نوع الملف",
-        description: "يجب أن يكون الملف صورة (JPG، PNG، GIF، إلخ)",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    // Check file size (allow up to 10MB)
-    const maxSizeInBytes = 10 * 1024 * 1024; // 10MB
-    if (file.size > maxSizeInBytes) {
-      toast({
-        title: "حجم الملف كبير جداً",
-        description: `حجم الملف ${(file.size / 1024 / 1024).toFixed(2)} ميجابايت. الحد الأقصى المسموح 10 ميجابايت`,
-        variant: "destructive"
-      });
-      return;
-    }
-
-    try {
-      // Show loading state
-      toast({
-        title: "جاري رفع الصورة...",
-        description: "يرجى الانتظار",
-      });
-
-      // Create FormData for file upload
-      const formData = new FormData();
-      formData.append('file', file);
-
-      // Upload to Firebase Storage via API
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'فشل في رفع الصورة');
-      }
-
-      const result = await response.json();
-      
-      // Update form with the uploaded image URL
-      setQuestionForm({ ...questionForm, imageUrl: result.imageUrl });
-      
-      toast({
-        title: "تم رفع الصورة بنجاح",
-        description: `تم رفع الصورة (${(file.size / 1024).toFixed(1)} كيلوبايت) إلى Firebase Storage`,
-      });
-
-    } catch (error: any) {
-      console.error('Image upload error:', error);
-      toast({
-        title: "خطأ في رفع الصورة",
-        description: error.message || "حدث خطأ أثناء رفع الصورة",
-        variant: "destructive"
-      });
-    }
   };
 
   // Helper function to check if we can add more questions to a category/difficulty
@@ -469,7 +374,7 @@ export default function AdminDashboard() {
     const mediumCount = getQuestionCount(category, "متوسط");
     const hardCount = getQuestionCount(category, "صعب");
     const totalCount = easyCount + mediumCount + hardCount;
-    
+
     return {
       easy: easyCount,
       medium: mediumCount,
@@ -490,6 +395,7 @@ export default function AdminDashboard() {
       hint: question.hint || "",
       explanation: question.explanation || "",
       imageUrl: question.imageUrl || "",
+      videoUrl: question.videoUrl || "",
     });
   };
 
@@ -503,7 +409,7 @@ export default function AdminDashboard() {
 
   const handleCancelQuestionEdit = () => {
     setEditingQuestion(null);
-    setQuestionForm({ question: "", answer: "", category: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" });
+    setQuestionForm({ question: "", answer: "", category: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "", videoUrl: "" });
   };
 
   const handleEditCategory = (category: Category) => {
@@ -602,39 +508,90 @@ export default function AdminDashboard() {
 
   const handleCancelUserEdit = () => {
     setEditingUser(null);
-    setUserForm({ email: "", name: "", password: "", availableGames: "", isAdmin: false });
+    setUserForm({ email: "", phoneNumber: "", name: "", password: "", availableGames: "", isAdmin: false });
   };
 
-  const handlePublishQuestions = async () => {
-    try {
-      await apiRequest("POST", "/api/admin/questions/publish");
-      toast({
-        title: "تم النشر",
-        description: "تم نشر جميع الأسئلة بنجاح. الآن يمكن للمستخدمين رؤيتها في الألعاب",
-      });
-    } catch (error: any) {
-      toast({
-        title: "خطأ",
-        description: error.message || "حدث خطأ في نشر الأسئلة",
-        variant: "destructive",
-      });
-    }
-  };
+  // Video upload handler
+  const handleVideoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
 
-  const handleUnpublishQuestions = async () => {
-    try {
-      await apiRequest("POST", "/api/admin/questions/unpublish");
+    if (!file.type.startsWith('video/')) {
       toast({
-        title: "تم إلغاء النشر",
-        description: "تم إلغاء نشر جميع الأسئلة. لن تظهر للمستخدمين في الألعاب",
+        title: "خطأ في نوع الملف",
+        description: "يجب أن يكون الملف فيديو (MP4، MOV، AVI، إلخ)",
+        variant: "destructive"
       });
-    } catch (error: any) {
-      toast({
-        title: "خطأ",
-        description: error.message || "حدث خطأ في إلغاء نشر الأسئلة",
-        variant: "destructive",
-      });
+      return;
     }
+
+    // Check file size (allow up to 50MB for videos)
+    const maxSizeInBytes = 50 * 1024 * 1024; // 50MB
+    if (file.size > maxSizeInBytes) {
+      toast({
+        title: "حجم الملف كبير جداً",
+        description: `حجم الملف ${(file.size / 1024 / 1024).toFixed(2)} ميجابايت. الحد الأقصى المسموح 50 ميجابايت`,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Check video duration (max 60 seconds)
+    const video = document.createElement('video');
+    video.preload = 'metadata';
+
+    video.onloadedmetadata = async () => {
+      window.URL.revokeObjectURL(video.src);
+
+      if (video.duration > 60) {
+        toast({
+          title: "مدة الفيديو طويلة جداً",
+          description: `مدة الفيديو ${Math.round(video.duration)} ثانية. الحد الأقصى المسموح 60 ثانية`,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      try {
+        toast({
+          title: "جاري رفع الفيديو...",
+          description: "يرجى الانتظار، قد يستغرق هذا بعض الوقت",
+        });
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('type', 'video');
+
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'فشل في رفع الفيديو');
+        }
+
+        const result = await response.json();
+        setQuestionForm({ ...questionForm, videoUrl: result.videoUrl });
+
+        toast({
+          title: "تم رفع الفيديو بنجاح",
+          description: `تم رفع الفيديو (${(file.size / 1024 / 1024).toFixed(1)} ميجابايت، ${Math.round(video.duration)} ثانية) إلى Firebase Storage`,
+        });
+
+      } catch (error: any) {
+        console.error('Video upload error:', error);
+        toast({
+          title: "خطأ في رفع الفيديو",
+          description: error.message || "حدث خطأ أثناء رفع الفيديو",
+          variant: "destructive"
+        });
+      }
+    };
+
+    video.src = URL.createObjectURL(file);
   };
 
   if (isLoading) {
@@ -716,7 +673,6 @@ export default function AdminDashboard() {
               </div>
             ) : (
               <div className="space-y-6">
-                {/* Key Metrics */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
                     <CardContent className="p-6">
@@ -729,7 +685,7 @@ export default function AdminDashboard() {
                       </div>
                     </CardContent>
                   </Card>
-                  
+
                   <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
                     <CardContent className="p-6">
                       <div className="flex items-center justify-between">
@@ -741,7 +697,7 @@ export default function AdminDashboard() {
                       </div>
                     </CardContent>
                   </Card>
-                  
+
                   <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
                     <CardContent className="p-6">
                       <div className="flex items-center justify-between">
@@ -753,7 +709,7 @@ export default function AdminDashboard() {
                       </div>
                     </CardContent>
                   </Card>
-                  
+
                   <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
                     <CardContent className="p-6">
                       <div className="flex items-center justify-between">
@@ -766,96 +722,11 @@ export default function AdminDashboard() {
                     </CardContent>
                   </Card>
                 </div>
-
-                {/* Monthly Revenue Chart */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle>الإيرادات الشهرية</CardTitle>
-                    <CardDescription>آخر 12 شهر</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-64 flex items-end justify-between gap-2">
-                      {analytics?.monthlyRevenue?.map((month, index) => (
-                        <div key={index} className="flex-1 flex flex-col items-center">
-                          <div 
-                            className="bg-blue-500 rounded-t w-full min-h-2 transition-all duration-300 hover:bg-blue-600"
-                            style={{ height: `${Math.max((month.revenue / Math.max(...analytics.monthlyRevenue.map(m => m.revenue))) * 240, 8)}px` }}
-                          ></div>
-                          <div className="text-xs text-gray-500 mt-2">{month.month}</div>
-                          <div className="text-sm font-semibold text-gray-700">{formatKWD(month.revenue)}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Top Game Packages */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>باقات الألعاب الأكثر مبيعاً</CardTitle>
-                      <CardDescription>أفضل 5 باقات</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        {analytics?.topGamePackages?.map((pkg, index) => (
-                          <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
-                                {index + 1}
-                              </div>
-                              <div>
-                                <p className="font-semibold">{pkg.name}</p>
-                                <p className="text-sm text-gray-600">{pkg.sales} مبيعات</p>
-                              </div>
-                            </div>
-                            <div className="text-right">
-                              <p className="font-bold text-green-600">{formatKWD(pkg.revenue)}</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Recent Sales */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>المبيعات الأخيرة</CardTitle>
-                      <CardDescription>آخر 10 مبيعات</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        {analytics?.recentSales?.map((sale) => (
-                          <div key={sale.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                            <div>
-                              <p className="font-semibold">{sale.userName}</p>
-                              <p className="text-sm text-gray-600">{sale.packageName}</p>
-                              <p className="text-xs text-gray-500">{sale.date}</p>
-                              {sale.couponCode && (
-                                <Badge variant="secondary" className="text-xs mt-1">
-                                  {sale.couponCode}
-                                </Badge>
-                              )}
-                            </div>
-                            <div className="text-right">
-                              <p className="font-bold text-green-600">{formatKWD(sale.amount)}</p>
-                              {sale.discountAmount && (
-                                <p className="text-xs text-red-500">-{formatKWD(sale.discountAmount)}</p>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
               </div>
             )}
           </TabsContent>
 
           <TabsContent value="questions" className="mt-6">
-            {/* Search and Filter Bar */}
             <div className="mb-6 p-4 bg-white rounded-lg shadow-sm border">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
@@ -898,277 +769,17 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Category Overview */}
-            <Card className="mb-6">
-              <CardHeader>
-                <CardTitle>نظرة عامة على الفئات</CardTitle>
-                <CardDescription>
-                  عدد الأسئلة حسب الفئة والصعوبة
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {categories?.categories?.map((category: Category) => {
-                    const status = getCategoryStatus(category.name);
-                    return (
-                      <div key={category.id} className="p-4 border rounded-lg">
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-medium">{category.displayName}</h3>
-                          <Badge variant={status.total > 0 ? "default" : "secondary"}>
-                            {status.total} أسئلة
-                          </Badge>
-                        </div>
-                        <div className="space-y-1 text-sm">
-                          <div className="flex justify-between">
-                            <span className="text-green-600">سهل (200):</span>
-                            <span className={status.easy > 0 ? "text-green-600" : "text-gray-500"}>
-                              {status.easy}
-                            </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-yellow-600">متوسط (400):</span>
-                            <span className={status.medium > 0 ? "text-green-600" : "text-gray-500"}>
-                              {status.medium}
-                            </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-red-600">صعب (600):</span>
-                            <span className={status.hard > 0 ? "text-green-600" : "text-gray-500"}>
-                              {status.hard}
-                            </span>
-                          </div>
-                        </div>
-                        {status.total > 0 && (
-                          <div className="mt-2 text-xs text-green-600 font-medium">
-                            ✓ جاهزة للعب
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Publishing Controls */}
-            <Card className="mb-6">
-              <CardHeader>
-                <CardTitle>نشر الأسئلة</CardTitle>
-                <CardDescription>
-                  بعد إكمال جميع الأسئلة، انقر على "نشر الأسئلة" لتصبح متاحة للمستخدمين في الألعاب
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex gap-4">
-                  <Button
-                    onClick={() => handlePublishQuestions()}
-                    className="flex-1"
-                    variant="default"
-                  >
-                    نشر جميع الأسئلة
-                  </Button>
-                  <Button
-                    onClick={() => handleUnpublishQuestions()}
-                    className="flex-1"
-                    variant="outline"
-                  >
-                    إلغاء نشر الأسئلة
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Add Question Form */}
               <Card>
                 <CardHeader>
                   <CardTitle>
-                    {editingQuestion ? "تعديل السؤال" : bulkQuestionMode ? "إضافة أسئلة دفعة واحدة" : "إضافة سؤال جديد"}
+                    {editingQuestion ? "تعديل السؤال" : "إضافة سؤال جديد"}
                   </CardTitle>
                   <CardDescription>
-                    {editingQuestion ? "تعديل بيانات السؤال المحدد" : bulkQuestionMode ? "أضف أسئلة متعددة للفئة دفعة واحدة" : "أضف سؤالاً جديداً للفئة المحددة"}
+                    {editingQuestion ? "تعديل بيانات السؤال المحدد" : "أضف سؤالاً جديداً للفئة المحددة"}
                   </CardDescription>
-                  <div className="flex gap-2 mt-2">
-                    <Button 
-                      variant={!bulkQuestionMode ? "default" : "outline"} 
-                      size="sm"
-                      onClick={() => setBulkQuestionMode(false)}
-                    >
-                      سؤال واحد
-                    </Button>
-                    <Button 
-                      variant={bulkQuestionMode ? "default" : "outline"} 
-                      size="sm"
-                      onClick={() => setBulkQuestionMode(true)}
-                    >
-                      أسئلة متعددة
-                    </Button>
-                  </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {/* Bulk Questions Form */}
-                  {bulkQuestionMode && !editingQuestion && (
-                    <>
-                      {/* Category Selection for Bulk */}
-                      <div>
-                        <Label htmlFor="bulkCategory">الفئة للأسئلة</Label>
-                        <Select value={questionForm.category} onValueChange={(value) => setQuestionForm({ ...questionForm, category: value })}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="اختر الفئة" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {categories?.categories?.map((cat: Category) => (
-                              <SelectItem key={cat.id} value={cat.name}>
-                                <span>{cat.displayName}</span>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      
-                      {/* Bulk Questions Grid */}
-                      <div className="space-y-6 max-h-96 overflow-y-auto">
-                        {bulkQuestions.map((question, index) => (
-                          <div key={index} className="p-4 border rounded-lg bg-gray-50">
-                            <div className="flex items-center gap-2 mb-2">
-                              <Badge variant={question.difficulty === "سهل" ? "secondary" : question.difficulty === "متوسط" ? "default" : "destructive"}>
-                                {question.difficulty} - {question.difficulty === "سهل" ? "200" : question.difficulty === "متوسط" ? "400" : "600"} نقطة
-                              </Badge>
-                              <span className="text-sm text-gray-600">السؤال {index + 1}</span>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => {
-                                  const updated = bulkQuestions.filter((_, i) => i !== index);
-                                  setBulkQuestions(updated);
-                                }}
-                                className="text-red-600 hover:text-red-800"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-                            
-                            <div className="grid gap-3">
-                              <div>
-                                <Label>السؤال</Label>
-                                <Textarea
-                                  value={question.question}
-                                  onChange={(e) => {
-                                    const updated = [...bulkQuestions];
-                                    updated[index].question = e.target.value;
-                                    setBulkQuestions(updated);
-                                  }}
-                                  placeholder="اكتب السؤال هنا..."
-                                  rows={2}
-                                />
-                              </div>
-                              
-                              <div className="grid grid-cols-2 gap-2">
-                                <div>
-                                  <Label>الإجابة</Label>
-                                  <Input
-                                    value={question.answer}
-                                    onChange={(e) => {
-                                      const updated = [...bulkQuestions];
-                                      updated[index].answer = e.target.value;
-                                      setBulkQuestions(updated);
-                                    }}
-                                    placeholder="الإجابة الصحيحة"
-                                  />
-                                </div>
-                                <div>
-                                  <Label>التلميح (مطلوب)</Label>
-                                  <Input
-                                    value={question.hint}
-                                    onChange={(e) => {
-                                      const updated = [...bulkQuestions];
-                                      updated[index].hint = e.target.value;
-                                      setBulkQuestions(updated);
-                                    }}
-                                    placeholder="تلميح مساعد"
-                                  />
-                                </div>
-                              </div>
-                              
-                              <div>
-                                <Label>الشرح (اختياري)</Label>
-                                <Input
-                                  value={question.explanation}
-                                  onChange={(e) => {
-                                    const updated = [...bulkQuestions];
-                                    updated[index].explanation = e.target.value;
-                                    setBulkQuestions(updated);
-                                  }}
-                                  placeholder="شرح إضافي للإجابة"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                      
-                      {/* Add More Questions Button */}
-                      <div className="flex gap-2">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => {
-                            setBulkQuestions([...bulkQuestions, { question: "", answer: "", difficulty: "سهل", hint: "", explanation: "", imageUrl: "" }]);
-                          }}
-                          className="flex-1"
-                        >
-                          <Plus className="h-4 w-4 mr-2" />
-                          إضافة سؤال سهل
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => {
-                            setBulkQuestions([...bulkQuestions, { question: "", answer: "", difficulty: "متوسط", hint: "", explanation: "", imageUrl: "" }]);
-                          }}
-                          className="flex-1"
-                        >
-                          <Plus className="h-4 w-4 mr-2" />
-                          إضافة سؤال متوسط
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => {
-                            setBulkQuestions([...bulkQuestions, { question: "", answer: "", difficulty: "صعب", hint: "", explanation: "", imageUrl: "" }]);
-                          }}
-                          className="flex-1"
-                        >
-                          <Plus className="h-4 w-4 mr-2" />
-                          إضافة سؤال صعب
-                        </Button>
-                      </div>
-                      
-                      <Button
-                        onClick={() => {
-                          if (!questionForm.category) {
-                            toast({ title: "يجب اختيار الفئة", variant: "destructive" });
-                            return;
-                          }
-                          const incompleteQuestions = bulkQuestions.filter(q => !q.question.trim() || !q.answer.trim() || !q.hint.trim());
-                          if (incompleteQuestions.length > 0) {
-                            toast({ title: "يجب إكمال جميع الحقول المطلوبة", variant: "destructive" });
-                            return;
-                          }
-                          createBulkQuestionsMutation.mutate({ category: questionForm.category, questions: bulkQuestions });
-                        }}
-                        disabled={createBulkQuestionsMutation.isPending}
-                        className="w-full"
-                      >
-                        {createBulkQuestionsMutation.isPending ? "جاري الإضافة..." : `إضافة ${bulkQuestions.length} أسئلة`}
-                      </Button>
-                    </>
-                  )}
-
-                  {/* Single Question Form */}
-                  {!bulkQuestionMode && (
-                    <>
                   <div>
                     <Label htmlFor="question">السؤال</Label>
                     <Textarea
@@ -1183,8 +794,7 @@ export default function AdminDashboard() {
                     <Label htmlFor="answer">الإجابة</Label>
                     <Input
                       id="answer"
-                      value={questionForm.answer}
-                      onChange={(e) => setQuestionForm({ ...questionForm, answer: e.target.value })}
+                      value={questionForm.answer}                      onChange={(e) => setQuestionForm({ ...questionForm, answer: e.target.value })}
                       placeholder="الإجابة الصحيحة"
                       className="mt-1"
                     />
@@ -1211,26 +821,6 @@ export default function AdminDashboard() {
                         })}
                       </SelectContent>
                     </Select>
-                    
-                    {/* Category Status Display */}
-                    {questionForm.category && (
-                      <div className="mt-2 p-2 bg-gray-50 rounded text-sm">
-                        <div className="font-medium mb-1">
-                          حالة الفئة: {categories?.categories?.find(c => c.name === questionForm.category)?.displayName}
-                        </div>
-                        <div className="grid grid-cols-3 gap-2 text-xs">
-                          <div>
-                            <span className="text-green-600">سهل:</span> {getQuestionCount(questionForm.category, "سهل")}/2
-                          </div>
-                          <div>
-                            <span className="text-yellow-600">متوسط:</span> {getQuestionCount(questionForm.category, "متوسط")}/2
-                          </div>
-                          <div>
-                            <span className="text-red-600">صعب:</span> {getQuestionCount(questionForm.category, "صعب")}/2
-                          </div>
-                        </div>
-                      </div>
-                    )}
                   </div>
                   <div>
                     <Label htmlFor="difficulty">الصعوبة والنقاط</Label>
@@ -1255,45 +845,6 @@ export default function AdminDashboard() {
                       className="mt-1"
                     />
                   </div>
-                  {/* Image Upload Field */}
-                  <div>
-                    <Label htmlFor="image">صورة السؤال (اختياري)</Label>
-                    <div className="mt-1">
-                      <input
-                        type="file"
-                        id="image"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        className="block w-full text-sm text-gray-500
-                          file:mr-4 file:py-2 file:px-4
-                          file:rounded-full file:border-0
-                          file:text-sm file:font-semibold
-                          file:bg-blue-50 file:text-blue-700
-                          hover:file:bg-blue-100"
-                      />
-                      {questionForm.imageUrl && (
-                        <div className="mt-2">
-                          <img 
-                            src={questionForm.imageUrl} 
-                            alt="صورة السؤال" 
-                            className="max-w-full h-40 object-contain rounded border"
-                          />
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            className="mt-2"
-                            onClick={() => setQuestionForm({ ...questionForm, imageUrl: "" })}
-                          >
-                            إزالة الصورة
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                    <p className="text-xs text-gray-500 mt-1">
-                      سيتم تغيير حجم الصورة تلقائياً لتناسب عرض السؤال (أقصى عرض: 400px، أقصى ارتفاع: 300px)
-                    </p>
-                  </div>
                   <div>
                     <Label htmlFor="explanation">الوصف/الشرح (اختياري)</Label>
                     <Textarea
@@ -1313,7 +864,47 @@ export default function AdminDashboard() {
                       className="mt-2"
                     />
                   </div>
-                  {/* Validation Warning */}
+                  <div>
+                    <Label htmlFor="video">فيديو السؤال (اختياري - حد أقصى 60 ثانية)</Label>
+                    <div className="mt-1">
+                      <input
+                        type="file"
+                        id="video"
+                        accept="video/*"
+                        onChange={handleVideoUpload}
+                        className="block w-full text-sm text-gray-500
+                          file:mr-4 file:py-2 file:px-4
+                          file:rounded-full file:border-0
+                          file:text-sm file:font-semibold
+                          file:bg-red-50 file:text-red-700
+                          hover:file:bg-red-100"
+                      />
+                      {questionForm.videoUrl && (
+                        <div className="mt-2">
+                          <video 
+                            src={questionForm.videoUrl} 
+                            controls
+                            className="max-w-full h-40 object-contain rounded border"
+                          >
+                            المتصفح الخاص بك لا يدعم تشغيل الفيديو.
+                          </video>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="mt-2"
+                            onClick={() => setQuestionForm({ ...questionForm, videoUrl: "" })}
+                          >
+                            إزالة الفيديو
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      الحد الأقصى: 60 ثانية، 50 ميجابايت. سيتم عرض الفيديو للمستخدمين بعد تقديم الإجابة.
+                    </p>
+                  </div>
+
                   {questionForm.category && questionForm.difficulty && !editingQuestion && 
                    !canAddQuestion(questionForm.category, questionForm.difficulty) && (
                     <div className="p-3 bg-red-50 border border-red-200 rounded text-sm text-red-700">
@@ -1321,7 +912,7 @@ export default function AdminDashboard() {
                       لا يمكن إضافة المزيد من الأسئلة.
                     </div>
                   )}
-                  
+
                   <div className="flex gap-2">
                     <Button
                       onClick={handleQuestionSubmit}
@@ -1357,12 +948,9 @@ export default function AdminDashboard() {
                       </Button>
                     )}
                   </div>
-                    </>
-                  )}
                 </CardContent>
               </Card>
 
-              {/* Questions List */}
               <Card>
                 <CardHeader>
                   <CardTitle>الأسئلة المتاحة</CardTitle>
@@ -1381,13 +969,29 @@ export default function AdminDashboard() {
                         filteredQuestions.map((question: Question) => (
                         <div key={question.id} className="p-4 border rounded-lg">
                           <div className="flex items-start space-x-reverse space-x-4">
-                            {question.imageUrl && (
+                            {(question.imageUrl || question.videoUrl) && (
                               <div className="flex-shrink-0">
-                                <img
-                                  src={question.imageUrl}
-                                  alt={question.question}
-                                  className="w-16 h-16 object-cover rounded-lg border"
-                                />
+                                {question.imageUrl && (
+                                  <img
+                                    src={question.imageUrl}
+                                    alt={question.question}
+                                    className="w-16 h-16 object-cover rounded-lg border"
+                                  />
+                                )}
+                                {question.videoUrl && (
+                                  <div className="relative">
+                                    <video
+                                      src={question.videoUrl}
+                                      className="w-16 h-16 object-cover rounded-lg border"
+                                      muted
+                                    />
+                                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-lg">
+                                      <div className="w-4 h-4 bg-white rounded-full flex items-center justify-center">
+                                        <div className="w-0 h-0 border-l-2 border-l-gray-800 border-t-1 border-t-transparent border-b-1 border-b-transparent ml-0.5"></div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
                               </div>
                             )}
                             <div className="flex-1">
@@ -1398,9 +1002,16 @@ export default function AdminDashboard() {
                                   <div className="flex gap-2 mt-2">
                                     <Badge variant="secondary">{question.category}</Badge>
                                     <Badge variant="outline">{question.difficulty}</Badge>
-                                    <Badge variant={(question as any).published ? "default" : "destructive"}>
-                                      {(question as any).published ? "منشور" : "مسودة"}
-                                    </Badge>
+                                    {question.imageUrl && (
+                                      <Badge variant="outline" className="text-xs">
+                                        📷 صورة
+                                      </Badge>
+                                    )}
+                                    {question.videoUrl && (
+                                      <Badge variant="outline" className="text-xs">
+                                        🎥 فيديو
+                                      </Badge>
+                                    )}
                                   </div>
                                 </div>
                                 <div className="flex gap-2">
@@ -1433,7 +1044,6 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="categories" className="mt-6">
-            {/* Search Bar */}
             <div className="mb-6 p-4 bg-white rounded-lg shadow-sm border">
               <div>
                 <Label htmlFor="category-search">البحث في الفئات</Label>
@@ -1447,7 +1057,6 @@ export default function AdminDashboard() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Add Category Form */}
               <Card>
                 <CardHeader>
                   <CardTitle>
@@ -1532,7 +1141,6 @@ export default function AdminDashboard() {
                 </CardContent>
               </Card>
 
-              {/* Categories List */}
               <Card>
                 <CardHeader>
                   <CardTitle>الفئات المتاحة</CardTitle>
@@ -1611,7 +1219,6 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="coupons" className="mt-6">
-            {/* Search Bar */}
             <div className="mb-6 p-4 bg-white rounded-lg shadow-sm border">
               <div>
                 <Label htmlFor="coupon-search">البحث في الكوبونات</Label>
@@ -1625,7 +1232,6 @@ export default function AdminDashboard() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Add Coupon Form */}
               <Card>
                 <CardHeader>
                   <CardTitle>إضافة كوبون جديد</CardTitle>
@@ -1704,7 +1310,6 @@ export default function AdminDashboard() {
                 </CardContent>
               </Card>
 
-              {/* Coupons List */}
               <Card>
                 <CardHeader>
                   <CardTitle>الكوبونات المتاحة</CardTitle>
@@ -1757,10 +1362,8 @@ export default function AdminDashboard() {
             </div>
           </TabsContent>
 
-          {/* Game Packages Tab */}
           <TabsContent value="packages" className="space-y-6">
             <div className="space-y-6">
-              {/* Create Game Package Form */}
               <Card>
                 <CardHeader>
                   <CardTitle>إضافة باقة جديدة</CardTitle>
@@ -1852,7 +1455,6 @@ export default function AdminDashboard() {
                 </CardContent>
               </Card>
 
-              {/* Game Packages List */}
               <Card>
                 <CardHeader>
                   <CardTitle>باقات الألعاب المتاحة</CardTitle>
@@ -1913,7 +1515,6 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="users" className="mt-6">
-            {/* User Search Bar */}
             <div className="mb-6 p-4 bg-white rounded-lg shadow-sm border">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -1933,7 +1534,6 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Add User Form */}
             <Card className="mb-6">
               <CardHeader>
                 <CardTitle>
@@ -1976,7 +1576,7 @@ export default function AdminDashboard() {
                   </div>
                   <div>
                     <Label htmlFor="user-password">
-                      كلمة المرور {editingUser && "(اتركها فارغة لعدم التغيير)"}
+                      كلمة المرور {editingUser && "(اتركه فارغة لعدم التغيير)"}
                     </Label>
                     <Input
                       id="user-password"
@@ -2027,7 +1627,6 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
 
-            {/* Users List */}
             <Card>
               <CardHeader>
                 <CardTitle>المستخدمون المسجلون</CardTitle>
@@ -2063,7 +1662,7 @@ export default function AdminDashboard() {
                             </div>
                             <p className="text-sm text-gray-600">{user.email}</p>
                             <p className="text-sm text-gray-600">{user.phoneNumber || 'لا يوجد رقم هاتف'}</p>
-                            <p className="text-sm text-gray-500">
+                            <p className className="text-sm text-gray-500">
                               الألعاب المتاحة: {user.availableGames}
                             </p>
                             <p className="text-sm text-gray-400">
@@ -2077,7 +1676,7 @@ export default function AdminDashboard() {
                               onClick={() => handleEditUser(user)}
                             >
                               <Edit className="w-4 h-4" />
-                            </Button>
+                                                          </Button>
                             <Button
                               size="sm"
                               variant="outline"

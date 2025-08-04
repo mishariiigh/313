@@ -7,11 +7,13 @@ import { getCategoryColor, getDifficultyColor, type Question } from "@/lib/game"
 
 interface QuestionCardProps {
   question: Question;
+  imageUrl?: string;
+  videoUrl?: string;
   onNext: (answered: boolean) => void;
   isLoading?: boolean;
 }
 
-export default function QuestionCard({ question, onNext, isLoading }: QuestionCardProps) {
+export default function QuestionCard({ question, onNext, isLoading, videoUrl }: QuestionCardProps) {
   const [showHint, setShowHint] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
 
@@ -101,7 +103,7 @@ export default function QuestionCard({ question, onNext, isLoading }: QuestionCa
                   {question.answer}
                 </p>
               </div>
-              
+
               {/* Explanation */}
               {question.explanation && (
                 <div className="bg-white rounded-lg p-4 mt-4">
@@ -132,6 +134,26 @@ export default function QuestionCard({ question, onNext, isLoading }: QuestionCa
               >
                 إجابة صحيحة
               </Button>
+            </div>
+          )}
+
+          {/* Video Display - only show after answer is revealed */}
+          {showAnswer && videoUrl && (
+            <div className="mb-6">
+              <div className="text-center mb-3">
+                <Badge variant="outline" className="text-sm">
+                  🎥 فيديو توضيحي
+                </Badge>
+              </div>
+              <video
+                src={videoUrl}
+                controls
+                className="max-w-full h-auto max-h-80 mx-auto rounded-lg shadow-lg"
+                preload="metadata"
+                controlsList="nodownload"
+              >
+                المتصفح الخاص بك لا يدعم تشغيل الفيديو.
+              </video>
             </div>
           )}
         </div>
