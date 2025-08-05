@@ -2,17 +2,17 @@ import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { AuthProvider } from "@/lib/auth";
-import ArabicLayout from "@/components/ui/arabic-layout";
-import AuthPage from "@/pages/auth";
-import Dashboard from "@/pages/dashboard";
-import GamePage from "@/pages/game";
-import GameSetupPage from "@/pages/game-setup";
-import AdminPage from "@/pages/admin";
-import AdminDashboard from "@/pages/admin-dashboard";
-import CheckoutPage from "@/pages/checkout";
-import NotFound from "@/pages/not-found";
+import { TooltipProvider } from "./components/ui/tooltip";
+import { AuthProvider } from "./lib/auth";
+import ArabicLayout from "./components/ui/arabic-layout";
+import AuthPage from "./pages/auth";
+import Dashboard from "./pages/dashboard";
+import GamePage from "./pages/game";
+import GameSetupPage from "./pages/game-setup";
+import AdminPage from "./pages/admin";
+import AdminDashboard from "./pages/admin-dashboard";
+import CheckoutPage from "./pages/checkout";
+import NotFound from "./pages/not-found";
 
 function Router() {
   return (

@@ -484,12 +484,12 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
               <div className="relative rounded-3xl p-2 h-full shadow-2xl overflow-hidden" style={{
                 background: 'rgb(241, 11, 11)',
                 border: '3px solid rgb(222, 33, 0)',
-                boxShadow: '0 10px 40px rgba(153, 9, 20, 0.3)'
+                boxShadow: '0 8px 32px rgba(229, 9, 20, 0.25)'
               }}>
 
 
                 {/* Inner Content Container */}
-                <div className="relative rounded-2xl p-2 h-full flex flex-col justify-between border-1 overflow-hidden" style={{
+                <div className="relative rounded-2xl p-4 h-full flex flex-col justify-between border-2 overflow-hidden" style={{
                   background: 'rgb(255, 245, 245)',
                   borderColor: ' #990000'
                 }}>
@@ -519,20 +519,20 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
 
                   {/* Question Image - Below question text */}
                   {selectedQuestion.imageUrl && (
-                <div className="flex justify-center mb-1 flex-1 min-h-0">
-                  <div
-                    className="rounded-3xl p-2 shadow-xl  max-w-full w-full max-h-[450px] overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
-                    style={{
-                      background: 'linear-gradient(135deg, #333333 0%, #1e1e1e 100%)',
-                      borderColor: '#990000'
-                    }}
-                    onClick={() => setImagePopupOpen(true)}
-              >
+  <div className="flex justify-center mb-1 flex-1 min-h-0">
+    <div
+      className="rounded-3xl p-2 shadow-xl border-2 max-w-full w-full max-h-[450px] overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+      style={{
+        background: 'linear-gradient(135deg, #333333 0%, #1e1e1e 100%)',
+        borderColor: '#990000'
+      }}
+      onClick={() => setImagePopupOpen(true)}
+    >
       <img
         src={selectedQuestion.imageUrl}
         alt="صورة السؤال"
-        className="w-full h-full object-contain"
-        />
+        className="w-full h-full object-contain rounded-2xl shadow-lg"
+      />
     </div>
   </div>
 )}
