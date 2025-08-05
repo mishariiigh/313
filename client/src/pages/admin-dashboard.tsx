@@ -1662,7 +1662,8 @@ export default function AdminDashboard() {
                             </div>
                             <p className="text-sm text-gray-600">{user.email}</p>
                             <p className="text-sm text-gray-600">{user.phoneNumber || 'لا يوجد رقم هاتف'}</p>
-                            <p className className="text-sm text-gray-500">
+                            <p className="text-sm text-gray-500">
+
                               الألعاب المتاحة: {user.availableGames}
                             </p>
                             <p className="text-sm text-gray-400">
