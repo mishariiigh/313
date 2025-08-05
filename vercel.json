@@ -2,21 +2,17 @@
   "version": 2,
   "builds": [
     {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist/public"
-      }
-    },
-    {
-      "src": "server/index.ts",
+      "src": "dist/index.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/server/index.ts"
+      "dest": "/dist/index.js"
+    },
+    {
+      "handle": "filesystem"
     },
     {
       "src": "/(.*)",
@@ -24,7 +20,7 @@
     }
   ],
   "functions": {
-    "server/index.ts": {
+    "dist/index.js": {
       "runtime": "nodejs18.x"
     }
   },
@@ -71,7 +67,6 @@
   "env": {
     "NODE_ENV": "production"
   },
-  "installCommand": "npm install",
   "buildCommand": "npm run build",
   "outputDirectory": "dist/public"
 }
