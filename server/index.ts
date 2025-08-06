@@ -80,11 +80,16 @@ app.use((req, res, next) => {
     });
   }
 
-  // Vercel will provide the PORT environment variable
-  const port = parseInt(process.env.PORT || '5000', 10);
-  const host = '0.0.0.0';
-  
-  server.listen(port, host, () => {
-    log(`Server running on ${host}:${port}`);
-  });
+  // For local development
+  if (process.env.NODE_ENV === 'development') {
+    const port = parseInt(process.env.PORT || '5000', 10);
+    const host = '0.0.0.0';
+    
+    server.listen(port, host, () => {
+      log(`Server running on ${host}:${port}`);
+    });
+  }
 })();
+
+// Export for Vercel serverless function
+export default app;

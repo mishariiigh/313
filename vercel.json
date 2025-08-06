@@ -1,11 +1,12 @@
+
 {
   "version": 2,
   "builds": [
     {
-      "src": "vite.config.ts",
+      "src": "client/package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "dist"
+        "distDir": "../dist"
       }
     },
     {
@@ -19,12 +20,11 @@
       "dest": "/server/index.ts"
     },
     {
-      "src": "/assets/(.*)",
-      "dest": "/dist/assets/$1"
+      "handle": "filesystem"
     },
     {
       "src": "/(.*)",
-      "dest": "/dist/$1"
+      "dest": "/dist/index.html"
     }
   ]
 }
