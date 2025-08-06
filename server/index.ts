@@ -1,4 +1,5 @@
 import express, { type Request, Response, NextFunction } from "express";
+import path from 'path';
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { firebaseAutoSync } from "./firebase-auto-sync";
@@ -16,8 +17,7 @@ const app = express();
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: false, limit: '50mb' }));
 
-
-
+// Middleware for logging
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -54,10 +54,10 @@ app.use((req, res, next) => {
   
   const server = await registerRoutes(app);
 
+  // Error handling middleware
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     let message = err.message || "Internal Server Error";
-    // Handle specific payload too large errors
     if (err.code === 'LIMIT_FILE_SIZE' || err.type === 'entity.too.large') {
       message = "حجم الملف كبير جداً. الحد الأقصى المسموح 50 ميجابايت";
     }
@@ -65,26 +65,26 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
-    serveStatic(app);
+    // Production static file serving
+    const clientDistPath = path.join(__dirname, '../../dist');
+    app.use(express.static(clientDistPath));
+    
+    // Handle client-side routing - return index.html for all non-api routes
+    app.get('*', (req, res) => {
+      if (!req.path.startsWith('/api')) {
+        res.sendFile(path.join(clientDistPath, 'index.html'));
+      }
+    });
   }
 
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Default to 5000 if not specified.
+  // Vercel will provide the PORT environment variable
   const port = parseInt(process.env.PORT || '5000', 10);
-  
-  // Use 0.0.0.0 for Replit compatibility
   const host = '0.0.0.0';
   
-  server.listen({
-    port,
-    host,
-  }, () => {
-    log(`serving on ${host}:${port}`);
+  server.listen(port, host, () => {
+    log(`Server running on ${host}:${port}`);
   });
 })();
