@@ -1,9 +1,12 @@
 {
   "version": 2,
   "buildCommand": "npm run build",
-  "installCommand": "npm install",
   "outputDirectory": "dist/public",
-
+  "functions": {
+    "server/index.ts": {
+      "runtime": "nodejs18.x"
+    }
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -14,33 +17,6 @@
       "destination": "/index.html"
     }
   ],
-
-  "functions": {
-    "server/index.ts": {
-      "runtime": "nodejs18.x"
-    }
-  },
-
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        }
-      ]
-    }
-  ],
-
   "env": {
     "NODE_ENV": "production"
   }
