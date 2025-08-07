@@ -17,11 +17,11 @@ export const config = {
 
   // Firebase configuration
   firebase: {
-    apiKey: process.env.VITE_FIREBASE_API_KEY,
-    projectId: process.env.VITE_FIREBASE_PROJECT_ID,
-    appId: process.env.VITE_FIREBASE_APP_ID,
-    authDomain: process.env.VITE_FIREBASE_PROJECT_ID ? `${process.env.VITE_FIREBASE_PROJECT_ID}.firebaseapp.com` : undefined,
-    storageBucket: process.env.VITE_FIREBASE_PROJECT_ID ? `${process.env.VITE_FIREBASE_PROJECT_ID}.firebasestorage.app` : undefined,
+    apiKey: process.env.FIREBASE_API_KEY,
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    appId: process.env.FIREBASE_APP_ID,
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
   },
 
   // Stripe configuration
@@ -40,9 +40,9 @@ export const config = {
   validate() {
     const missingVars: string[] = [];
 
-    if (!this.firebase.apiKey) missingVars.push('VITE_FIREBASE_API_KEY');
-    if (!this.firebase.projectId) missingVars.push('VITE_FIREBASE_PROJECT_ID');
-    if (!this.firebase.appId) missingVars.push('VITE_FIREBASE_APP_ID');
+    if (!this.firebase.apiKey) missingVars.push('FIREBASE_API_KEY');
+    if (!this.firebase.projectId) missingVars.push('FIREBASE_PROJECT_ID');
+    if (!this.firebase.appId) missingVars.push('FIREBASE_APP_ID');
 
     if (missingVars.length > 0) {
       console.warn('Missing environment variables:', missingVars.join(', '));
