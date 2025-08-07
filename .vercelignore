@@ -1,5 +1,5 @@
+*.test.ts
 node_modules
 dist
 *.log
-*.ts
-*.test.ts
+!vite.config.ts
