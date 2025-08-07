@@ -1,4 +1,5 @@
-import express, { Request, Response, NextFunction } from "express";
+
+import express, { type Request, Response, NextFunction } from "express";
 import path from 'path';
 import { registerRoutes } from "../server/routes.js";
 import { fileURLToPath } from 'url';
@@ -9,7 +10,6 @@ config();
 
 // Then import config after env vars are loaded
 //import { config as appConfig } from "@shared/config";
-
 
 // Create Express app instance
 const app = express();
@@ -57,7 +57,7 @@ async function initializeApp() {
   
   try {
     await registerRoutes(app);
-
+    
     // Error handling middleware
     app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       const status = err.status || err.statusCode || 500;
@@ -67,7 +67,7 @@ async function initializeApp() {
       }
       res.status(status).json({ message });
     });
-
+    
     routesInitialized = true;
   } catch (error) {
     console.error("Failed to initialize routes:", error);

@@ -98,9 +98,8 @@ var init_config = __esm({
   }
 });
 
-// server/index.ts
-import express2 from "express";
-import path4 from "path";
+// api/index.ts
+import express from "express";
 
 // server/routes.ts
 import session from "express-session";
@@ -191,7 +190,7 @@ var FirebaseStorage = class {
   }
   async getAllUsers() {
     const snapshot = await getDocs(collection(db, "users"));
-    return snapshot.docs.map((doc3) => ({ id: doc3.id, ...doc3.data() }));
+    return snapshot.docs.map((doc2) => ({ id: doc2.id, ...doc2.data() }));
   }
   async updateUser(id, updates) {
     const userRef = doc(db, "users", id);
@@ -205,7 +204,7 @@ var FirebaseStorage = class {
   // Question operations
   async getAllQuestions() {
     const snapshot = await getDocs(collection(db, "questions"));
-    return snapshot.docs.map((doc3) => ({ id: doc3.id, ...doc3.data() }));
+    return snapshot.docs.map((doc2) => ({ id: doc2.id, ...doc2.data() }));
   }
   async getQuestionsByCategory(category, limitCount) {
     const q = query(
@@ -213,7 +212,7 @@ var FirebaseStorage = class {
       where("category", "==", category)
     );
     const snapshot = await getDocs(q);
-    let questions = snapshot.docs.map((doc3) => ({ id: doc3.id, ...doc3.data() }));
+    let questions = snapshot.docs.map((doc2) => ({ id: doc2.id, ...doc2.data() }));
     const difficultyOrder = { "\u0633\u0647\u0644": 1, "\u0645\u062A\u0648\u0633\u0637": 2, "\u0635\u0639\u0628": 3 };
     questions = questions.sort((a, b) => {
       return (difficultyOrder[a.difficulty] || 4) - (difficultyOrder[b.difficulty] || 4);
@@ -229,7 +228,7 @@ var FirebaseStorage = class {
       q = query(q, where("difficulty", "==", difficulty));
     }
     const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc3) => ({ id: doc3.id, ...doc3.data() }));
+    return snapshot.docs.map((doc2) => ({ id: doc2.id, ...doc2.data() }));
   }
   async getQuestionById(id) {
     const questionDoc = await getDoc(doc(db, "questions", id));
@@ -240,7 +239,7 @@ var FirebaseStorage = class {
   }
   async getRandomQuestions(count) {
     const snapshot = await getDocs(collection(db, "questions"));
-    const questions = snapshot.docs.map((doc3) => ({ id: doc3.id, ...doc3.data() }));
+    const questions = snapshot.docs.map((doc2) => ({ id: doc2.id, ...doc2.data() }));
     const shuffled = questions.sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count);
   }
@@ -251,7 +250,7 @@ var FirebaseStorage = class {
       where("isPublished", "==", true)
     );
     const snapshot = await getDocs(q);
-    let questions = snapshot.docs.map((doc3) => ({ id: doc3.id, ...doc3.data() }));
+    let questions = snapshot.docs.map((doc2) => ({ id: doc2.id, ...doc2.data() }));
     const difficultyOrder = { "\u0633\u0647\u0644": 1, "\u0645\u062A\u0648\u0633\u0637": 2, "\u0635\u0639\u0628": 3 };
     return questions.sort((a, b) => {
       return (difficultyOrder[a.difficulty] || 4) - (difficultyOrder[b.difficulty] || 4);
@@ -279,8 +278,8 @@ var FirebaseStorage = class {
     const q = query(collection(db, "questions"), where("isPublished", "==", false));
     const snapshot = await getDocs(q);
     const batch = writeBatch(db);
-    snapshot.docs.forEach((doc3) => {
-      batch.update(doc3.ref, { isPublished: true });
+    snapshot.docs.forEach((doc2) => {
+      batch.update(doc2.ref, { isPublished: true });
     });
     await batch.commit();
   }
@@ -288,8 +287,8 @@ var FirebaseStorage = class {
     const q = query(collection(db, "questions"), where("isPublished", "==", true));
     const snapshot = await getDocs(q);
     const batch = writeBatch(db);
-    snapshot.docs.forEach((doc3) => {
-      batch.update(doc3.ref, { isPublished: false });
+    snapshot.docs.forEach((doc2) => {
+      batch.update(doc2.ref, { isPublished: false });
     });
     await batch.commit();
   }
@@ -321,7 +320,7 @@ var FirebaseStorage = class {
       where("userId", "==", userId)
     );
     const snapshot = await getDocs(q);
-    const sessions = snapshot.docs.map((doc3) => ({ id: doc3.id, ...doc3.data() }));
+    const sessions = snapshot.docs.map((doc2) => ({ id: doc2.id, ...doc2.data() }));
     return sessions.sort((a, b) => {
       const aDate = a.createdAt instanceof Timestamp ? a.createdAt.toDate() : new Date(a.createdAt);
       const bDate = b.createdAt instanceof Timestamp ? b.createdAt.toDate() : new Date(b.createdAt);
@@ -350,12 +349,12 @@ var FirebaseStorage = class {
       orderBy("createdAt", "desc")
     );
     const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc3) => ({ id: doc3.id, ...doc3.data() }));
+    return snapshot.docs.map((doc2) => ({ id: doc2.id, ...doc2.data() }));
   }
   // Category operations
   async getAllCategories() {
     const snapshot = await getDocs(collection(db, "categories"));
-    return snapshot.docs.map((doc3) => ({ id: doc3.id, ...doc3.data() }));
+    return snapshot.docs.map((doc2) => ({ id: doc2.id, ...doc2.data() }));
   }
   async createCategory(category) {
     const docRef = await addDoc(collection(db, "categories"), {
@@ -387,7 +386,7 @@ var FirebaseStorage = class {
   // Coupon operations
   async getAllCoupons() {
     const snapshot = await getDocs(collection(db, "coupons"));
-    return snapshot.docs.map((doc3) => ({ id: doc3.id, ...doc3.data() }));
+    return snapshot.docs.map((doc2) => ({ id: doc2.id, ...doc2.data() }));
   }
   async getCouponByCode(code) {
     const q = query(collection(db, "coupons"), where("code", "==", code));
@@ -419,12 +418,12 @@ var FirebaseStorage = class {
   // Game Package operations
   async getAllGamePackages() {
     const snapshot = await getDocs(collection(db, "gamePackages"));
-    return snapshot.docs.map((doc3) => ({ id: doc3.id, ...doc3.data() }));
+    return snapshot.docs.map((doc2) => ({ id: doc2.id, ...doc2.data() }));
   }
   async getActiveGamePackages() {
     const q = query(collection(db, "gamePackages"), where("isActive", "==", true));
     const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc3) => ({ id: doc3.id, ...doc3.data() }));
+    return snapshot.docs.map((doc2) => ({ id: doc2.id, ...doc2.data() }));
   }
   async createGamePackage(gamePackage) {
     const docRef = await addDoc(collection(db, "gamePackages"), {
@@ -454,8 +453,8 @@ var FirebaseStorage = class {
     const thirtyDaysAgo = /* @__PURE__ */ new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     let monthlyRevenue = 0;
-    purchasesSnapshot.docs.forEach((doc3) => {
-      const purchase = doc3.data();
+    purchasesSnapshot.docs.forEach((doc2) => {
+      const purchase = doc2.data();
       const purchaseDate = purchase.createdAt instanceof Timestamp ? purchase.createdAt.toDate() : new Date(purchase.createdAt);
       if (purchaseDate >= thirtyDaysAgo) {
         monthlyRevenue += purchase.amount;
@@ -474,8 +473,8 @@ var FirebaseStorage = class {
       getDocs(collection(db, "purchases")),
       getDocs(collection(db, "users"))
     ]);
-    const purchases = purchasesSnapshot.docs.map((doc3) => ({ id: doc3.id, ...doc3.data() }));
-    const users = usersSnapshot.docs.map((doc3) => ({ id: doc3.id, ...doc3.data() }));
+    const purchases = purchasesSnapshot.docs.map((doc2) => ({ id: doc2.id, ...doc2.data() }));
+    const users = usersSnapshot.docs.map((doc2) => ({ id: doc2.id, ...doc2.data() }));
     const totalRevenue = purchases.reduce((sum, purchase) => sum + purchase.amount, 0);
     const totalSales = purchases.length;
     const averageOrderValue = totalSales > 0 ? Math.round(totalRevenue / totalSales) : 0;
@@ -537,7 +536,7 @@ var FirebaseStorage = class {
   async getActiveCategories() {
     const q = query(collection(db, "categories"), where("isActive", "==", true));
     const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc3) => ({ id: doc3.id, ...doc3.data() }));
+    return snapshot.docs.map((doc2) => ({ id: doc2.id, ...doc2.data() }));
   }
 };
 var storage2 = new FirebaseStorage();
@@ -1977,216 +1976,15 @@ async function registerRoutes(app3) {
   });
 }
 
-// server/vite.ts
-import express from "express";
-import fs2 from "fs";
-import path3 from "path";
-import { createServer as createViteServer, createLogger } from "vite";
-
-// vite.config.ts
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import path2 from "path";
-import { fileURLToPath } from "url";
-var __filename = fileURLToPath(import.meta.url);
-var __dirname2 = path2.dirname(__filename);
-var vite_config_default = defineConfig({
-  root: path2.resolve(__dirname2, "client"),
-  plugins: [react()],
-  resolve: {
-    alias: {
-      "@": path2.resolve(__dirname2, "client/src"),
-      "@shared": path2.resolve(__dirname2, "shared"),
-      "@assets": path2.resolve(__dirname2, "attached_assets")
-    }
-  }
-});
-
-// server/vite.ts
-import { nanoid } from "nanoid";
-var viteLogger = createLogger();
-function log(message, source = "express") {
-  const formattedTime = (/* @__PURE__ */ new Date()).toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true
-  });
-  console.log(`${formattedTime} [${source}] ${message}`);
-}
-async function setupVite(app3, server) {
-  const serverOptions = {
-    middlewareMode: true,
-    hmr: { server },
-    allowedHosts: true
-  };
-  const vite = await createViteServer({
-    ...vite_config_default,
-    configFile: false,
-    customLogger: {
-      ...viteLogger,
-      error: (msg, options) => {
-        viteLogger.error(msg, options);
-        process.exit(1);
-      }
-    },
-    server: serverOptions,
-    appType: "custom"
-  });
-  app3.use(vite.middlewares);
-  app3.use("*", async (req, res, next) => {
-    const url = req.originalUrl;
-    try {
-      const clientTemplate = path3.resolve(
-        import.meta.dirname,
-        "..",
-        "client",
-        "index.html"
-      );
-      let template = await fs2.promises.readFile(clientTemplate, "utf-8");
-      template = template.replace(
-        `src="/src/main.tsx"`,
-        `src="/src/main.tsx?v=${nanoid()}"`
-      );
-      const page = await vite.transformIndexHtml(url, template);
-      res.status(200).set({ "Content-Type": "text/html" }).end(page);
-    } catch (e) {
-      vite.ssrFixStacktrace(e);
-      next(e);
-    }
-  });
-}
-
-// server/services/data-loader.ts
-import { collection as collection2, addDoc as addDoc2, doc as doc2, setDoc, serverTimestamp as serverTimestamp2 } from "firebase/firestore";
-init_config();
-import bcrypt2 from "bcryptjs";
-var DataLoaderService = class {
-  /**
-   * Load all initial data into Firebase from configuration files
-   */
-  async seedFirebaseData() {
-    try {
-      console.log("\u{1F504} Starting Firebase data seeding from configuration files...");
-      await this.seedAdminUser();
-      await this.seedCategories();
-      await this.seedQuestions();
-      await this.seedGamePackages();
-      await this.seedCoupons();
-      console.log("\u2705 Firebase data seeding completed successfully");
-    } catch (error) {
-      console.error("\u274C Firebase seeding failed:", error);
-      throw error;
-    }
-  }
-  async seedAdminUser() {
-    const adminData = loadAdminUser();
-    const hashedPassword = await bcrypt2.hash(adminData.password, 10);
-    const adminUserRef = doc2(db, "users", "admin-user-id");
-    await setDoc(adminUserRef, {
-      email: adminData.email,
-      name: adminData.name,
-      phoneNumber: adminData.phoneNumber,
-      password: hashedPassword,
-      availableGames: adminData.availableGames,
-      isAdmin: adminData.isAdmin,
-      createdAt: serverTimestamp2()
-    });
-    console.log("\u2713 Admin user created");
-  }
-  async seedCategories() {
-    const categories = loadCategories();
-    for (const category of categories) {
-      await addDoc2(collection2(db, "categories"), {
-        ...category,
-        createdAt: serverTimestamp2()
-      });
-    }
-    console.log(`\u2713 ${categories.length} categories seeded`);
-  }
-  async seedQuestions() {
-    const questions = loadQuestions();
-    for (const question of questions) {
-      await addDoc2(collection2(db, "questions"), {
-        ...question,
-        createdAt: serverTimestamp2()
-      });
-    }
-    console.log(`\u2713 ${questions.length} questions seeded`);
-  }
-  async seedGamePackages() {
-    const packages = loadGamePackages();
-    for (const gamePackage of packages) {
-      await addDoc2(collection2(db, "gamePackages"), {
-        name: gamePackage.name,
-        description: gamePackage.description,
-        gameCount: gamePackage.gameCount,
-        priceInCents: gamePackage.priceInCents,
-        sortOrder: gamePackage.sortOrder,
-        isActive: gamePackage.isActive,
-        createdAt: serverTimestamp2()
-      });
-    }
-    console.log(`\u2713 ${packages.length} game packages seeded`);
-  }
-  async seedCoupons() {
-    const coupons = loadCoupons();
-    for (const coupon of coupons) {
-      const expiresAt = new Date(Date.now() + coupon.daysFromNow * 24 * 60 * 60 * 1e3);
-      await addDoc2(collection2(db, "coupons"), {
-        code: coupon.code,
-        discountType: coupon.discountType,
-        discountValue: coupon.discountValue,
-        maxUsage: coupon.maxUsage,
-        usageCount: coupon.usageCount,
-        expiresAt,
-        isActive: coupon.isActive,
-        createdAt: serverTimestamp2()
-      });
-    }
-    console.log(`\u2713 ${coupons.length} coupons seeded`);
-  }
-};
-var dataLoader = new DataLoaderService();
-
-// server/firebase-auto-sync.ts
-var FirebaseAutoSync = class {
-  initialized = false;
-  async initialize() {
-    if (this.initialized) return;
-    try {
-      console.log("\u{1F504} Checking Firebase collections...");
-      const [users, questions, categories, gamePackages, coupons] = await Promise.all([
-        storage2.getAllUsers(),
-        storage2.getAllQuestions(),
-        storage2.getAllCategories(),
-        storage2.getAllGamePackages(),
-        storage2.getAllCoupons()
-      ]);
-      if (users.length === 0 || questions.length === 0 || categories.length === 0) {
-        console.log("\u{1F4E4} Firebase collections empty, seeding from configuration files...");
-        await dataLoader.seedFirebaseData();
-      } else {
-        console.log("\u2705 Firebase collections already populated");
-      }
-      this.initialized = true;
-    } catch (error) {
-      console.error("\u274C Firebase sync initialization failed:", error);
-    }
-  }
-};
-var firebaseAutoSync = new FirebaseAutoSync();
-
-// server/index.ts
+// api/index.ts
 import { config as config2 } from "dotenv";
 config2();
-console.log("\u{1F527} Starting application...");
-var app2 = express2();
-app2.use(express2.json({ limit: "50mb" }));
-app2.use(express2.urlencoded({ extended: false, limit: "50mb" }));
+var app2 = express();
+app2.use(express.json({ limit: "50mb" }));
+app2.use(express.urlencoded({ extended: false, limit: "50mb" }));
 app2.use((req, res, next) => {
   const start = Date.now();
-  const path5 = req.path;
+  const path2 = req.path;
   let capturedJsonResponse = void 0;
   const originalResJson = res.json;
   res.json = function(bodyJson, ...args) {
@@ -2195,52 +1993,41 @@ app2.use((req, res, next) => {
   };
   res.on("finish", () => {
     const duration = Date.now() - start;
-    if (path5.startsWith("/api")) {
-      let logLine = `${req.method} ${path5} ${res.statusCode} in ${duration}ms`;
+    if (path2.startsWith("/api")) {
+      let logLine = `${req.method} ${path2} ${res.statusCode} in ${duration}ms`;
       if (capturedJsonResponse) {
         logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
       }
       if (logLine.length > 80) {
         logLine = logLine.slice(0, 79) + "\u2026";
       }
-      log(logLine);
+      console.log(logLine);
     }
   });
   next();
 });
-(async () => {
-  await firebaseAutoSync.initialize();
-  await registerRoutes(app2);
-  app2.use((err, _req, res, _next) => {
-    const status = err.status || err.statusCode || 500;
-    let message = err.message || "Internal Server Error";
-    if (err.code === "LIMIT_FILE_SIZE" || err.type === "entity.too.large") {
-      message = "\u062D\u062C\u0645 \u0627\u0644\u0645\u0644\u0641 \u0643\u0628\u064A\u0631 \u062C\u062F\u0627\u064B. \u0627\u0644\u062D\u062F \u0627\u0644\u0623\u0642\u0635\u0649 \u0627\u0644\u0645\u0633\u0645\u0648\u062D 50 \u0645\u064A\u062C\u0627\u0628\u0627\u064A\u062A";
-    }
-    res.status(status).json({ message });
-    throw err;
-  });
-  const { createServer } = await import("http");
-  const server = createServer(app2);
-  if (app2.get("env") === "development") {
-    await setupVite(app2, server);
-  } else {
-    const clientDistPath = path4.join(__dirname, "../../dist");
-    app2.use(express2.static(clientDistPath));
-    app2.get("*", (req, res) => {
-      if (!req.path.startsWith("/api")) {
-        res.sendFile(path4.join(clientDistPath, "index.html"));
+var routesInitialized = false;
+async function initializeApp2() {
+  if (routesInitialized) return;
+  try {
+    await registerRoutes(app2);
+    app2.use((err, _req, res, _next) => {
+      const status = err.status || err.statusCode || 500;
+      let message = err.message || "Internal Server Error";
+      if (err.code === "LIMIT_FILE_SIZE" || err.type === "entity.too.large") {
+        message = "\u062D\u062C\u0645 \u0627\u0644\u0645\u0644\u0641 \u0643\u0628\u064A\u0631 \u062C\u062F\u0627\u064B. \u0627\u0644\u062D\u062F \u0627\u0644\u0623\u0642\u0635\u0649 \u0627\u0644\u0645\u0633\u0645\u0648\u062D 50 \u0645\u064A\u062C\u0627\u0628\u0627\u064A\u062A";
       }
+      res.status(status).json({ message });
     });
+    routesInitialized = true;
+  } catch (error) {
+    console.error("Failed to initialize routes:", error);
   }
-  if (process.env.NODE_ENV === "development") {
-    const port = parseInt(process.env.PORT || "5000", 10);
-    const host = "0.0.0.0";
-    server.listen(port, host, () => {
-      log(`Server running on ${host}:${port}`);
-    });
-  }
-})();
+}
+async function handler(req, res) {
+  await initializeApp2();
+  return app2(req, res);
+}
 export {
-  app2 as default
+  handler as default
 };
