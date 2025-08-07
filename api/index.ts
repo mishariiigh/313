@@ -1,18 +1,20 @@
-
-import express, { type Request, Response, NextFunction } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import path from 'path';
 import { registerRoutes } from "../server/routes.js";
+import { fileURLToPath } from 'url';
 
 // Load environment variables FIRST
 import { config } from "dotenv";
 config();
 
 // Then import config after env vars are loaded
-import { config as appConfig } from "@shared/config";
+//import { config as appConfig } from "@shared/config";
 
-console.log("🔧 Starting serverless function...");
 
+// Create Express app instance
 const app = express();
+
+// Configure middleware
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: false, limit: '50mb' }));
 
@@ -47,20 +49,33 @@ app.use((req, res, next) => {
   next();
 });
 
-// Initialize routes
-(async () => {
-  await registerRoutes(app);
-  
-  // Error handling middleware
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    let message = err.message || "Internal Server Error";
-    if (err.code === 'LIMIT_FILE_SIZE' || err.type === 'entity.too.large') {
-      message = "حجم الملف كبير جداً. الحد الأقصى المسموح 50 ميجابايت";
-    }
-    res.status(status).json({ message });
-  });
-})();
+// Initialize routes and error handling
+let routesInitialized = false;
 
-// Export for Vercel serverless function
-export default app;
+async function initializeApp() {
+  if (routesInitialized) return;
+  
+  try {
+    await registerRoutes(app);
+
+    // Error handling middleware
+    app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+      const status = err.status || err.statusCode || 500;
+      let message = err.message || "Internal Server Error";
+      if (err.code === 'LIMIT_FILE_SIZE' || err.type === 'entity.too.large') {
+        message = "حجم الملف كبير جداً. الحد الأقصى المسموح 50 ميجابايت";
+      }
+      res.status(status).json({ message });
+    });
+
+    routesInitialized = true;
+  } catch (error) {
+    console.error("Failed to initialize routes:", error);
+  }
+}
+
+// Serverless handler function
+export default async function handler(req: Request, res: Response) {
+  await initializeApp();
+  return app(req, res);
+}

@@ -1,4 +1,3 @@
-
 {
   "version": 2,
   "builds": [
@@ -17,11 +16,11 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/api/index.ts"
+      "dest": "/server/index.ts"
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/dist/index.html"
     }
   ]
 }
