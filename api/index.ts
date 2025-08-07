@@ -1,7 +1,7 @@
 
 import express, { type Request, Response, NextFunction } from "express";
 import path from 'path';
-import { registerRoutes } from "../server/routes";
+import { registerRoutes } from "../server/routes.js";
 
 // Load environment variables FIRST
 import { config } from "dotenv";
