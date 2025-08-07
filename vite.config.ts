@@ -7,10 +7,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default defineConfig({
-  root: path.resolve(__dirname, 'client'),
+  root: path.resolve(__dirname, 'client'), // your frontend root
   base: './',
   build: {
-    outDir: 'dist', 
+    outDir: 'dist',    // build output relative to `root` → client/dist
     emptyOutDir: true,
   },
   plugins: [react()],
