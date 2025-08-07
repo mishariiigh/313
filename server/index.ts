@@ -52,7 +52,7 @@ app.use((req, res, next) => {
   // Initialize Firebase auto-sync on startup
   await firebaseAutoSync.initialize();
   
-  const server = await registerRoutes(app);
+  await registerRoutes(app);
 
   // Error handling middleware
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -64,6 +64,10 @@ app.use((req, res, next) => {
     res.status(status).json({ message });
     throw err;
   });
+
+  // Create HTTP server
+  const { createServer } = await import("http");
+  const server = createServer(app);
 
   if (app.get("env") === "development") {
     await setupVite(app, server);
