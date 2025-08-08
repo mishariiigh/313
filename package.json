@@ -7,7 +7,9 @@
     "dev": "tsx server/index.ts & vite --config vite.config.ts",
     "prebuild": "rm -rf netlify_build_output || true",
     "build": "vite build && mv netlify_build_output dist_deploy",
-    "postbuild": "ls -la dist_deploy",
+    "postbuild": "ls -la dist_deploy && du -sh dist_deploy",
+    "preview": "vite preview",
+    "netlify-dev": "netlify dev",
     "build:client": "vite build --config vite.config.ts",
     "build:server": "esbuild server/index.ts --platform=node --bundle --format=esm --outfile=dist-server/index.js",
     "start": "node server/index.js"
