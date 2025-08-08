@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "tsx server/index.ts & vite --config vite.config.ts",
     "prebuild": "rm -rf dist || true",
+    "debug": "vite build --emptyOutDir false && find . -name dist && sleep 10 && find . -name dist",
     "build": "vite build --emptyOutDir false",
     "postbuild": "ls -la dist && du -sh dist",
     "build:client": "vite build --config vite.config.ts",
