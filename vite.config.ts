@@ -25,7 +25,6 @@ export default defineConfig({
             'firebase/storage'
           ],
           react: ['react', 'react-dom'],
-          vendor: ['lodash', 'axios', 'zod']
         }
       }
     }
