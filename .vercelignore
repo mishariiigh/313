@@ -3,6 +3,3 @@ dist
 *.log
 *.test.ts
 client/src/**/*.test.ts
-client/src/**/*.ts
-!vite.config.ts
-!server/index.ts
