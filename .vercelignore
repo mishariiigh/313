@@ -1,9 +1,11 @@
-# Allow vite config
+# Always keep the Vite config
 !vite.config.ts
 
-# Ignore node_modules and build output
+# Ignore build artifacts
 node_modules
 dist
-*.log
-*.test.ts
+dist-server
+
+# Ignore only unnecessary TypeScript sources
 client/src/**/*.test.ts
+server/**/*.test.ts
