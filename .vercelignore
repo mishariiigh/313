@@ -1,7 +1,9 @@
+# Allow vite config
+!vite.config.ts
+
+# Ignore node_modules and build output
 node_modules
 dist
 *.log
 *.test.ts
 client/src/**/*.test.ts
-!vite.config.ts
-!server/index.ts
