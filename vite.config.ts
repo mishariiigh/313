@@ -11,10 +11,9 @@ export default defineConfig({
   base: './',
   build: {
     chunkSizeWarningLimit: 1000,
-    outDir: 'dist_final',    
+    outDir: 'netlify_build_output',
     emptyOutDir: false,
     write: true,
-    manifest: true
 
   },
   plugins: [react()],

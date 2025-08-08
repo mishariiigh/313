@@ -1,4 +1,4 @@
 [build]
   command = "npm run build"
-  publish = "dist_final"
-  environment = { NODE_VERSION = "18.16.0" }
+  publish = "dist_deploy"
+  environment = { NODE_VERSION = "20.0.0" } # Match Firebase requirements
