@@ -10,7 +10,7 @@ export default defineConfig({
   root: path.resolve(__dirname, 'client'), //frontend
   base: './',
   build: {
-    outDir: 'dist',    
+    outDir: 'dist_final',    
     emptyOutDir: false,
     write: true,
     manifest: true

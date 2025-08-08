@@ -7,7 +7,7 @@
     "dev": "tsx server/index.ts & vite --config vite.config.ts",
     "prebuild": "rm -rf dist || true",
     "build": "vite build --emptyOutDir false",
-    "postbuild": "find . -name dist && sleep 5 && ls -la dist",
+    "postbuild": "ls -la dist_final",
     "build:client": "vite build --config vite.config.ts",
     "build:server": "esbuild server/index.ts --platform=node --bundle --format=esm --outfile=dist-server/index.js",
     "start": "node server/index.js"
