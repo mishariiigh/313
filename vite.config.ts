@@ -10,6 +10,7 @@ export default defineConfig({
   root: path.resolve(__dirname, 'client'), //frontend
   base: './',
   build: {
+    chunkSizeWarningLimit: 1000,
     outDir: 'dist_final',    
     emptyOutDir: false,
     write: true,
