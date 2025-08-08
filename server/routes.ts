@@ -14,6 +14,16 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_...", {
   apiVersion: "2024-06-20" as any,
 });
 
+// CORS configuration
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? [process.env.FRONTEND_URL || 'https://your-app-name.replit.app'] 
+    : true,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
+};
+
 // Configure multer for memory storage
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -30,6 +40,27 @@ const upload = multer({
 });
 
 export async function registerRoutes(app: Express): Promise<void> {
+  // CORS middleware
+  app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    const allowedOrigins = process.env.NODE_ENV === 'production' 
+      ? [process.env.FRONTEND_URL || 'https://your-app-name.replit.app']
+      : [origin]; // Allow any origin in development
+
+    if (process.env.NODE_ENV !== 'production' || (origin && allowedOrigins.includes(origin))) {
+      res.setHeader('Access-Control-Allow-Origin', origin || '*');
+    }
+    
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Cookie');
+    
+    if (req.method === 'OPTIONS') {
+      return res.sendStatus(200);
+    }
+    next();
+  });
+
   // Health check endpoint
   app.get('/health', (req, res) => {
     res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -40,10 +71,11 @@ export async function registerRoutes(app: Express): Promise<void> {
     resave: false,
     saveUninitialized: false,
     cookie: { 
-      secure: false, 
+      secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
       httpOnly: true,
-      sameSite: 'lax'
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Allow cross-site in production
+      domain: process.env.NODE_ENV === 'production' ? undefined : undefined // Let browser set domain automatically
     },
     name: 'trivia.session'
   }));
@@ -1653,5 +1685,4 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
-  // Routes registered successfully
 }
