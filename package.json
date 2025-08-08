@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx server/index.ts & vite --config vite.config.ts",
     "prebuild": "rm -rf netlify_build_output || true",
-    "build": "vite build && mv netlify_build_output dist_deploy",
+    "build": "vite build && mv netlify_build_output dist_deploy && esbuild api/index.ts --bundle --platform=node --outfile=api/index.js",
     "postbuild": "ls -la dist_deploy && du -sh dist_deploy",
     "preview": "vite preview",
     "netlify-dev": "netlify dev",
