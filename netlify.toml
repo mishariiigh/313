@@ -1,19 +1,17 @@
 [build]
-  command = "npm run build"
-  publish = "dist_deploy"
-  functions = "api"  # Points to your api directory
-  
-[build.environment]
-  NODE_VERSION = "20.0.0"  # Required for Firebase v10+
-  NPM_FLAGS = "--legacy-peer-deps"
-  VITE_API_URL = "/.netlify/functions"  # For client-side API calls
+  base = "client"
+  publish = "dist"
+  command = "npm install && npm run build"
 
-[dev]
-  framework = "vite"
-  targetPort = 3000
-  autoLaunch = true
+[functions]
+  directory = "../api"
 
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  to = "/.netlify/functions/index"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
   status = 200
