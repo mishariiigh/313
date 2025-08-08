@@ -1,11 +1,12 @@
 [build]
   command = "npm run build"
-  publish = "dist"
+  publish = "dist" # Still publish from dist
 
 [build.environment]
   NETLIFY_USE_YARN = "false"
   SKIP_GOOGLE_CHROME_DOWNLOAD = "true"
+  NODE_VERSION = "18.16.0" # Match your local version
 
-[[plugins]]
-  package = "netlify-plugin-inline-functions-env"
-  inputs = {}
+# Remove plugins for now to simplify
+# [[plugins]]
+#   package = "netlify-plugin-inline-functions-env"
