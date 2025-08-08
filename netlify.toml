@@ -2,5 +2,10 @@
   command = "npm run build"
   publish = "dist"
 
+# Add this to preserve files
+[build.environment]
+  NETLIFY_USE_YARN = "false" # Ensure npm is used
+  SKIP_GOOGLE_CHROME_DOWNLOAD = "true" # Reduce cleanup
+
 [[plugins]]
   package = "netlify-plugin-inline-functions-env"
