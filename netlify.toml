@@ -4,9 +4,9 @@
   functions = "api"  
   
 [build.environment]
-  NODE_VERSION = "20.0.0"  # Required for Firebase v10+
+  NODE_VERSION = "20.0.0" 
   NPM_FLAGS = "--legacy-peer-deps"
-  VITE_API_URL = "/.netlify/functions"  # For client-side API calls
+  VITE_API_URL = "/.netlify/functions"  
 
 [dev]
   framework = "vite"
