@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "tsx server/index.ts & vite --config vite.config.ts",
-    "build": "vite build --config vite.config.ts",
+    "build": "vite build",
     "build:client": "vite build --config vite.config.ts",
     "build:server": "esbuild server/index.ts --platform=node --bundle --format=esm --outfile=dist-server/index.js",
     "start": "node server/index.js"

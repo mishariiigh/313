@@ -1,11 +1,13 @@
-# Always keep the Vite config
+# Keep build-critical config
 !vite.config.ts
+!tsconfig.json
+!package.json
+!package-lock.json
+!server/**
+!api/**
 
-# Ignore build artifacts
+# Ignore only unnecessary stuff
 node_modules
 dist
 dist-server
-
-# Ignore only unnecessary TypeScript sources
-client/src/**/*.test.ts
-server/**/*.test.ts
+*.log
