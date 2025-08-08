@@ -15,3 +15,6 @@
   from = "/*"
   to = "/index.html"
   status = 200
+[build]
+  publish = "netlify_build_output"  # or wherever your React build output goes
+  command = "npm run build"
