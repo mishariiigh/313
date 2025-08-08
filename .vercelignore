@@ -1,0 +1,13 @@
+# Ignore build outputs and logs
+node_modules
+dist
+dist-server
+*.log
+
+# Do NOT ignore these critical files and folders:
+!vite.config.ts
+!tsconfig.json
+!package.json
+!package-lock.json
+!client/**
+!server/**

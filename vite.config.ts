@@ -10,7 +10,7 @@ export default defineConfig({
   root: path.resolve(__dirname, 'client'), //frontend
   base: './',
   build: {
-    outDir: 'client/dist',    
+    outDir: 'dist',    
     emptyOutDir: true,
   },
   plugins: [react()],
