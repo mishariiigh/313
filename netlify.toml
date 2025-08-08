@@ -1,7 +1,7 @@
 [build]
-  base = "client"
-  publish = "dist"
-  command = "npm install && npm run build"
+  publish = "netlify_build_output"  # or wherever your React build output goes
+  command = "npm run build"
+
 
 [functions]
   directory = "../api"
@@ -15,6 +15,3 @@
   from = "/*"
   to = "/index.html"
   status = 200
-[build]
-  publish = "netlify_build_output"  # or wherever your React build output goes
-  command = "npm run build"
