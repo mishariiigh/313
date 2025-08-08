@@ -1,8 +1,7 @@
 [build]
-  publish = "netlify_build_output"  # or wherever your React build output goes
+  publish = "netlify_build_output"
   command = "npm run build"
-  functions = "api"  # Changed from "../api" to "api"
-
+  functions = "api"
 
 [functions]
   directory = "../api"
