@@ -1,47 +1,33 @@
-
 import express, { type Request, Response, NextFunction } from "express";
-import path from 'path';
-import { registerRoutes } from "../server/routes.js";
-import { fileURLToPath } from 'url';
-
-// Load environment variables FIRST
+import serverless from "serverless-http";
 import { config } from "dotenv";
+import { registerRoutes } from "../server/routes.js";
+
+// Load env vars
 config();
 
-// Then import config after env vars are loaded
-//import { config as appConfig } from "@shared/config";
-
-// Create Express app instance
 const app = express();
 
-// Configure middleware
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: false, limit: '50mb' }));
 
-// Middleware for logging
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
+  let capturedJsonResponse: Record<string, any> | undefined;
 
-  const originalResJson = res.json;
+  const originalResJson = res.json.bind(res);
   res.json = function (bodyJson, ...args) {
     capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
+    return originalResJson(bodyJson, ...args);
   };
 
   res.on("finish", () => {
     const duration = Date.now() - start;
     if (path.startsWith("/api")) {
       let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-      }
-
-      if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
-      }
-
+      if (capturedJsonResponse) logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
+      if (logLine.length > 80) logLine = logLine.slice(0, 79) + "…";
       console.log(logLine);
     }
   });
@@ -49,16 +35,13 @@ app.use((req, res, next) => {
   next();
 });
 
-// Initialize routes and error handling
 let routesInitialized = false;
 
 async function initializeApp() {
   if (routesInitialized) return;
-  
   try {
     await registerRoutes(app);
-    
-    // Error handling middleware
+
     app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       const status = err.status || err.statusCode || 500;
       let message = err.message || "Internal Server Error";
@@ -67,15 +50,16 @@ async function initializeApp() {
       }
       res.status(status).json({ message });
     });
-    
+
     routesInitialized = true;
   } catch (error) {
     console.error("Failed to initialize routes:", error);
   }
 }
 
-// Serverless handler function
-export default async function handler(req: Request, res: Response) {
+const handler = serverless(app);
+
+export default async function serverlessHandler(req: Request, res: Response) {
   await initializeApp();
-  return app(req, res);
+  return handler(req, res);
 }
