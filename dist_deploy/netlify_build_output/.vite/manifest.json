@@ -1,0 +1,30 @@
+{
+  "../attached_assets/logo 313-2_1753650586356.png": {
+    "file": "assets/logo 313-2_1753650586356-BUjv5KMW.png",
+    "src": "../attached_assets/logo 313-2_1753650586356.png"
+  },
+  "_firebase-Dt4QnLbc.js": {
+    "file": "assets/firebase-Dt4QnLbc.js",
+    "name": "firebase"
+  },
+  "_react-C733eHZ9.js": {
+    "file": "assets/react-C733eHZ9.js",
+    "name": "react"
+  },
+  "index.html": {
+    "file": "assets/index-gKW_AISN.js",
+    "name": "index",
+    "src": "index.html",
+    "isEntry": true,
+    "imports": [
+      "_react-C733eHZ9.js",
+      "_firebase-Dt4QnLbc.js"
+    ],
+    "css": [
+      "assets/index-CJi0rVMK.css"
+    ],
+    "assets": [
+      "assets/logo 313-2_1753650586356-BUjv5KMW.png"
+    ]
+  }
+}
