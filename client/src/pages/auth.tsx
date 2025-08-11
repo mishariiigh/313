@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { useLocation } from "wouter";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormReturn, FieldValues, Path } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2 } from "lucide-react";
@@ -23,7 +22,8 @@ const loginSchema = z.object({
 const registerSchema = z.object({
   name: z.string().min(2, "الاسم يجب أن يكون حرفين على الأقل"),
   email: z.string().email("البريد الإلكتروني غير صحيح"),
-  phoneNumber: z.string()
+  phoneNumber: z
+    .string()
     .min(8, "رقم الهاتف يجب أن يكون 8 أرقام على الأقل")
     .regex(/^[0-9+\-\s()]+$/, "رقم الهاتف يجب أن يحتوي على أرقام فقط"),
   password: z.string().min(6, "كلمة المرور يجب أن تكون 6 أحرف على الأقل"),
@@ -32,6 +32,20 @@ const registerSchema = z.object({
   message: "كلمة المرور غير متطابقة",
   path: ["confirmPassword"],
 });
+
+// Correctly typed lowercase change handler
+function handleLowercaseChange<
+  TFieldValues extends FieldValues = FieldValues
+>(
+  e: React.ChangeEvent<HTMLInputElement>,
+  form: UseFormReturn<TFieldValues>,
+  fieldName: Path<TFieldValues>
+) {
+  form.setValue(fieldName, e.target.value.toLowerCase() as any, {
+    shouldValidate: true,
+    shouldDirty: true,
+  });
+}
 
 export default function AuthPage() {
   const { user, login, register, isLoading } = useAuth();
@@ -58,17 +72,15 @@ export default function AuthPage() {
     },
   });
 
-  // Handle Google redirect result
   useEffect(() => {
     const handleRedirect = async () => {
       try {
         const result = await handleGoogleRedirect();
         if (result) {
-          // User signed in with Google, redirect to dashboard
           setLocation("/dashboard");
         }
       } catch (error) {
-        console.error('Error handling Google redirect:', error);
+        console.error("Error handling Google redirect:", error);
         toast({
           title: "خطأ في تسجيل الدخول",
           description: "حدث خطأ أثناء تسجيل الدخول بجوجل",
@@ -76,12 +88,10 @@ export default function AuthPage() {
         });
       }
     };
-
     handleRedirect();
   }, [setLocation, toast]);
 
-  // Redirect if already logged in
-  React.useEffect(() => {
+  useEffect(() => {
     if (user) {
       setLocation("/dashboard");
     }
@@ -94,16 +104,16 @@ export default function AuthPage() {
   const onLogin = async (values: z.infer<typeof loginSchema>) => {
     try {
       await login(values.email, values.password);
-    } catch (error) {
-      // Error handling is done in the auth context
+    } catch {
+      // handled in auth context
     }
   };
 
   const onRegister = async (values: z.infer<typeof registerSchema>) => {
     try {
       await register(values.email, values.password, values.name);
-    } catch (error) {
-      // Error handling is done in the auth context
+    } catch {
+      // handled in auth context
     }
   };
 
@@ -111,29 +121,20 @@ export default function AuthPage() {
     try {
       setGoogleLoading(true);
       const user = await signInWithGoogle();
-      
-      // Get the ID token from the user
       const idToken = await user.getIdToken();
-      
-      // Send the ID token to our backend
-      const response = await fetch('/api/auth/google', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const response = await fetch("/api/auth/google", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ idToken }),
       });
-      
       if (response.ok) {
-        const data = await response.json();
-        // Redirect to dashboard on successful authentication
-        window.location.href = '/dashboard';
+        window.location.href = "/dashboard";
       } else {
         const error = await response.json();
-        throw new Error(error.message || 'Authentication failed');
+        throw new Error(error.message || "Authentication failed");
       }
     } catch (error) {
-      console.error('Error signing in with Google:', error);
+      console.error("Error signing in with Google:", error);
       toast({
         title: "خطأ في تسجيل الدخول",
         description: "حدث خطأ أثناء تسجيل الدخول بجوجل",
@@ -147,19 +148,21 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="max-w-md w-full space-y-8">
-        {/* Logo and Header */}
         <div className="text-center">
           <Logo size="large" className="mx-auto mb-6" />
           <h1 className="text-4xl font-bold text-gaming-red mb-4">313</h1>
           <p className="text-gray-400 text-lg">اختبر معلوماتك مع الأصدقاء والعائلة</p>
         </div>
 
-        {/* Auth Form */}
         <div className="bg-gaming-darkgrey border-2 border-gaming-mutedred rounded-2xl p-8 shadow-xl">
           <Tabs defaultValue="login" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="login" className="text-lg">تسجيل الدخول</TabsTrigger>
-              <TabsTrigger value="register" className="text-lg">إنشاء حساب</TabsTrigger>
+              <TabsTrigger value="login" className="text-lg">
+                تسجيل الدخول
+              </TabsTrigger>
+              <TabsTrigger value="register" className="text-lg">
+                إنشاء حساب
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="login">
@@ -172,7 +175,13 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel className="text-gaming-offwhite font-semibold">البريد الإلكتروني</FormLabel>
                         <FormControl>
-                          <Input placeholder="أدخل بريدك الإلكتروني" {...field} className="bg-gaming-black border-gaming-mutedred text-gaming-offwhite placeholder-gray-500 focus:border-gaming-red focus:ring-gaming-red" />
+                          <Input
+                            placeholder="أدخل بريدك الإلكتروني"
+                            {...field}
+                            className="bg-gaming-black border-gaming-mutedred text-gaming-offwhite placeholder-gray-500 focus:border-gaming-red focus:ring-gaming-red"
+                            onChange={(e) => handleLowercaseChange(e, loginForm, "email")}
+                            value={loginForm.watch("email")}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -185,20 +194,25 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel className="text-gaming-offwhite font-semibold">كلمة المرور</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="أدخل كلمة المرور" {...field} className="bg-gaming-black border-gaming-mutedred text-gaming-offwhite placeholder-gray-500 focus:border-gaming-red focus:ring-gaming-red" />
+                          <Input
+                            type="password"
+                            placeholder="أدخل كلمة المرور"
+                            {...field}
+                            className="bg-gaming-black border-gaming-mutedred text-gaming-offwhite placeholder-gray-500 focus:border-gaming-red focus:ring-gaming-red"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <button type="submit" className="bg-gaming-red hover:bg-gaming-mutedred text-gaming-offwhite font-bold w-full text-lg py-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl" disabled={isLoading}>
-                    {isLoading ? (
-                      <Loader2 className="mx-auto h-5 w-5 animate-spin" />
-                    ) : (
-                      "تسجيل الدخول"
-                    )}
-                  </button>
-                  
+                  <Button
+                    type="submit"
+                    className="bg-gaming-red hover:bg-gaming-mutedred text-gaming-offwhite font-bold w-full text-lg py-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? <Loader2 className="mx-auto h-5 w-5 animate-spin" /> : "تسجيل الدخول"}
+                  </Button>
+
                   <div className="relative">
                     <div className="absolute inset-0 flex items-center">
                       <span className="w-full border-t" />
@@ -207,8 +221,8 @@ export default function AuthPage() {
                       <span className="bg-background px-2 text-muted-foreground">أو</span>
                     </div>
                   </div>
-                  
-                  <button
+
+                  <Button
                     type="button"
                     onClick={handleGoogleSignIn}
                     disabled={googleLoading}
@@ -222,7 +236,7 @@ export default function AuthPage() {
                         تسجيل الدخول بجوجل
                       </>
                     )}
-                  </button>
+                  </Button>
                 </form>
               </Form>
             </TabsContent>
@@ -237,7 +251,13 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel className="text-luxury-green-dark font-semibold">الاسم الكامل</FormLabel>
                         <FormControl>
-                          <Input placeholder="أدخل اسمك الكامل" {...field} className="luxury-input" />
+                          <Input
+                            placeholder="أدخل اسمك الكامل"
+                            {...field}
+                            className="luxury-input"
+                            onChange={(e) => handleLowercaseChange(e, registerForm, "name")}
+                            value={registerForm.watch("name")}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -250,7 +270,13 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel className="text-luxury-green-dark font-semibold">البريد الإلكتروني</FormLabel>
                         <FormControl>
-                          <Input placeholder="أدخل بريدك الإلكتروني" {...field} className="luxury-input" />
+                          <Input
+                            placeholder="أدخل بريدك الإلكتروني"
+                            {...field}
+                            className="luxury-input"
+                            onChange={(e) => handleLowercaseChange(e, registerForm, "email")}
+                            value={registerForm.watch("email")}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -263,7 +289,13 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel className="text-luxury-green-dark font-semibold">رقم الهاتف</FormLabel>
                         <FormControl>
-                          <Input placeholder="أدخل رقم الهاتف (مثال: +965 1234567)" {...field} className="luxury-input" />
+                          <Input
+                            placeholder="أدخل رقم الهاتف (مثال: +965 1234567)"
+                            {...field}
+                            className="luxury-input"
+                            onChange={(e) => handleLowercaseChange(e, registerForm, "phoneNumber")}
+                            value={registerForm.watch("phoneNumber")}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -295,13 +327,9 @@ export default function AuthPage() {
                       </FormItem>
                     )}
                   />
-                  <button type="submit" className="luxury-button w-full text-lg py-4" disabled={isLoading}>
-                    {isLoading ? (
-                      <div className="luxury-spinner mx-auto" />
-                    ) : (
-                      "إنشاء حساب جديد"
-                    )}
-                  </button>
+                  <Button type="submit" className="luxury-button w-full text-lg py-4" disabled={isLoading}>
+                    {isLoading ? <div className="luxury-spinner mx-auto" /> : "إنشاء حساب جديد"}
+                  </Button>
                 </form>
               </Form>
             </TabsContent>
