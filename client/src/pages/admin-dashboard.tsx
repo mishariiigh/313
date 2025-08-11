@@ -559,10 +559,10 @@ export default function AdminDashboard() {
         });
 
         const formData = new FormData();
-        formData.append('file', file);
+        formData.append('video', file);
         formData.append('type', 'video');
 
-        const response = await fetch('/api/upload', {
+        const response = await fetch('/api/upload-video', {
           method: 'POST',
           body: formData,
           credentials: 'include',
@@ -574,7 +574,7 @@ export default function AdminDashboard() {
         }
 
         const result = await response.json();
-        setQuestionForm({ ...questionForm, videoUrl: result.videoUrl });
+        setQuestionForm({ ...questionForm, videoUrl: result.filePath });
 
         toast({
           title: "تم رفع الفيديو بنجاح",

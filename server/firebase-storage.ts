@@ -162,6 +162,7 @@ export class FirebaseStorage implements IFirebaseStorage {
 
   async getAllUsers(): Promise<User[]> {
     const snapshot = await getDocs(collection(db, "users"));
+
     return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as User));
   }
 

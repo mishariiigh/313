@@ -141,7 +141,12 @@ export async function registerRoutes(app: Express): Promise<void> {
       const snapshot = await uploadBytes(storageRef, req.file.buffer);
       const downloadURL = await getDownloadURL(snapshot.ref);
 
-      res.json({ url: downloadURL, type: fileType });
+      // Return URL based on file type
+      if (fileType === 'video') {
+        res.json({ videoUrl: downloadURL });
+      } else {
+        res.json({ imageUrl: downloadURL });
+      }
     } catch (error) {
       console.error('Upload error:', error);
       res.status(500).json({ message: "خطأ في رفع الملف" });

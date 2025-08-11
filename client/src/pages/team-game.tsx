@@ -475,13 +475,13 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 p-4 min-h-0 overflow-hidden">
+        <div className="flex-1 p-2 min-h-0 overflow-hidden">
           <div className="max-w-7xl mx-auto flex gap-4 h-full">
 
             {/* Main Question Panel (Left Side - 80% width) */}
             <div className="flex-1" style={{ flex: '0 0 80%' }}>
               {/* Question with Triangle Border Design */}
-              <div className="relative rounded-3xl p-2 h-full shadow-2xl overflow-hidden" style={{
+              <div className="relative rounded-2xl p-1 h-full shadow-2xl overflow-hidden" style={{
                 background: 'rgb(241, 11, 11)',
                 border: '3px solid rgb(222, 33, 0)',
                 boxShadow: '0 8px 32px rgba(229, 9, 20, 0.25)'
@@ -506,25 +506,34 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                     </h2>
                   </div>
 
-                  {/* Question Title - Arabic, centered, bold */}
-                  <div className="text-center mb-3">
-                    <h1 className="text-2xl font-bold leading-relaxed" style={{
-                      color: 'rgb(253, 0, 0)',
-                      fontFamily: 'Cairo, Arial, sans-serif',
-                      textShadow: '0 2px 4px rgba(188, 166, 166, 0.1)'
-                    }}>
-                      {selectedQuestion.question}
-                    </h1>
-                  </div>
-
-                  {/* Question Image - Below question text */}
-                  {selectedQuestion.imageUrl && (
-  <div className="flex justify-center mb-1 flex-1 min-h-0">
-    <div
-      className="rounded-3xl p-2 shadow-xl border-2 max-w-full w-full max-h-[450px] overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+{/* Question Media (Video or Image) - Below question text */}
+{selectedQuestion.videoUrl ? (
+  <div className="flex justify-center mb-1 min-h-[200px]">
+  <div
+      className="rounded-3xl p-6 shadow-xl border-4 max-w-full w-full max-h-[700px] overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
       style={{
         background: 'linear-gradient(135deg, #333333 0%, #1e1e1e 100%)',
-        borderColor: '#990000'
+        borderColor: '#990000',
+      }}
+    >
+      <video
+        src={selectedQuestion.videoUrl}
+        controls
+        className="w-full h-full object-contain rounded-2xl shadow-lg"
+        preload="metadata"
+        controlsList="nodownload"
+      >
+        المتصفح الخاص بك لا يدعم تشغيل الفيديو.
+      </video>
+    </div>
+  </div>
+) : selectedQuestion.imageUrl ? (
+  <div className="flex justify-center mb-1 flex-1 min-h-0">
+    <div
+      className="rounded-3xl p-6 shadow-xl border-4 max-w-full w-full max-h-[700px] overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+      style={{
+        background: 'linear-gradient(135deg, #333333 0%, #1e1e1e 100%)',
+        borderColor: '#990000',
       }}
       onClick={() => setImagePopupOpen(true)}
     >
@@ -535,7 +544,10 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
       />
     </div>
   </div>
+) : (
+  <div className="flex-1"></div>
 )}
+
 
 
                   {/* Spacer if no image to center question */}
@@ -779,67 +791,68 @@ export default function TeamGamePage({ params }: TeamGamePageProps) {
                 </div>
 
                 {/* Answer Display Section */}
-                <div className="p-3 text-center flex-shrink-0">
-                  <div className="mb-3 p-3 rounded-2xl" style={{
-                    background: 'linear-gradient(135deg, #000000 0%, #1e1e1e 100%)',
-                    border: '3px solid #990000',
-                    boxShadow: 'inset 0 2px 8px rgba(229, 9, 20, 0.2)'
-                  }}>
-                    <div className="flex items-center justify-center mb-2">
-                      <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-sm font-bold mr-2" style={{
-                        background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
-                      }}>
-                        ✓
-                      </div>
-                      <span className="text-sm font-bold" style={{ color: '#f5f5f5' }}>الجواب</span>
-                    </div>
-                    <p className="text-xl font-bold leading-relaxed" style={{
-                      fontFamily: 'Cairo, Arial, sans-serif',
-                      color: '#f5f5f5'
-                    }}>
-                      {selectedQuestion.answer}
-                    </p>
-                  </div>
+<div className="p-3 text-center flex-shrink-0">
+  <div
+    className="mb-3 p-3 rounded-2xl"
+    style={{
+      background: 'linear-gradient(135deg, #000000 0%, #1e1e1e 100%)',
+      border: '3px solid #990000',
+      boxShadow: 'inset 0 2px 8px rgba(229, 9, 20, 0.2)'
+    }}
+  >
+    <div className="flex items-center justify-center mb-2">
+      <div
+        className="w-6 h-6 rounded-full flex items-center justify-center text-white text-sm font-bold mr-2"
+        style={{
+          background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+        }}
+      >
+        ✓
+      </div>
+      <span className="text-sm font-bold" style={{ color: '#f5f5f5' }}>
+        الجواب
+      </span>
+    </div>
+    <p
+      className="text-xl font-bold leading-relaxed"
+      style={{
+        fontFamily: 'Cairo, Arial, sans-serif',
+        color: '#f5f5f5'
+      }}
+    >
+      {selectedQuestion.answer}
+    </p>
+  </div>
 
-                  {selectedQuestion.explanation && (
-                    <div className="mb-2 p-2 rounded-xl" style={{
-                      background: 'linear-gradient(135deg, #333333 0%, #1e1e1e 100%)',
-                      border: '2px solid #990000'
-                    }}>
-                      <div className="flex items-center mb-1">
-                        <div className="text-sm mr-1">💡</div>
-                        <span className="text-sm font-bold" style={{ color: '#f5f5f5' }}>توضيح</span>
-                      </div>
-                      <p className="text-sm leading-relaxed" style={{
-                        fontFamily: 'Cairo, Arial, sans-serif',
-                        color: '#f5f5f5'
-                      }}>
-                        {selectedQuestion.explanation}
-                      </p>
-                    </div>
-                  )}
-                      {/* Video Display */}
-                      {selectedQuestion.videoUrl && (
-                        <div className="mt-4">
-                          <div className="text-center mb-3">
-                            <span className="inline-block bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">
-                              🎥 فيديو توضيحي
-                            </span>
-                          </div>
-                          <video
-                            src={selectedQuestion.videoUrl}
-                            controls
-                            className="max-w-full h-auto max-h-60 mx-auto rounded-lg shadow-lg"
-                            preload="metadata"
-                            controlsList="nodownload"
-                          >
-                            المتصفح الخاص بك لا يدعم تشغيل الفيديو.
-                          </video>
-                        </div>
-                      )}
-                </div>
+  {selectedQuestion.explanation && (
+    <div
+      className="mb-2 p-2 rounded-xl"
+      style={{
+        background: 'linear-gradient(135deg, #333333 0%, #1e1e1e 100%)',
+        border: '2px solid #990000'
+      }}
+    >
+      <div className="flex items-center mb-1">
+        <div className="text-sm mr-1">💡</div>
+        <span className="text-sm font-bold" style={{ color: '#f5f5f5' }}>
+          توضيح
+        </span>
+      </div>
+      <p
+        className="text-sm leading-relaxed"
+        style={{
+          fontFamily: 'Cairo, Arial, sans-serif',
+          color: '#f5f5f5'
+        }}
+      >
+        {selectedQuestion.explanation}
+      </p>
+    </div>
+  )}
+</div>
 
-                {/* Team Selection Section */}
+
+                {/* Team Selection Sectionß */}
                 <div className="px-3 pb-1 flex-1 min-h-0 overflow-y-auto">
                   <div className="grid gap-2">
                     {gameSession.teams.map((team: string, index: number) => {

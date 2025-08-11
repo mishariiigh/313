@@ -6,6 +6,8 @@ export interface Question {
   difficulty: string;
   hint?: string;
   explanation?: string;
+  imageUrl?: string;
+  videoUrl?: string | null;  // <-- Add this line
 }
 
 export interface GameSession {

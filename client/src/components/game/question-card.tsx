@@ -13,7 +13,7 @@ interface QuestionCardProps {
   isLoading?: boolean;
 }
 
-export default function QuestionCard({ question, onNext, isLoading, videoUrl }: QuestionCardProps) {
+export default function QuestionCard({ question, onNext, isLoading }: QuestionCardProps) {
   const [showHint, setShowHint] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
 
@@ -136,28 +136,9 @@ export default function QuestionCard({ question, onNext, isLoading, videoUrl }: 
               </Button>
             </div>
           )}
-
-          {/* Video Display - only show after answer is revealed */}
-          {showAnswer && videoUrl && (
-            <div className="mb-6">
-              <div className="text-center mb-3">
-                <Badge variant="outline" className="text-sm">
-                  🎥 فيديو توضيحي
-                </Badge>
-              </div>
-              <video
-                src={videoUrl}
-                controls
-                className="max-w-full h-auto max-h-80 mx-auto rounded-lg shadow-lg"
-                preload="metadata"
-                controlsList="nodownload"
-              >
-                المتصفح الخاص بك لا يدعم تشغيل الفيديو.
-              </video>
-            </div>
-          )}
         </div>
       </CardContent>
     </Card>
   );
 }
+  
