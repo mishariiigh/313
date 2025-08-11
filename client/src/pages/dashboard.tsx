@@ -15,15 +15,42 @@ export default function Dashboard() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
 
-  const { data: historyData } = useQuery({
+  const { data: historyData, error: historyError, isLoading: historyLoading } = useQuery({
     queryKey: ["/api/games/history"],
     enabled: !!user,
-  }) as { data: { gameSessions?: any[] } | undefined };
+    retry: 3,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  }) as { data: { gameSessions?: any[] } | undefined; error: any; isLoading: boolean };
 
-  const { data: activeGameData } = useQuery({
+  const { data: activeGameData, error: activeGameError, isLoading: activeGameLoading } = useQuery({
     queryKey: ["/api/games/active"],
     enabled: !!user,
-  }) as { data: { activeSession?: any } | undefined };
+    retry: 3,
+    staleTime: 30 * 1000, // 30 seconds
+  }) as { data: { activeSession?: any } | undefined; error: any; isLoading: boolean };
+
+  // Handle errors using useEffect
+  React.useEffect(() => {
+    if (historyError) {
+      console.error('Failed to fetch game history:', historyError);
+      toast({
+        title: "خطأ في تحميل البيانات",
+        description: "فشل في تحميل سجل الألعاب",
+        variant: "destructive",
+      });
+    }
+  }, [historyError, toast]);
+
+  React.useEffect(() => {
+    if (activeGameError) {
+      console.error('Failed to fetch active game:', activeGameError);
+      toast({
+        title: "خطأ في تحميل البيانات",
+        description: "فشل في تحميل اللعبة النشطة",
+        variant: "destructive",
+      });
+    }
+  }, [activeGameError, toast]);
 
   const startGameMutation = useMutation({
     mutationFn: async () => {

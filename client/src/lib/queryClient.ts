@@ -3,25 +3,60 @@ import { QueryClient, QueryFunction } from "@tanstack/react-query";
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
     const text = (await res.text()) || res.statusText;
+    // Handle specific Firebase errors
+    if (text.includes('Firebase') || text.includes('auth/')) {
+      throw new Error('خطأ في الاتصال بـ Firebase. تحقق من إعدادات المشروع.');
+    }
+    
     throw new Error(`${res.status}: ${text}`);
   }
 }
 
-export async function apiRequest(
-  method: string,
-  url: string,
-  data?: unknown | undefined,
-): Promise<Response> {
-  const res = await fetch(url, {
+export const apiRequest = async (method: string, url: string, data?: any): Promise<Response> => {
+  const config: RequestInit = {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
-    body: data ? JSON.stringify(data) : undefined,
-    credentials: "include",
-  });
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  };
 
-  await throwIfResNotOk(res);
-  return res;
-}
+  if (data) {
+    config.body = JSON.stringify(data);
+  }
+
+  try {
+    const response = await fetch(url, config);
+
+    // Log errors for debugging
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`API Request failed: ${method} ${url}`, {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorText
+      });
+
+      // Re-create response for consumption by caller
+      return new Response(errorText, {
+        status: response.status,
+        statusText: response.statusText,
+        headers: response.headers
+      });
+    }
+
+    return response;
+  } catch (error) {
+    console.error(`Network error for ${method} ${url}:`, error);
+
+    // Handle network errors
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('خطأ في الاتصال بالخادم. تأكد من اتصالك بالإنترنت.');
+    }
+
+    throw error;
+  }
+};
 
 type UnauthorizedBehavior = "returnNull" | "throw";
 export const getQueryFn: <T>(options: {
