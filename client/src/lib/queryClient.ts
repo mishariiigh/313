@@ -18,7 +18,7 @@ export const apiRequest = async (method: string, url: string, data?: any): Promi
     headers: {
       'Content-Type': 'application/json',
     },
-    credentials: 'include',
+    credentials: 'include', // Always include cookies for authentication
   };
 
   if (data) {
@@ -65,7 +65,10 @@ export const getQueryFn: <T>(options: {
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
     const res = await fetch(queryKey.join("/") as string, {
-      credentials: "include",
+      credentials: "include", // Ensure cookies are sent
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
 
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {

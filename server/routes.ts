@@ -51,6 +51,26 @@ export async function registerRoutes(app: Express): Promise<void> {
   app.use(passport.initialize());
   app.use(passport.session());
 
+  // Authentication middleware
+  const requireAuth = (req: any, res: any, next: any) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+    next();
+  };
+
+  // Admin middleware
+  const requireAdmin = (req: any, res: any, next: any) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "غير مسجل الدخول" });
+    }
+    const user = req.user as any;
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "غير مصرح بالوصول - مطلوب صلاحيات إدارية" });
+    }
+    next();
+  };
+
   // Passport configuration
   passport.use(new LocalStrategy(
     { usernameField: 'email' },
@@ -87,15 +107,7 @@ export async function registerRoutes(app: Express): Promise<void> {
   });
 
   // File upload route
-  app.post("/api/upload", upload.single('file'), async (req, res) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "غير مسجل الدخول" });
-    }
-
-    const user = req.user as any;
-    if (!user.isAdmin) {
-      return res.status(403).json({ message: "غير مصرح بالوصول" });
-    }
+  app.post("/api/upload", requireAdmin, upload.single('file'), async (req, res) => {
 
     if (!req.file) {
       return res.status(400).json({ message: "لم يتم رفع أي ملف" });
@@ -259,10 +271,7 @@ export async function registerRoutes(app: Express): Promise<void> {
 
 
   // Game routes
-  app.post("/api/games/start", async (req, res) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "غير مسجل الدخول" });
-    }
+  app.post("/api/games/start", requireAuth, async (req, res) => {
 
     const user = req.user as any;
     const { gameType = "single", teams = [], selectedCategories = [] } = req.body;
@@ -416,10 +425,7 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
-  app.get("/api/games/history", async (req, res) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "غير مسجل الدخول" });
-    }
+  app.get("/api/games/history", requireAuth, async (req, res) => {
 
     try {
       const user = req.user as any;
@@ -1032,15 +1038,7 @@ export async function registerRoutes(app: Express): Promise<void> {
   });
 
   // Admin routes
-  app.get("/api/admin/stats", async (req, res) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "غير مسجل الدخول" });
-    }
-
-    const user = req.user as any;
-    if (!user.isAdmin) {
-      return res.status(403).json({ message: "غير مصرح بالوصول" });
-    }
+  app.get("/api/admin/stats", requireAdmin, async (req, res) => {
 
     try {
       const stats = await storage.getStats();
@@ -1398,10 +1396,7 @@ export async function registerRoutes(app: Express): Promise<void> {
   });
 
   // Coupon validation route
-  app.post("/api/validate-coupon", async (req, res) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "غير مسجل الدخول" });
-    }
+  app.post("/api/validate-coupon", requireAuth, async (req, res) => {
 
     try {
       const { code } = req.body;

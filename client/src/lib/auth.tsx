@@ -30,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }): JSX.Element
   const { toast } = useToast();
   const [, setLocation] = useLocation();
 
-  const { data: authData } = useQuery<{ user: User | null }>({
+  const { data: authData, error: authError } = useQuery<{ user: User | null }>({
     queryKey: ["/api/auth/me"],
     queryFn: async () => {
       const response = await apiRequest("GET", "/api/auth/me");
@@ -44,9 +44,15 @@ export function AuthProvider({ children }: { children: ReactNode }): JSX.Element
       }
       return response.json();
     },
-    retry: false,
-    staleTime: Infinity, // Keep the auth state fresh
-    gcTime: Infinity, // Keep the auth state in cache indefinitely
+    retry: (failureCount, error: any) => {
+      // Don't retry on authentication errors
+      if (error?.status === 401 || error?.status === 403) {
+        return false;
+      }
+      return failureCount < 3;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
   });
 
   useEffect(() => {
