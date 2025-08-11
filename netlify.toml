@@ -1,6 +1,6 @@
 [build]
   command = "npm run build"
-  publish = "dist_deploy"
+  publish = "dist_deploy/netlify_build_output"
   functions = "api"
 
 [build.environment]
@@ -8,12 +8,12 @@
   NPM_FLAGS = "--legacy-peer-deps"
   VITE_API_URL = "/.netlify/functions"
 
-[dev]
-  framework = "vite"
-  targetPort = 3000
-  autoLaunch = true
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/index"
+  status = 200
 
 [[redirects]]
-from = "/api/*"
-to = "/.netlify/functions/index"
-status = 200
+  from = "/*"
+  to = "/index.html"
+  status = 200
