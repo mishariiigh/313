@@ -1,12 +1,12 @@
 [build]
   command = "npm run build"
   publish = "dist_deploy"
-  functions = "api"  
-  
+  functions = "api"
+
 [build.environment]
-  NODE_VERSION = "20.0.0" 
+  NODE_VERSION = "20.0.0"
   NPM_FLAGS = "--legacy-peer-deps"
-  VITE_API_URL = "/.netlify/functions"  
+  VITE_API_URL = "/.netlify/functions"
 
 [dev]
   framework = "vite"
