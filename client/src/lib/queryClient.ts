@@ -13,6 +13,13 @@ async function throwIfResNotOk(res: Response) {
 }
 
 export const apiRequest = async (method: string, url: string, body?: any): Promise<Response> => {
+  // Use local development server URL
+  const baseUrl = window.location.hostname === 'localhost' || window.location.hostname.includes('replit') 
+    ? `${window.location.protocol}//${window.location.hostname}:5000`
+    : '';
+  
+  const fullUrl = url.startsWith('/') ? `${baseUrl}${url}` : url;
+  
   const config: RequestInit = {
     method,
     headers: {
@@ -40,7 +47,7 @@ export const apiRequest = async (method: string, url: string, body?: any): Promi
     config.body = JSON.stringify(body);
   }
 
-  const response = await fetch(url, config);
+  const response = await fetch(fullUrl, config);
   await throwIfResNotOk(response);
   return response;
 };
@@ -51,6 +58,14 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
+    // Use local development server URL
+    const baseUrl = window.location.hostname === 'localhost' || window.location.hostname.includes('replit') 
+      ? `${window.location.protocol}//${window.location.hostname}:5000`
+      : '';
+    
+    const url = queryKey.join("/") as string;
+    const fullUrl = url.startsWith('/') ? `${baseUrl}${url}` : url;
+    
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
@@ -67,7 +82,7 @@ export const getQueryFn: <T>(options: {
       console.warn("Failed to get Firebase token for query:", error);
     }
 
-    const res = await fetch(queryKey.join("/") as string, {
+    const res = await fetch(fullUrl, {
       credentials: "include", // Ensure cookies are sent
       headers,
     });
