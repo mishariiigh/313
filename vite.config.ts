@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 export default defineConfig({
   root: path.resolve(__dirname, 'client'),
   base: './',
-  publicDir: path.resolve(__dirname, 'client/public'), // <-- ensures public/ is served
+  publicDir: path.resolve(__dirname, 'client/public'),
 
   build: {
     chunkSizeWarningLimit: 1000,
@@ -50,5 +50,15 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
+  },
+
+  optimizeDeps: {
+    exclude: [
+      "firebase-admin",
+      "fs",
+      "path",
+      "os",
+      "@server",  // optional, to block accidental imports
+    ],
   },
 });

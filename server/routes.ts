@@ -8,8 +8,7 @@ import { storage } from "./firebase-storage";
 import { insertUserSchema, insertQuestionSchema, insertCategorySchema, insertCouponSchema, insertGamePackageSchema, type InsertUser } from "@shared/firebase-schema";
 import { z } from "zod";
 import Stripe from "stripe";
-import { verifyIdToken, createOrUpdateFirebaseUser } from "./firebase-auth";
-import { verifyFirebaseToken, requireFirebaseAdmin } from "./firebase-admin-auth";
+import { verifyFirebaseToken, requireFirebaseAdmin } from "./firebase-auth";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_...", {
   apiVersion: "2024-06-20" as any,
