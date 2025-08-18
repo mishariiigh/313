@@ -3,8 +3,8 @@
     "file": "assets/logo 313-2_1753650586356-BUjv5KMW.png",
     "src": "../attached_assets/logo 313-2_1753650586356.png"
   },
-  "_firebase-DgngoABk.js": {
-    "file": "assets/firebase-DgngoABk.js",
+  "_firebase-Dmhf6R9F.js": {
+    "file": "assets/firebase-Dmhf6R9F.js",
     "name": "firebase"
   },
   "_react-C733eHZ9.js": {
@@ -12,13 +12,13 @@
     "name": "react"
   },
   "index.html": {
-    "file": "assets/index-B1BloXNZ.js",
+    "file": "assets/index-D5sTnGS0.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
     "imports": [
       "_react-C733eHZ9.js",
-      "_firebase-DgngoABk.js"
+      "_firebase-Dmhf6R9F.js"
     ],
     "css": [
       "assets/index-CJi0rVMK.css"

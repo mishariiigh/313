@@ -26,39 +26,43 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }): JSX.Element {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setLoading] = useState(true); // Initialize loading state
+  const [isLoading, setLoading] = useState(true);
+  const [authInitialized, setAuthInitialized] = useState(false);
   const { toast } = useToast();
   const [, setLocation] = useLocation();
 
   const { data: authData, error: authError } = useQuery<{ user: User | null }>({
     queryKey: ["/api/auth/me"],
     queryFn: async () => {
-      const response = await apiRequest("GET", "/api/auth/me");
-      if (!response.ok) {
-        // Handle cases where the backend might return an error status
-        // For example, if the user is not logged in on the backend
-        if (response.status === 401 || response.status === 403) {
-          return { user: null }; // Treat as not logged in
+      try {
+        const response = await apiRequest("GET", "/api/auth/me");
+        if (!response.ok) {
+          if (response.status === 401 || response.status === 403) {
+            return { user: null };
+          }
+          throw new Error(`Failed to fetch user data: ${response.statusText}`);
         }
-        throw new Error(`Failed to fetch user data: ${response.statusText}`);
+        return response.json();
+      } catch (error) {
+        return { user: null };
       }
-      return response.json();
     },
-    retry: (failureCount, error: any) => {
-      // Don't retry on authentication errors
-      if (error?.status === 401 || error?.status === 403) {
-        return false;
-      }
-      return failureCount < 3;
-    },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
+    retry: false,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    enabled: true, // Enable by default - it will return null for unauthenticated users
   });
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      console.log('Auth state changed:', firebaseUser?.email);
+      console.log('Auth state changed:', firebaseUser?.email || 'No user');
       setLoading(true);
+      
+      // Mark auth as initialized after first state change
+      if (!authInitialized) {
+        setAuthInitialized(true);
+      }
+      
       try {
         if (firebaseUser) {
           // Get the ID token
@@ -72,6 +76,9 @@ export function AuthProvider({ children }: { children: ReactNode }): JSX.Element
             const data = await response.json();
             setUser(data.user);
             console.log('User authenticated:', data.user.email);
+            
+            // Enable and invalidate queries to refresh with new auth state
+            queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
           } else {
             const errorData = await response.json();
             console.error('Backend authentication failed:', errorData.message);
@@ -134,7 +141,7 @@ export function AuthProvider({ children }: { children: ReactNode }): JSX.Element
     });
 
     return () => unsubscribe();
-  }, []); // Empty dependency array means this effect runs once on mount and cleans up on unmount
+  }, [toast, queryClient, authInitialized]);
 
   // Update user state when authData from useQuery changes
   useEffect(() => {
@@ -257,6 +264,7 @@ export function AuthProvider({ children }: { children: ReactNode }): JSX.Element
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
+    console.error("useAuth called outside of AuthProvider. Make sure your component is wrapped with AuthProvider.");
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;

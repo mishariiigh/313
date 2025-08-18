@@ -8,7 +8,8 @@ import { storage } from "./firebase-storage";
 import { insertUserSchema, insertQuestionSchema, insertCategorySchema, insertCouponSchema, insertGamePackageSchema, type InsertUser } from "@shared/firebase-schema";
 import { z } from "zod";
 import Stripe from "stripe";
-import { verifyFirebaseToken, requireFirebaseAdmin } from "./firebase-auth";
+import { verifyIdToken, createOrUpdateFirebaseUser } from "./firebase-auth";
+import { verifyFirebaseToken, requireFirebaseAdmin } from "./firebase-admin-auth";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_...", {
   apiVersion: "2024-06-20" as any,
@@ -250,12 +251,22 @@ export async function registerRoutes(app: Express): Promise<void> {
   });
 
   app.get("/api/auth/me", (req, res) => {
+    // Try session auth first
     if (req.isAuthenticated()) {
       const user = req.user as any;
-      res.json({ user: { id: user.id, email: user.email, name: user.name, phoneNumber: user.phoneNumber, availableGames: user.availableGames, isAdmin: user.isAdmin } });
-    } else {
-      res.status(401).json({ message: "غير مسجل الدخول" });
+      return res.json({ user: { id: user.id, email: user.email, name: user.name, phoneNumber: user.phoneNumber, availableGames: user.availableGames, isAdmin: user.isAdmin } });
     }
+    
+    // If no session, try Firebase token auth
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      return verifyFirebaseToken(req, res, () => {
+        const user = req.user as any;
+        return res.json({ user: { id: user.id, email: user.email, name: user.name, phoneNumber: user.phoneNumber, availableGames: user.availableGames, isAdmin: user.isAdmin } });
+      });
+    }
+    
+    res.status(401).json({ message: "غير مسجل الدخول" });
   });
 
   // Google Authentication route

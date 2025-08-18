@@ -17,13 +17,26 @@ const firebaseConfig = {
 
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+console.log('Initializing Firebase with config:', {
+  ...firebaseConfig,
+  apiKey: firebaseConfig.apiKey ? `${firebaseConfig.apiKey.substring(0, 20)}...` : 'MISSING'
+});
+
+let app;
+try {
+  app = initializeApp(firebaseConfig);
+  console.log('✅ Firebase app initialized successfully');
+} catch (error) {
+  console.error('❌ Failed to initialize Firebase app:', error);
+  throw error;
+}
 
 // Initialize Firestore
 export const db = getFirestore(app);
 
 // Initialize Auth
 export const auth = getAuth(app);
+console.log('✅ Firebase Auth initialized');
 
 // Initialize Google Auth Provider
 export const googleProvider = new GoogleAuthProvider();

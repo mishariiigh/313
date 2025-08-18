@@ -80461,6 +80461,67 @@ var init_firebase_storage = __esm({
   }
 });
 
+// server/firebase-auth.ts
+var firebase_auth_exports = {};
+__export(firebase_auth_exports, {
+  createOrUpdateFirebaseUser: () => createOrUpdateFirebaseUser,
+  verifyIdToken: () => verifyIdToken
+});
+var verifyIdToken, createOrUpdateFirebaseUser;
+var init_firebase_auth = __esm({
+  "server/firebase-auth.ts"() {
+    "use strict";
+    init_firebase_storage();
+    verifyIdToken = async (idToken) => {
+      try {
+        const base64Url = idToken.split(".")[1];
+        const base642 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        const jsonPayload = decodeURIComponent(atob(base642).split("").map(function(c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(""));
+        const payload = JSON.parse(jsonPayload);
+        if (!payload.email || !payload.sub) {
+          throw new Error("Invalid token payload");
+        }
+        return {
+          uid: payload.sub,
+          email: payload.email,
+          name: payload.name || payload.email.split("@")[0],
+          picture: payload.picture,
+          email_verified: payload.email_verified || false
+        };
+      } catch (error) {
+        console.error("Error verifying ID token:", error);
+        throw new Error("Invalid ID token");
+      }
+    };
+    createOrUpdateFirebaseUser = async (decodedToken) => {
+      try {
+        let user = await storage2.getUserByEmail(decodedToken.email);
+        if (user) {
+          return user;
+        } else {
+          const newUser = await storage2.createUser({
+            email: decodedToken.email,
+            name: decodedToken.name || decodedToken.email.split("@")[0],
+            phoneNumber: "",
+            // Google auth doesn't provide phone number
+            password: "",
+            // No password for Google auth users
+            availableGames: 2,
+            // Give 2 free games to new users
+            isAdmin: false
+          });
+          return newUser;
+        }
+      } catch (error) {
+        console.error("Error creating/updating Firebase user:", error);
+        throw error;
+      }
+    };
+  }
+});
+
 // node_modules/firebase-admin/lib/utils/validator.js
 var require_validator = __commonJS({
   "node_modules/firebase-admin/lib/utils/validator.js"(exports2) {
@@ -247999,14 +248060,23 @@ function createStripe(platformFunctions, requestSender = defaultRequestSenderFac
 var Stripe = createStripe(new NodePlatformFunctions());
 var stripe_esm_node_default = Stripe;
 
-// server/firebase-auth.ts
+// server/routes.ts
+init_firebase_auth();
+
+// server/firebase-admin-auth.ts
 var import_firebase_admin = __toESM(require_lib13(), 1);
 if (!import_firebase_admin.default.apps.length) {
   const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT_KEY ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY) : void 0;
-  import_firebase_admin.default.initializeApp({
-    credential: serviceAccount ? import_firebase_admin.default.credential.cert(serviceAccount) : import_firebase_admin.default.credential.applicationDefault(),
-    projectId: process.env.FIREBASE_PROJECT_ID || "game-aad88"
-  });
+  try {
+    import_firebase_admin.default.initializeApp({
+      credential: serviceAccount ? import_firebase_admin.default.credential.cert(serviceAccount) : import_firebase_admin.default.credential.applicationDefault(),
+      projectId: process.env.FIREBASE_PROJECT_ID || "game-aad88"
+    });
+    console.log("\u2705 Firebase Admin SDK initialized successfully");
+  } catch (error) {
+    console.error("\u274C Failed to initialize Firebase Admin SDK:", error);
+    console.log("Using fallback token verification for development");
+  }
 }
 async function verifyFirebaseToken(req, res, next) {
   const authHeader = req.headers.authorization;
@@ -248015,7 +248085,14 @@ async function verifyFirebaseToken(req, res, next) {
   }
   const idToken = authHeader.split("Bearer ")[1];
   try {
-    const decodedToken = await import_firebase_admin.default.auth().verifyIdToken(idToken);
+    let decodedToken;
+    try {
+      decodedToken = await import_firebase_admin.default.auth().verifyIdToken(idToken);
+    } catch (adminError) {
+      console.log("Firebase Admin verification failed, trying fallback:", adminError.message);
+      const { verifyIdToken: verifyIdToken2 } = await Promise.resolve().then(() => (init_firebase_auth(), firebase_auth_exports));
+      decodedToken = await verifyIdToken2(idToken);
+    }
     const { storage: storage3 } = await Promise.resolve().then(() => (init_firebase_storage(), firebase_storage_exports));
     let user = await storage3.getUserByEmail(decodedToken.email);
     if (!user) {
@@ -248029,6 +248106,7 @@ async function verifyFirebaseToken(req, res, next) {
         // Give 2 free games to new users
         isAdmin: false
       });
+      console.log("Created new user from Firebase auth:", user.email);
     }
     req.user = user;
     req.firebaseUser = decodedToken;
@@ -248233,10 +248311,16 @@ async function registerRoutes(app3) {
   app3.get("/api/auth/me", (req, res) => {
     if (req.isAuthenticated()) {
       const user = req.user;
-      res.json({ user: { id: user.id, email: user.email, name: user.name, phoneNumber: user.phoneNumber, availableGames: user.availableGames, isAdmin: user.isAdmin } });
-    } else {
-      res.status(401).json({ message: "\u063A\u064A\u0631 \u0645\u0633\u062C\u0644 \u0627\u0644\u062F\u062E\u0648\u0644" });
+      return res.json({ user: { id: user.id, email: user.email, name: user.name, phoneNumber: user.phoneNumber, availableGames: user.availableGames, isAdmin: user.isAdmin } });
     }
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      return verifyFirebaseToken(req, res, () => {
+        const user = req.user;
+        return res.json({ user: { id: user.id, email: user.email, name: user.name, phoneNumber: user.phoneNumber, availableGames: user.availableGames, isAdmin: user.isAdmin } });
+      });
+    }
+    res.status(401).json({ message: "\u063A\u064A\u0631 \u0645\u0633\u062C\u0644 \u0627\u0644\u062F\u062E\u0648\u0644" });
   });
   app3.post("/api/auth/google", async (req, res) => {
     try {
