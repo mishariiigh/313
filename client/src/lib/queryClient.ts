@@ -1,82 +1,76 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
+import { getAuth } from "firebase/auth";
+import { auth } from "./firebase"; // your initialized firebase app
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
     const text = (await res.text()) || res.statusText;
-    // Handle specific Firebase errors
-    if (text.includes('Firebase') || text.includes('auth/')) {
-      throw new Error('خطأ في الاتصال بـ Firebase. تحقق من إعدادات المشروع.');
+    if (text.includes("Firebase") || text.includes("auth/")) {
+      throw new Error("خطأ في الاتصال بـ Firebase. تحقق من إعدادات المشروع.");
     }
-    
     throw new Error(`${res.status}: ${text}`);
   }
 }
 
-export const apiRequest = async (method: string, url: string, data?: any): Promise<Response> => {
+// Helper: build headers with token
+async function withAuthHeaders(extra: Record<string, string> = {}) {
+  let token: string | null = null;
+
+  if (auth.currentUser) {
+    try {
+      token = await auth.currentUser.getIdToken();
+    } catch (err) {
+      console.warn("Failed to get Firebase token:", err);
+    }
+  }
+
+  return {
+    "Content-Type": "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...extra,
+  };
+}
+
+// General API request
+export const apiRequest = async (
+  method: string,
+  url: string,
+  body?: any
+): Promise<Response> => {
+  const headers = await withAuthHeaders();
+
   const config: RequestInit = {
     method,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    credentials: 'include', // Always include cookies for authentication
+    headers,
+    credentials: "include",
+    body: body ? JSON.stringify(body) : undefined,
   };
 
-  if (data) {
-    config.body = JSON.stringify(data);
-  }
-
-  try {
-    const response = await fetch(url, config);
-
-    // Log errors for debugging
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`API Request failed: ${method} ${url}`, {
-        status: response.status,
-        statusText: response.statusText,
-        error: errorText
-      });
-
-      // Re-create response for consumption by caller
-      return new Response(errorText, {
-        status: response.status,
-        statusText: response.statusText,
-        headers: response.headers
-      });
-    }
-
-    return response;
-  } catch (error) {
-    console.error(`Network error for ${method} ${url}:`, error);
-
-    // Handle network errors
-    if (error instanceof TypeError && error.message.includes('fetch')) {
-      throw new Error('خطأ في الاتصال بالخادم. تأكد من اتصالك بالإنترنت.');
-    }
-
-    throw error;
-  }
+  const response = await fetch(url, config);
+  await throwIfResNotOk(response);
+  return response;
 };
 
 type UnauthorizedBehavior = "returnNull" | "throw";
+
+// Query function for React Query
 export const getQueryFn: <T>(options: {
   on401: UnauthorizedBehavior;
 }) => QueryFunction<T> =
-  ({ on401: unauthorizedBehavior }) =>
+  ({ on401 }) =>
   async ({ queryKey }) => {
+    const headers = await withAuthHeaders();
     const res = await fetch(queryKey.join("/") as string, {
-      credentials: "include", // Ensure cookies are sent
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      credentials: "include",
+      headers,
     });
 
-    if (unauthorizedBehavior === "returnNull" && res.status === 401) {
+    if (on401 === "returnNull" && res.status === 401) {
       return null;
     }
 
     await throwIfResNotOk(res);
-    return await res.json();
+    return res.json();
   };
 
 export const queryClient = new QueryClient({

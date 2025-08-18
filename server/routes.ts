@@ -9,6 +9,7 @@ import { insertUserSchema, insertQuestionSchema, insertCategorySchema, insertCou
 import { z } from "zod";
 import Stripe from "stripe";
 import { verifyIdToken, createOrUpdateFirebaseUser } from "./firebase-auth";
+import { verifyFirebaseToken, requireFirebaseAdmin } from "./firebase-admin-auth";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_...", {
   apiVersion: "2024-06-20" as any,
@@ -51,24 +52,43 @@ export async function registerRoutes(app: Express): Promise<void> {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // Authentication middleware
+  // Authentication middleware (supports both session and Firebase token auth)
   const requireAuth = (req: any, res: any, next: any) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "غير مسجل الدخول" });
+    // Try session auth first
+    if (req.isAuthenticated()) {
+      return next();
     }
-    next();
+    
+    // If no session, try Firebase token auth
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      return verifyFirebaseToken(req, res, next);
+    }
+    
+    return res.status(401).json({ message: "غير مسجل الدخول" });
   };
 
-  // Admin middleware
+  // Admin middleware (supports both session and Firebase token auth)
   const requireAdmin = (req: any, res: any, next: any) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "غير مسجل الدخول" });
+    // Try session auth first
+    if (req.isAuthenticated()) {
+      const user = req.user as any;
+      if (!user.isAdmin) {
+        return res.status(403).json({ message: "غير مصرح بالوصول - مطلوب صلاحيات إدارية" });
+      }
+      return next();
     }
-    const user = req.user as any;
-    if (!user.isAdmin) {
-      return res.status(403).json({ message: "غير مصرح بالوصول - مطلوب صلاحيات إدارية" });
+    
+    // If no session, try Firebase token auth
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      return verifyFirebaseToken(req, res, (error?: any) => {
+        if (error) return res.status(401).json({ message: "غير مسجل الدخول" });
+        return requireFirebaseAdmin(req, res, next);
+      });
     }
-    next();
+    
+    return res.status(401).json({ message: "غير مسجل الدخول" });
   };
 
   // Passport configuration
